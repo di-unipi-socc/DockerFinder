@@ -75,3 +75,8 @@ The description of the images can be decomposed in two main classes:
 - information related to the Docker Hub description.
 - information generated dynamically from the images.
 
+### Collects the description
+In order to collect the description from the images, i have found a 
+[Python Api for dokcer](https://github.com/docker/docker-py)  that is a Python library  that expose all the docker commnad. Can be useful to run an images directly into a python code.
+
+
