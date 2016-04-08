@@ -67,35 +67,11 @@ Introduce the image **manifest**  : semplifies images definition and improves se
 
 The steps in order to build the description for the images can be:
 -  Create a local Registry.
--  Download all the images in the DockerHub.
--  For all the images downloaded create a database with more information.
+-  Download all the images from the DockerHub (create a copy).
+-  Create a database with more useful information for all the images downloaded.
 
 ### Description structure
 The description of the images can be decomposed in two main classes:
 - information related to the Docker Hub description.
 - information generated dynamically from the images.
 
-The databases includes the tables
-  - IMAGES(ID_IMAGE, name, star,tag)
-  - LAYER(ID_LAYER,NAME)
-  - IMALAYER(ID_IMAGES,ID_LAYER)
-  - COMPONENETS(ID_COMP,name)
-  - IMACOMP(ID_IMAGE, ID_COMP);
-  
-The structure can be a JSON file:
-
-```
-{
-  "name":<image_name>
-  "ID":<id>
-  "tag":<tag>
-  "size":<size>
-  "stars": <number_Stars>
-  "layer":
-    [{
-      "ID":<id>
-      },
-    ]
-
-}
-```
