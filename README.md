@@ -58,16 +58,17 @@ Example response of previous GET:
 
 #### Docker Registry HTTP API V2.
 Introduce the image **manifest**  : semplifies images definition and improves security.
+
 - authentication (OAuth2).
 - Layering information
 - SHA256 on layer ID and Data.
 
-## Build the description
+## DockerFinder get the description
 
-The steps in order to build the description for the images :
-1. Create a local Registry.
-2. Download all the images in the DockerHub.
-3. For all the images downloaded create a database with more information.
+The steps in order to build the description for the images can be:
+-  Create a local Registry.
+-  Download all the images in the DockerHub.
+-  For all the images downloaded create a database with more information.
 
 ### Description structure
 The description of the images can be decomposed in two main classes:
