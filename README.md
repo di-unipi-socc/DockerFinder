@@ -1,24 +1,26 @@
 # DockerFinder
 
-**Docker Registry** is a stateless, highly scalable server side application that
-stores and lets you manage your own Docker images.
+###  Docker registries
+Docker provides two kind of registries:
 
+1. **Docker Registry** is a stateless, highly scalable server side application that
+stores and lets you manage your `own` Docker images.
 
-**Docker Hub** is a public registry maintained by Docker. It contains images you can download and
+2. **Docker Hub** is a public registry maintained by Docker. It contains images you can download and
 use to build containers. It provides authentication, work group structure, private repository for
 storing images you don't want to share publicly.
 
-*Command line* interface provide the `search` utility that search in the Docker Hub:
+### Docker search
+Docker provides through the *Command line* the `search` utility that search in the Docker Hub. The sysntax is of the form:
 
 ``` $ docker search [OPTIONS] TERM ```
 
-Search the Term on different search fields:
+Term is searched in all the fields:
 - **image name** (top-level namespace of official repository does not show the repository `reposUser/imagesNmae`).
 - **user name**.
 - **description** (match also substring in the description)
 
 #### Docker API v1
-
 
 - **search**:
   ```
@@ -55,7 +57,6 @@ Example response of previous GET:
 
 
 #### Docker Registry HTTP API V2.
-
 Introduce the image **manifest**  : semplifies images definition and improves security.
 - authentication (OAuth2).
 - Layering information
@@ -80,7 +81,6 @@ The databases includes the tables
   - COMPONENETS(ID_COMP,name)
   - IMACOMP(ID_IMAGE, ID_COMP);
   
-
 The structure can be a JSON file:
 
 ```
