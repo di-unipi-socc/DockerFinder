@@ -11,7 +11,10 @@ Next steps to be performed:
   - decide the structure of the inforamation (relational DB ?? )
   - Write the scripts in order to indentify the capability of the images.
   - starting from docker file ,generate the informations.
-  
+
+
+
+
 
 ### Description
 The description of the images can be decomposed in:
@@ -37,7 +40,8 @@ There are two possiblities to implement the thesi:
     - download the images from ducker.hub
     - generates the description of the image.
     - sends the description to the user
-
+    
+    [Docker on-line description](https://www.dropbox.com/s/j1dcuvgmu3l0ttn/Docker.pdf?dl=0 )
 
 ###  Docker registries
 Docker provides two kind of registries:
