@@ -40,8 +40,10 @@ There are two possiblities to implement the thesi:
     - download the images from ducker.hub
     - generates the description of the image.
     - sends the description to the user
-
-    [Docker on-line description](https://www.dropbox.com/s/j1dcuvgmu3l0ttn/Docker.pdf?dl=0 )
+<div style="text-align:center">
+<img src="https://cloud.githubusercontent.com/assets/9201530/15286937/e62ac2a6-1b5f-11e6-97d4-9a01d5d135ac.png" width="500">
+</div>
+    
 
 ###  Docker registries
 Docker provides two kind of registries:
