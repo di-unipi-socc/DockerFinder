@@ -1,30 +1,25 @@
-#from sidomo import Container
-from _ast import Add
+import json
+import os.path
+from pprint import pprint
 
-from docker import Client
+from src import Container
 
-cli = Client(base_url='unix://var/run/docker.sock')
+image = "ubuntu"
 
-"""
-# -v mount a volume, -w set working directory on container
-# docker run -v `pwd`:/path/container -w /path/container -i -t ubuntu
+scriptpath = os.path.dirname(__file__)
+filename = os.path.join(scriptpath, 'images.json')
 
-container = cli.create_container(
-    'ubuntu', command='echo ciao', working_dir="/mnt/vol2",tty=True,stdin_open=True, volumes=['/mnt/vol1', '/mnt/vol2'],
-    host_config=cli.create_host_config(binds={
-        '/home/dido-ubuntu/': {
-            'bind': '/mnt/vol2',
-            'mode': 'rw',
-        },
-        '/var/www': {
-            'bind': '/mnt/vol1',
-            'mode': 'ro',
-        }
-    })
-)
-"""
+with open(filename) as data_file:
+    data = json.load(data_file)
+    pprint(data[image]['os'])
+    pprint(data[image]['kernel'])
+    pprint(data[image]['apps'])
 
-cli.create_container('ubuntu', command='echo ciao',stdin_open=True,tty=True)
+    with Container(image, volumes=['/home/dido/getInfo.sh:/my/info.sh', '/home/dido/out.txt:/my/out.txt']) as c:
+        for output_line in c.run('bash /my/info.sh >> /my/out.txt'):  # && bash  /my/info.sh > /my/out.txt && cat /my/out.txt"):
+            print(output_line)
 
-
-
+# for output_line in c.run(data['ubuntu']['app']):
+#    print(output_line)
+# for output_line in c.run(data['fedora']['os']):
+#   print(output_line)
