@@ -12,8 +12,17 @@ Next steps to be performed:
   - Write the scripts in order to indentify the capability of the images.
   - starting from docker file ,generate the informations.
 
+# regex 
+`[0-9]\.[0-9](\.[0-9])*[^\s]*`
 
 
+```
+import re
+p = re.compile('[0-9]\.[0-9](\.[0-9])*[^\s]*')
+p = p.search("python 3.3.4.")
+p.group(0)
+
+```
 
 
 ### Description
