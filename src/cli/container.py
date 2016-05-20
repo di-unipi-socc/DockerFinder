@@ -1,4 +1,3 @@
-
 import docker
 
 # sets the docker host from your environment variables
@@ -8,7 +7,6 @@ client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 class Container:
     """
     Represents a single docker container on the host.
-
     Volumes should be a list of mapped paths, e.g. ['/var/log/docker:/var/log/docker'].
     """
 
@@ -51,22 +49,14 @@ class Container:
         """Just like 'docker run CMD'.
         This is a generator that yields lines of container output.
         """
-        exec_id = client.exec_create(
-            container=self.container_id,
-            cmd=command,
-            stdout=self.stdout,
-            stderr=self.stderr
-        )['Id']
+
+        for cmd in command:
+            exec_id = client.exec_create(
+                container=self.container_id,
+                cmd=command,
+                stdout=self.stdout,
+                stderr=self.stderr
+            )['Id']
 
         for line in client.exec_start(exec_id, stream=True):
             yield line
-
-    def pull(image):
-        # get image if not available locally
-        imnames = [im['RepoTags'][0] for im in client.images()]
-        if (not any([image in imname for imname in imnames])) and client.search(image):
-            print('Image "{}" not found locally. Pulling from docker hub...'.format(image))
-            for line in client.pull(image, stream=True):
-                yield line
-
-

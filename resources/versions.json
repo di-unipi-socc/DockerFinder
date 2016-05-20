@@ -1,0 +1,11 @@
+{
+  "python": [
+    {"version":"--version"}
+  ],
+  "java": [
+    {"version":"-version"}
+  ],
+  "curl": [
+    {"version":"--version"}
+  ]
+}

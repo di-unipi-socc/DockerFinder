@@ -1,0 +1,3 @@
+- {name: python, ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+- {name: java  , ver: -version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*' }
+- {name: curl  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*' }
