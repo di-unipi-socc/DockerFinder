@@ -55,8 +55,10 @@ class Container:
                 container=self.container_id,
                 cmd=command,
                 stdout=self.stdout,
-                stderr=self.stderr
+                stderr=self.stderr,
             )['Id']
+
+        # return client.exec_start(exec_id, stream=False)
 
         for line in client.exec_start(exec_id, stream=True):
             yield line

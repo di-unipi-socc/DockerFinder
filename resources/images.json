@@ -2,16 +2,12 @@
   "ubuntu":
         {
           "os": "bash -c 'cat /etc/*-release'" ,
-          "kernel": "bash -c 'uname -r'",
-          "apps":"dpkg --get-selections"
 
         }
       ,
   "fedora":
         {
           "os": "bash -c 'cat /etc/*-release'",
-          "kernel": "bash -c 'uname -r'",
-          "apps": "rpm -qa | less"
         }
       ,
   "CentOs":

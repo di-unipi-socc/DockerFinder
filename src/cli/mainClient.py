@@ -15,7 +15,6 @@ pathFile = "/home/dido/github/DockerFinder/resources/versions.yml"
 #@click.option('--image', '-i', help='Image name in which to run do', default=None)
 def dofinder(image):
 
-
     # try to set image
     if not image:
         ims = client.images()
@@ -35,10 +34,24 @@ def dofinder(image):
     versionCommands = yaml.load(open(pathFile))
 
     with Container(image, cleanup=True) as c:
+        #search distribution
+        for cmd, reg in getSystemCommand(versionCommands):
+            output = ''
+            for out in c.run(cmd):
+                output += out.decode()
+            p = re.compile(reg)
+            match = p.search(output)
+            if match:
+                ver = match.group(0)
+                print('[{}] found {}'.format(image, ver))
+            else:
+                print("[{}] not found {}".format(image, cmd))
+
+        #search applications versions
         for bin, cmd, regex in getVersionCommad(versionCommands):
             print("[{}] searching {} ".format(image, bin))
             for output_line in c.run(bin+" "+cmd):
-                p = re.compile(regex)     ## can ve saved the compilatiion of the regez to sae time (if the refez is equal to all the version)
+                p = re.compile(regex)     ## can be saved the compilatiion of the regex to savee time (if is equal to all the version)
                 match = p.search(output_line.decode())
                 if match:
                     ver = match.group(0)
@@ -47,15 +60,24 @@ def dofinder(image):
                     print("[{}] not found {}".format(image, bin))
 
 
+def getSystemCommand(ymlCommand):
+    apps = ymlCommand['system']
+    for app in apps:
+        yield app["cmd"], app["re"]
+
 
 def getVersionCommad(ymlCommand):
-    for app in ymlCommand:
+    apps = ymlCommand['applications']
+    for app in apps:
         yield app["name"], app["ver"], app["re"]
 
 
 #if __name__ == '__main__':
 #    dofinder()
 
+dofinder("ubuntu")
 dofinder("python")
 
-dofinder("java")
+#dofinder("java")
+
+#dofinder("dido/mix")
