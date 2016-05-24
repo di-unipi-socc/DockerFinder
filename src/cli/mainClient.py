@@ -36,9 +36,7 @@ def dofinder(image):
     with Container(image, cleanup=True) as c:
         #search distribution
         for cmd, reg in getSystemCommand(versionCommands):
-            output = ''
-            for out in c.run(cmd):
-                output += out.decode()
+            output = c.run(cmd)
             p = re.compile(reg)
             match = p.search(output)
             if match:
@@ -50,14 +48,14 @@ def dofinder(image):
         #search applications versions
         for bin, cmd, regex in getVersionCommad(versionCommands):
             print("[{}] searching {} ".format(image, bin))
-            for output_line in c.run(bin+" "+cmd):
-                p = re.compile(regex)     ## can be saved the compilatiion of the regex to savee time (if is equal to all the version)
-                match = p.search(output_line.decode())
-                if match:
-                    ver = match.group(0)
-                    print('[{}] found {} {}'.format(image, bin, ver))
-                else:
-                    print("[{}] not found {}".format(image, bin))
+            output = c.run(bin+" "+cmd)
+            p = re.compile(regex)     ## can be saved the compilatiion of the regex to savee time (if is equal to all the version)
+            match = p.search(output)
+            if match:
+                ver = match.group(0)
+                print('[{}] found {} {}'.format(image, bin, ver))
+            else:
+                print("[{}] not found {}".format(image, bin))
 
 
 def getSystemCommand(ymlCommand):
@@ -77,7 +75,5 @@ def getVersionCommad(ymlCommand):
 
 dofinder("ubuntu")
 dofinder("python")
-
-#dofinder("java")
-
+dofinder("java")
 #dofinder("dido/mix")

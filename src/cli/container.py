@@ -58,7 +58,7 @@ class Container:
                 stderr=self.stderr,
             )['Id']
 
-        # return client.exec_start(exec_id, stream=False)
+        return client.exec_start(exec_id, stream=False).decode()
 
-        for line in client.exec_start(exec_id, stream=True):
-            yield line
+        #for line in client.exec_start(exec_id, stream=True):
+        #    yield line
