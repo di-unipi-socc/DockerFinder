@@ -73,7 +73,9 @@ def getVersionCommad(ymlCommand):
 #if __name__ == '__main__':
 #    dofinder()
 
-dofinder("ubuntu")
-dofinder("python")
-dofinder("java")
-#dofinder("dido/mix")
+#dofinder("ubuntu")
+#dofinder("python")
+#dofinder("java")
+
+
+dofinder("dido/mix")

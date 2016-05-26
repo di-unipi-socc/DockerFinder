@@ -6,8 +6,11 @@ system:
 
 applications:
   - {name: python, ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+  - {name: python3, ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+  - {name: python2, ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
   - {name: java  , ver: -version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*' }
   - {name: curl  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+  - {name: nano  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
 
 
 
