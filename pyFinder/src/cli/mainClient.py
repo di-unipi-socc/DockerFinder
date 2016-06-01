@@ -1,11 +1,11 @@
-from src.cli.container import *
-from src.utils import utils
-
-import yaml
+from pyFinder.src.cli.container import Container
 import json
+
 import docker
 import re
+import yaml
 
+from pymongo import MongoClient
 
 ID = "Id"
 TAGS = "RepoTags"
@@ -21,14 +21,17 @@ BINS = "Bins"
 BIN = "Bin"
 VER = "Ver"
 
+# mongodb client connect
+client = MongoClient('mongodb://localhost:27017/')
 
 # sets the docker host from your environment variables
 client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+db = client['doFinder']
 
-#path file of the ymal file specifiing the commands for extractin  the versions
-path_versions_cmd = "/home/dido/github/DockerFinder/resources/versions.yml"
+#path file of the yaml file specifing the commands for extracting the versions
+path_versions_cmd = "../../resources/versions.yml"
 
-path_json_out = "/home/dido/github/DockerFinder/dofinder.json"
+path_json_out = "./dofinder.json"
 
 
 def dofinder(image):
@@ -87,7 +90,7 @@ def dofinder(image):
         for bin, cmd, regex in getVersionCommad(versionCommands):
             print("[{}] searching {} ".format(image, bin))
             output = c.run(bin+" "+cmd)
-            p = re.compile(regex)     ## can be saved the compilatiion of the regex to savee time (if is equal to all the version)
+            p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
             match = p.search(output)
             if match:
                 ver = match.group(0)
