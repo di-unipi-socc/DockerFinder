@@ -1,27 +1,118 @@
-[{
-    "System": {
-        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
-    },
+{
     "Bins": [
         {
-            "ver": "2.7.9",
+            "Ver": "2.7.9",
             "Bin": "python"
         },
         {
-            "ver": "2.7.9",
+            "Ver": "2.7.9",
             "Bin": "python2"
         },
         {
-            "ver": "1.8.0_91\"",
+            "Ver": "1.8.0_91\"",
             "Bin": "java"
         },
         {
-            "ver": "7.38.0",
+            "Ver": "7.38.0",
             "Bin": "curl"
         }
+    ],
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    },
+    "RootFS": {
+        "Type": "layers",
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ]
+    },
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "RepoTags": [
+        "java:latest"
     ]
-},
-{
+}{
+    "System": {},
+    "RepoTags": [
+        "java:latest"
+    ],
+    "RootFS": {
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ],
+        "Type": "layers"
+    },
+    "Bins": [
+        {
+            "Ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "Ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "Ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "Ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ],
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2"
+}{
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    },
+    "RepoTags": [
+        "java:latest"
+    ],
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "RootFS": {
+        "Type": "layers",
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ]
+    },
     "Bins": [
         {
             "Bin": "python",
@@ -39,9 +130,230 @@
             "Bin": "curl",
             "Ver": "7.38.0"
         }
-    ],
+    ]
+}{
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
     "System": {
         "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    },
+    "Bins": [
+        {
+            "Ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "Ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "Ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "Ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ],
+    "RepoTags": [
+        "java:latest"
+    ],
+    "RootFS": {
+        "Type": "layers",
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ]
     }
+}{
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    },
+    "Bins": [
+        {
+            "Ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "Ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "Ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "Ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ],
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "RepoTags": [
+        "java:latest"
+    ],
+    "RootFS": {
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ],
+        "Type": "layers"
+    }
+}{
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "RepoTags": [
+        "java:latest"
+    ],
+    "RootFS": {
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ],
+        "Type": "layers"
+    },
+    "System": {
+        "Distro": "PRETTY_NAME=\""
+    },
+    "Bins": [
+        {
+            "Bin": "python",
+            "Ver": "2.7.9"
+        },
+        {
+            "Bin": "python2",
+            "Ver": "2.7.9"
+        },
+        {
+            "Bin": "java",
+            "Ver": "1.8.0_91\""
+        },
+        {
+            "Bin": "curl",
+            "Ver": "7.38.0"
+        }
+    ]
+}{
+    "System": {
+        "Distro": "Debian GNU/Linux 8 (jessie)\""
+    },
+    "RepoTags": [
+        "java:latest"
+    ],
+    "Bins": [
+        {
+            "Ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "Ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "Ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "Ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ],
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "RootFS": {
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ],
+        "Type": "layers"
+    }
+}{
+    "Id": "sha256:713a9aa340eb695f23a3460842d62b3e058d506dee012faab1b9892f811c8eb2",
+    "System": {
+        "Distro": "Debian GNU/Linux 8 (jessie)"
+    },
+    "RootFS": {
+        "Type": "layers",
+        "Layers": [
+            "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:d2c5e3a8d3d3bd55969c395fed533af84c84fc1658cbb375546d7abcdf29c89d",
+            "sha256:a80b5871b282fe65f83357d0fb2a73851467be508329d92df39ade50822cd2d8",
+            "sha256:0b27c42fd9f458390c74196d9901347e670043d89bced2b96039745299af5427",
+            "sha256:ce665995e9756e6653c0614bdad70a8c2d1b65518647f615f22be79f11a0bced",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:bf71781e560beb99d47d4078b351d2d92eb0951a81772cd256b1b1394331636a",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:89e17b631d26ecca5f22f0b6ab2f859670bcefa7329918bd0511d6b0f639371c",
+            "sha256:4903ccf10d86d9fc6e276d89911c49673f0e2d062006077cff28391f3a35d460"
+        ]
+    },
+    "RepoTags": [
+        "java:latest"
+    ],
+    "Bins": [
+        {
+            "Ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "Ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "Ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "Ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ]
 }
-]

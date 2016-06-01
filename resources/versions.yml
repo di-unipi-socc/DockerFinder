@@ -1,8 +1,8 @@
 ---
 
 system:
-    - {cmd: 'bash -c "cat /etc/*release"', re: 'PRETTY_NAME=.*'}
-    - {cmd: 'bash -c "lsb_release -a"'   ,  re: 'Description: .*'}
+    - {cmd: 'bash -c "cat /etc/*release"', re: '(?<=PRETTY_NAME=")[^"]*'}   #PRETTY_NAME=.*'
+    - {cmd: 'bash -c "lsb_release -a"'   ,  re: 'Description:.*'}
 
 applications:
   - {name: python, ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}

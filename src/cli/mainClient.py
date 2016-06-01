@@ -2,9 +2,16 @@ from src.cli.container import *
 from src.utils import utils
 
 import yaml
-
+import json
 import docker
 import re
+
+
+ID = "Id"
+TAGS = "RepoTags"
+PARENT = "Parent"
+COMMENT = "Comment"
+ROOT_FS = "RootFS"
 
 
 SYS = "System"
@@ -45,10 +52,22 @@ def dofinder(image):
         print(ret)
 
 
+    ### Docker inspect command info
+
+    dict_inspect = client.inspect_image(image)
+    dict_info[ID] = dict_inspect[ID]
+    dict_info[TAGS] = dict_inspect[TAGS]
+    if(dict_inspect[PARENT]): dict_info[PARENT] = dict_inspect[PARENT]
+    if(dict_inspect[COMMENT]):dict_info[COMMENT] = dict_inspect[COMMENT]
+    dict_info[ROOT_FS] = dict_inspect[ROOT_FS]
 
 
 
-    ### GET THE SYSTEM DISTRI AND THE BINARY RUNNING IN THE CONTAINER
+    ### Docker API/Search info (size, stars, pulls)
+
+
+    ### get distro and applications versions in the image
+
     versionCommands = yaml.load(open(path_versions_cmd))
 
     with Container(image, cleanup=True) as c:
@@ -58,7 +77,7 @@ def dofinder(image):
             p = re.compile(reg)
             match = p.search(output)
             if match:
-                ver = match.group(0)
+                ver = match.group(0) # take the non-capturing group: only the matches, group[0] return all the match
                 dict_info[SYS] = {DST: ver}
                 print('[{}] found {}'.format(image, ver))
             else:
@@ -77,7 +96,8 @@ def dofinder(image):
             else:
                 print("[{}] not found {}".format(image, bin))
 
-        utils.dictToJson(path_json_out, dict_info)
+        #utils.dictToJson(path_json_out, dict_info)
+        print(json.dumps(dict_info, indent=4))
 
 
 
