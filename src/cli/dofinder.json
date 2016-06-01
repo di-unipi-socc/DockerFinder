@@ -1,0 +1,23 @@
+{
+    "Bins": [
+        {
+            "Bin": "python",
+            "ver": "2.7.9"
+        },
+        {
+            "Bin": "python2",
+            "ver": "2.7.9"
+        },
+        {
+            "Bin": "java",
+            "ver": "1.8.0_91\""
+        },
+        {
+            "Bin": "curl",
+            "ver": "7.38.0"
+        }
+    ],
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    }
+}

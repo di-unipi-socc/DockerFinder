@@ -13,6 +13,8 @@ Next steps to be performed:
   - starting from docker file ,generate the informations.
 
 # regex 
+This regex extract the version number of the form `number.number[number | letters]` 
+ 
 `[0-9]\.[0-9](\.[0-9])*[^\s]*`
 
 
@@ -117,3 +119,59 @@ Introduce the image **manifest**  : semplifies images definition and improves se
 - Layering information
 - SHA256 on layer ID and Data.
 
+### Mongo Schemas
+
+Information from  `docker inspect INAME_NAME`
+```
+{  "_id" : SHA256_IMAGE
+   "RepoTags": [ TAGS_IMAGE ]
+   
+   
+   "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
+            ]
+        }
+}
+```
+
+Information from `docker search IMAGE_NAME`
+```
+{
+    "Stars": NUMBER,
+    "Official": "YES/NO"
+}
+```
+Information from `doFinder NAME_IMAGE`
+
+```
+  "System": { "Distro": NAME_DISTRO
+             }
+  "Bins": [ 
+           {"Bin": NAME_BINARY
+            "Ver": VERSION},
+        ]
+```
+
+
+final description of one image
+
+```
+{  "_id" : SHA256_IMAGE
+   "RepoTags": [ TAGS_IMAGE ]
+   "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
+            ]
+        },
+   "Stars":NUMBER,
+   "Official": "YES/NO"
+   
+   
+}
+
+
+
+```

@@ -1,19 +1,32 @@
 from src.cli.container import *
-import click
+from src.utils import utils
+
 import yaml
-import os
+
 import docker
 import re
+
+
+SYS = "System"
+DST = "Distro"
+
+BINS = "Bins"
+BIN = "Bin"
+VER = "Ver"
+
 
 # sets the docker host from your environment variables
 client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
-pathFile = "/home/dido/github/DockerFinder/resources/versions.yml"
+#path file of the ymal file specifiing the commands for extractin  the versions
+path_versions_cmd = "/home/dido/github/DockerFinder/resources/versions.yml"
 
-#@click.command()
-#@click.argument('image', nargs=-1)
-#@click.option('--image', '-i', help='Image name in which to run do', default=None)
+path_json_out = "/home/dido/github/DockerFinder/dofinder.json"
+
+
 def dofinder(image):
+
+    dict_info = {SYS: {}, BINS: []}
 
     # try to set image
     if not image:
@@ -31,7 +44,12 @@ def dofinder(image):
         ret = client.pull(image)
         print(ret)
 
-    versionCommands = yaml.load(open(pathFile))
+
+
+
+
+    ### GET THE SYSTEM DISTRI AND THE BINARY RUNNING IN THE CONTAINER
+    versionCommands = yaml.load(open(path_versions_cmd))
 
     with Container(image, cleanup=True) as c:
         #search distribution
@@ -41,6 +59,7 @@ def dofinder(image):
             match = p.search(output)
             if match:
                 ver = match.group(0)
+                dict_info[SYS] = {DST: ver}
                 print('[{}] found {}'.format(image, ver))
             else:
                 print("[{}] not found {}".format(image, cmd))
@@ -53,9 +72,13 @@ def dofinder(image):
             match = p.search(output)
             if match:
                 ver = match.group(0)
+                dict_info[BINS].append({BIN: bin, VER: ver})
                 print('[{}] found {} {}'.format(image, bin, ver))
             else:
                 print("[{}] not found {}".format(image, bin))
+
+        utils.dictToJson(path_json_out, dict_info)
+
 
 
 def getSystemCommand(ymlCommand):
@@ -70,12 +93,9 @@ def getVersionCommad(ymlCommand):
         yield app["name"], app["ver"], app["re"]
 
 
-#if __name__ == '__main__':
-#    dofinder()
 
 #dofinder("ubuntu")
 #dofinder("python")
-#dofinder("java")
+dofinder("java")
 
-
-dofinder("dido/mix")
+#dofinder("dido/mix")

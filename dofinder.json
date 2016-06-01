@@ -1,0 +1,47 @@
+[{
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    },
+    "Bins": [
+        {
+            "ver": "2.7.9",
+            "Bin": "python"
+        },
+        {
+            "ver": "2.7.9",
+            "Bin": "python2"
+        },
+        {
+            "ver": "1.8.0_91\"",
+            "Bin": "java"
+        },
+        {
+            "ver": "7.38.0",
+            "Bin": "curl"
+        }
+    ]
+},
+{
+    "Bins": [
+        {
+            "Bin": "python",
+            "Ver": "2.7.9"
+        },
+        {
+            "Bin": "python2",
+            "Ver": "2.7.9"
+        },
+        {
+            "Bin": "java",
+            "Ver": "1.8.0_91\""
+        },
+        {
+            "Bin": "curl",
+            "Ver": "7.38.0"
+        }
+    ],
+    "System": {
+        "Distro": "PRETTY_NAME=\"Debian GNU/Linux 8 (jessie)\""
+    }
+}
+]
