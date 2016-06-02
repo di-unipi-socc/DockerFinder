@@ -1,14 +1,15 @@
 from pyFinder.src.cli.container import Container
+from pyFinder.src.cli import cfg
+
 import json
 
 import docker
 import re
 import yaml
 
-from pymongo import MongoClient
-
-ID = "Id"
-TAGS = "RepoTags"
+#ID = "_id"
+ID_INSPECT = "Id"
+#TAGS = "RepoTags"
 PARENT = "Parent"
 COMMENT = "Comment"
 ROOT_FS = "RootFS"
@@ -21,20 +22,15 @@ BINS = "Bins"
 BIN = "Bin"
 VER = "Ver"
 
-# mongodb client connect
-client = MongoClient('mongodb://localhost:27017/')
 
 # sets the docker host from your environment variables
 client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
-db = client['doFinder']
 
 #path file of the yaml file specifing the commands for extracting the versions
 path_versions_cmd = "../../resources/versions.yml"
 
-path_json_out = "./dofinder.json"
 
-
-def dofinder(image):
+def imageDescriptor(image):
 
     dict_info = {SYS: {}, BINS: []}
 
@@ -54,22 +50,21 @@ def dofinder(image):
         ret = client.pull(image)
         print(ret)
 
-
-    ### Docker inspect command info
+    # 1) info from Docker inspect
+    print('[{}] docker inspect ... '.format(image))
 
     dict_inspect = client.inspect_image(image)
-    dict_info[ID] = dict_inspect[ID]
-    dict_info[TAGS] = dict_inspect[TAGS]
+    dict_info[cfg.ID] = dict_inspect[ID_INSPECT]
+    dict_info[cfg.TAGS] = dict_inspect[cfg.TAGS]
     if(dict_inspect[PARENT]): dict_info[PARENT] = dict_inspect[PARENT]
     if(dict_inspect[COMMENT]):dict_info[COMMENT] = dict_inspect[COMMENT]
     dict_info[ROOT_FS] = dict_inspect[ROOT_FS]
 
+    # 2) info from Docker API/Search info (size, stars, pulls)
 
 
-    ### Docker API/Search info (size, stars, pulls)
-
-
-    ### get distro and applications versions in the image
+    # 3) info distro and applications versions in the image
+    print('[{}] searching binaries version ... '.format(image))
 
     versionCommands = yaml.load(open(path_versions_cmd))
 
@@ -82,27 +77,26 @@ def dofinder(image):
             if match:
                 ver = match.group(0) # take the non-capturing group: only the matches, group[0] return all the match
                 dict_info[SYS] = {DST: ver}
-                print('[{}] found {}'.format(image, ver))
+                #print('[{}] found {}'.format(image, ver))
             else:
-                print("[{}] not found {}".format(image, cmd))
+                pass
+                #print("[{}] not found {}".format(image, cmd))
 
         #search applications versions
         for bin, cmd, regex in getVersionCommad(versionCommands):
-            print("[{}] searching {} ".format(image, bin))
+            #print("[{}] searching {} ".format(image, bin))
             output = c.run(bin+" "+cmd)
             p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
             match = p.search(output)
             if match:
                 ver = match.group(0)
                 dict_info[BINS].append({BIN: bin, VER: ver})
-                print('[{}] found {} {}'.format(image, bin, ver))
+                #print('[{}] found {} {}'.format(image, bin, ver))
             else:
-                print("[{}] not found {}".format(image, bin))
-
-        #utils.dictToJson(path_json_out, dict_info)
-        print(json.dumps(dict_info, indent=4))
-
-
+                pass
+                #print("[{}] not found {}".format(image, bin))
+        print('[{}] finish search'.format(image))
+        return dict_info
 
 def getSystemCommand(ymlCommand):
     apps = ymlCommand['system']
@@ -114,11 +108,3 @@ def getVersionCommad(ymlCommand):
     apps = ymlCommand['applications']
     for app in apps:
         yield app["name"], app["ver"], app["re"]
-
-
-
-#dofinder("ubuntu")
-#dofinder("python")
-dofinder("java")
-
-#dofinder("dido/mix")
