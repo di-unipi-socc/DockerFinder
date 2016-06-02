@@ -113,13 +113,51 @@ Example response of previous GET:
 
 
 #### Docker Registry HTTP API V2.
-Introduce the image **manifest**  : semplifies images definition and improves security.
+Goals.
+    - simplicity
+    - distribution (saparation of content fro namenig)
+    - security (veriable iamges)
+    - performance  
+    - implementatian (move to Go)
 
-- authentication (OAuth2).
-- Layering information
-- SHA256 on layer ID and Data.
+ 
+**digest**: uniquely identify content (each layer is a content-addressable blob, Sha256)
 
-### Mongo Schemas
+**Manifest** describes the component of an image ina single object (layers can be fetched in parallel)
+```docker pull ubuntu@sha256orgihgoiaeho...```
+*Tags* are in the manifest.
+
+**Repository**
+ 
+ V1 vs V2 AI
+ - content addresses (digest) are primary identifiers
+ - no search API (reaplaced with somthing better)
+ - no explicit tagging API
+ 
+ 
+##### Atherntication 
+```
+GET https://auth.docker.io/token?service=registry.docker.io&scope=registry:catalog:*
+
+```
+
+return a jason token 
+```
+{
+token: "TOKEN"
+}
+```
+
+`https://registry-1.docker.io/v2/dido/webofficina/tags/list`
+
+Use the token to submit the operation (check if end point ha version 2)
+```
+GET https://index.docker.io/v2/
+
+Authorization: Bearer TOKEN 
+```
+
+###Mongo Schemas
 
 Information from  `docker inspect INAME_NAME`
 ```

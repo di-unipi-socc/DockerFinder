@@ -26,11 +26,8 @@ class FinderMongoClient:
     def get_image(self, sha_image):
         return self.images.find_one({cfg.ID: sha_image})
 
-
     def count_all_images(self):
         return self.images.count()
-
-    #833bdb1e4995
 
 
 
