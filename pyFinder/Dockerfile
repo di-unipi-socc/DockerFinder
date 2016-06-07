@@ -1,8 +1,9 @@
 FROM python:3.4-alpine
 
-RUN mkdir /code
-WORKDIR /code
-ADD  requirements.txt /code/
+RUN mkdir /pyFinder
+WORKDIR /pyFinder
+ADD  requirements.txt /pyFinder/
 RUN pip install  --upgrade pip
 RUN pip install -r requirements.txt
-ADD . /code/
+ADD . /pyFinder/
+ENTRYPOINT python ../pyFinder/src/pyDescriptor/mainDescriptor.py
