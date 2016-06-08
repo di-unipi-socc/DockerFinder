@@ -9,3 +9,15 @@ PyYAML==3.11
 requests==2.10.0
 six==1.10.0
 websocket-client==0.37.0
+PyYAML==3.11
+attrs==15.2.0
+backports.ssl-match-hostname==3.5.0.1
+click==6.6
+docker-py==1.8.1
+idna==2.1
+pyasn1==0.1.9
+pycparser==2.14
+pymongo==3.2.2
+requests==2.10.0
+six==1.10.0
+websocket-client==0.37.0

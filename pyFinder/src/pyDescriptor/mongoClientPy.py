@@ -1,9 +1,10 @@
-from pyFinder.conf import cfg
 from pymongo import MongoClient
 from pymongo.errors import *
 
+from . import cfg
 
-class MongoClient:
+
+class MongoClientPy:
 
     def __init__(self, host='mongodb://localhost:27017/'):
         client= MongoClient(host)
