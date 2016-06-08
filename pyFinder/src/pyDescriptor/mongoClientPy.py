@@ -14,7 +14,8 @@ class MongoClientPy:
     def insert_image(self, dict_image_info):
         try:
             sha_image = self.images.insert_one(dict_image_info).inserted_id      # bypass_document_validation=False
-            print("Inserted into database " + dict_image_info[cfg.TAGS])
+            for tags in dict_image_info[cfg.TAGS]:
+                print("Inserted into database " +  tags)
         except DuplicateKeyError:
             print("Error: duplicated image in the database")
 

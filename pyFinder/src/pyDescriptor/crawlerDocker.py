@@ -1,21 +1,18 @@
-import urllib.error
 import urllib.request
-import requests
-from requests.auth import HTTPBasicAuth
+import json
+
+url="https://hub.docker.com/v2/search/repositories/?page=3&query=*"
+
+
+def crawl_all_images():
+
+    response = urllib.request.urlopen("https://hub.docker.com/v2/search/repositories/?page="+i+"").read()
+    print(json.loads(response.decode())['results'])
+    #print(json.dumps(json.loads(response.decode()), indent=4))
+
+
 
 '''
-class CrawlerDocker:
-
-    def __init__(self):
-'''
-
-
-
-import argparse
-import urllib.error
-import urllib.request
-import requests
-from requests.auth import HTTPBasicAuth
 
 def find_between(s, first, last):
     try:
@@ -80,3 +77,4 @@ if __name__ == '__main__':
     """
 
 #get_www_authenticate_header('https://auth.docker.io/token')
+'''
