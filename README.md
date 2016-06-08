@@ -113,6 +113,8 @@ Example response of previous GET:
 
 
 #### Docker Registry HTTP API V2.
+[distribution gitHub](https://github.com/docker/distribution)
+[registry](https://docs.docker.com/registry/overviw)
 Goals.
     - simplicity
     - distribution (saparation of content fro namenig)
