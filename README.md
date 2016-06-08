@@ -51,20 +51,52 @@ There are two possiblities to implement the thesi:
     - download the images from ducker.hub
     - generates the description of the image.
     - sends the description to the user
+    - 
 <div style="text-align:center">
 <img src="https://cloud.githubusercontent.com/assets/9201530/15286937/e62ac2a6-1b5f-11e6-97d4-9a01d5d135ac.png" width="500">
 </div>
     
 
-###  Docker registries
-Docker provides two kind of registries:
 
-1. **Docker Registry** is a stateless, highly scalable server side application that
-stores and lets you manage your `own` Docker images.
+## Docker crawler
+The method available in order to  know th images name fro docker hub
+- API v1 are deprecated
+- API v2 don't allow the search operation
+- ```docker search TERM``` is not sufficient
+- call directly  the `docker HUB'
 
-2. **Docker Hub** is a public registry maintained by Docker. It contains images you can download and
-use to build containers. It provides authentication, work group structure, private repository for
-storing images you don't want to share publicly.
+### Docker HUB
+
+```
+  next = 1
+  while(next != nul){
+      10image = send GET to https://hub.docker.com/v2/search/repositories/?page=NUMBER&query=* 
+      add the info into the database      
+      next = 10.image['next']     //null if is the last page
+  }
+```
+
+the previous call return:
+```
+{
+  "count": 299569,
+  "next": "https://hub.docker.com/v2/search/repositories/?query=%2A&page=29957",
+  "previous": "https://hub.docker.com/v2/search/repositories/?query=%2A&page=29955",
+  "results": [
+    {
+      "star_count": 0,
+      "pull_count": 236,
+      "repo_owner": null,
+      "short_description": " ",
+      "is_automated": true,
+      "is_official": false,
+      "repo_name": "jess/audacity"
+    },
+    [{}]
+    ...
+}
+```
+
 
 ### Docker search
 Docker provides through the *Command line* the `search` utility that search in the Docker Hub. The sysntax is of the form:
@@ -75,6 +107,7 @@ Term is searched in all the fields:
 - **image name** (top-level namespace of official repository does not show the repository `reposUser/imagesNmae`).
 - **user name**.
 - **description** (match also substring in the description)
+- 
 
 #### Docker API v1
 
