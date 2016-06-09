@@ -4,13 +4,45 @@ import json
 url="https://hub.docker.com/v2/search/repositories/?page=3&query=*"
 
 
+
 def crawl_all_images():
+    i = 1
+    next = ""
+    dict_dockerHub = {}
+    while(next is not None  and i != 5):
+        response = urllib.request.urlopen("https://hub.docker.com/v2/search/repositories/?page="+str(i)+"&query=*").read()
+        json_response = json.loads(response.decode())
+        extract_info(json_response['results'], dict_dockerHub)
+        print(json_response['results'])
+        print(json_response['next'])
+        next = json_response['next']
+        i+=1
 
-    response = urllib.request.urlopen("https://hub.docker.com/v2/search/repositories/?page="+i+"").read()
-    print(json.loads(response.decode())['results'])
-    #print(json.dumps(json.loads(response.decode()), indent=4))
+def extract_info(images_list, dict):
+    """
+       star_count": 0,
+      "pull_count": 1,
+      "repo_owner": null,
+      "short_description": "Anduril2.x with all commonly known bundles",
+      "is_automated": false,
+      "is_official": false,
+      "repo_name": "anduril/full"
+    :param json_images:
+    :param dict:
+    :return:
+    """
+    for im in images_list:
+        if(images_list['repo_name']):
+            dict['_id'] = images_list['repo_name']
+        if (images_list['pull_count']):
+            dict['pull_count'] = images_list['pull_count']
+        if(images_list['star_count']):
+            dict['star_count'] = json_images['star_count']
+        if(json_images['is_official']):
+            dict['is_official'] = json_images['is_official']
 
 
+crawl_all_images()
 
 '''
 
