@@ -228,23 +228,40 @@ Information from `doFinder NAME_IMAGE`
 ```
 
 
-final description of one image
+Description of Image from official 
 
 ```
-{  "_id" : SHA256_IMAGE
-   "RepoTags": [ TAGS_IMAGE ]
-   "RootFS": {
-            "Type": "layers",
-            "Layers": [
-                "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
-            ]
-        },
-   "Stars":NUMBER,
-   "Official": "YES/NO"
-   
-   
+{  
+  "_id" : STRING (name:tag)
+  "t_scan": TIME/DATE
+  "t_crawl": TIME/DATE
+  "sha254": STRING (pint he version of the image)
+  "inspect":{
+         "RepoTags": [ TAGS_IMAGE ]
+         "RootFS": {
+                  "Type": "layers",
+                  "Layers": [
+                      "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
+                  ]
+              },
+      }
+  "hub":{
+        "star_count": INT,
+        "pull_count": INT,
+        "repo_owner": STRING,
+        "short_description": STRING,
+        "is_automated": BOOLEAN,
+        "is_official": BOOLEAN
+    }
 }
+```
 
-
-
+Description of `DockerFinder`
+```
+{
+ "_id": STRING (name:tag)
+ "dofinder":{
+    "system":{ "distro":STRING;}
+    "bins": [ {"bin":STRING, "ver":STRING},
+ }
 ```
