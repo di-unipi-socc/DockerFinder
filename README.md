@@ -248,3 +248,49 @@ final description of one image
 
 
 ```
+### Image digest
+Discussino about docker digest [here](https://groups.google.com/forum/#!topic/docker-user/PvAcxDrvP30).
+
+As long as the input used to generate the image is unchanged, the digest value is predictable.
+The digest is calculated as the sha256 checksum of the image manifest, excluding the signature portion.
+
+- Right now, changing the name and tag of the image affects the digest.
+- The current v2 manifest is a hybrid v1/v2 format to make the upgrade smoother.
+- The name and tag will be moved out with the next manifest format so this won't always be the case.
+
+
+`docker pull dido/webofficina`
+
+```
+latest: Pulling from dido/webofficina
+fdd5d7827f33: Already exists
+a3ed95caeb02: Already exists
+0f35d0fe50cc: Already exists
+627b6479c8f7: Already exists
+67c44324f4e3: Already exists
+9ee7e6ec2a05: Already exists
+8772e8de82cd: Already exists
+3fcada98271d: Already exists
+7fbb8e798d88: Already exists
+5abb04345dd0: Already exists
+a76aa2b5ed90: Already exists
+101d460c8ce1: Already exists
+Digest: sha256:0f01a20b205bddee13837169b3ba19028bfe609d5d63c43ab04cfadfda3551f3
+Status: Image is up to date for dido/webofficina:latest
+```
+
+ex
+
+
+
+
+### webofficina:v2
+
+`docker run -it dido/webofficina`
+`$ pip install pymongo`
+`docker commit -m 'install pymongo' -a IDCONAINTER dido/webofficina:v2
+
+```
+sha256:0ef7289534be235ec491cc3aae580b2d7a6e03cc954e7688e06520efdb3fdd50
+```
+
