@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "description": "Steps of the thesis: 1.  Identify th useful informations and describe the features od the images, and defines a model that describe that informations. 2. Defines how to extract the information starting from a **Docker image** or a **Docker file**. 3. Develops a intelligent **search system** that is able to identify the images that offer determined features and not only based on the name and the tag.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dido18/DockerFinder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dido18/DockerFinder/issues"
+  }
+}

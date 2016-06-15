@@ -10,10 +10,11 @@ class Hub(EmbeddedDocument):
     "repo_name": "jess/audacity"
     """
     pull = IntField()
-    is_automated =  BooleanField()
+    stars = IntField()
+    is_automated = BooleanField()
     is_official = BooleanField()
     repo_owner = StringField()
-    short_description= StringField()
+    short_description = StringField()
 
     def __str__(self):
         # Do whatever you want here
