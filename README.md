@@ -39,19 +39,11 @@ In order to collect the description from the images, i have found a
 [docker-py](https://github.com/docker/docker-py)  that is a Python library  that expose all the docker commnad. Can be useful to run an images directly into a python code.
 
 
-There are two possiblities to implement the thesi:
-
 1. **docker finder**:
     -  Create a local Registry.
     -  Download all the images from the DockerHub (create a copy).
     -  Create a database with more useful information for all the images downloaded.
 
-2. **docker on-line description** :
-    - expose a service, input: docker image or docker file.
-    - download the images from ducker.hub
-    - generates the description of the image.
-    - sends the description to the user
-    - 
 <div style="text-align:center">
 <img src="https://cloud.githubusercontent.com/assets/9201530/15286937/e62ac2a6-1b5f-11e6-97d4-9a01d5d135ac.png" width="500">
 </div>
