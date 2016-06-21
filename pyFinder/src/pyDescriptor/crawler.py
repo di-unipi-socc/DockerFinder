@@ -28,13 +28,11 @@ class Crawler:
             for im in hub_images:
                 hub_image = self.extract_info(im)   # Hub image model
                 list_tags = get_all_tags(im['repo_name'])
-                print(list_tags)
-                if len(list_tags) > 0 and 'latest' in list_tags:
-                    self.extract_info(im)
-                    print("[" + im['repo_name'] + "] crawled from docker Hub")
+                if len(list_tags) > 0 and 'latest' in list_tags:   # if contains latest tag will be dowloaded
+                    hub_image = self.extract_info(im)
+                    hub_image.tags = list_tags
+                    #print("[" + im['repo_name'] + "] crawled from docker Hub")
                     image_to_save.append(hub_image)
-                else:
-                    print("[" + im['repo_name'] + "] no tags found")
             if len(image_to_save) > 0:
                 self.save_into_db(image_to_save)
                 saved_images += len(image_to_save)
@@ -44,8 +42,8 @@ class Crawler:
             print(" {0} Saved images \n".format(str(saved_images)))
 
     def get_crawled_images(self):
-        for im in Hub.objects:
-            print(im)
+        return Hub.objects
+
 
     def extract_info(self, image):
 

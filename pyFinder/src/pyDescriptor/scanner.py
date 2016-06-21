@@ -7,6 +7,7 @@ import datetime
 from .container import Container
 from .model.bin import Bin
 from .model.image import Image
+from .utils import *
 
 
 
@@ -19,41 +20,38 @@ class Scanner:
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
     def scan(self, repo_name, tag="latest"):
-        print('Scanning  {0} '.format(repo_name))
+        pull_image(repo_name, tag)
+
+        print('Scanning [{0}]'.format(repo_name))
         image = Image(repo_name_tag=repo_name)
-        self.info_inspect(image)
-        self.info_docker_hub(image)
-        self.info_dofinder(image)
+
+        self.info_inspect(repo_name, image)
+        self.info_docker_hub(repo_name,image)
+        self.info_dofinder(repo_name, image)
+
         image.t_scan = datetime.datetime.now()
+
+        remove_iamge(repo_name)
         return image
 
-    def info_inspect(self, Image):
+    def info_inspect(self, repo_name, image):
         """
          docker inspect IMAGE
         """
+        print('[{}] docker inspect ... '.format(repo_name))
+        dict_inspect = self.client.inspect_image(repo_name)
+        image.size = str(dict_inspect['Size'])
 
-        name_tag = Image.repo_name_tag
-
-        print('[{}] docker inspect ... '.format(name_tag))
-        dict_inspect = self.client.inspect_image(name_tag)
-
-        Image.size = str(dict_inspect['Size'])
-
-    def info_docker_hub(self, Image):
+    def info_docker_hub(self, repo_name, image):
         # info from Docker API/Search info (size, stars, pulls)
-        name_tag = Image.repo_name_tag
-        print('[{}] docker API ... '.format(name_tag))
+        print('[{}] docker API ... '.format(repo_name))
 
 
-    def info_dofinder(self, Image):
-        """
-        :param Image: the object representing the image
-        :return:  the image enriched with the binary  installed in the image and the distribution
-        """
-        name_tag = Image.repo_name_tag
-        print('[{}] searching binaries version ... '.format(name_tag))
+    def info_dofinder(self, repo_name, image):
 
-        with Container(name_tag) as c:
+        print('[{}] searching binaries version ... '.format(repo_name))
+
+        with Container(repo_name) as c:
             # search distribution
             for cmd, reg in self._get_sys(self.versionCommands):
                 output = c.run(cmd)
@@ -61,12 +59,13 @@ class Scanner:
                 match = p.search(output)
                 if match:
                     # take the non-capturing group: only the matches, group[0] return all the match
-                    dist = match.group(0)
-                    Image.distro = dist
 
+                    dist = match.group(0)
+                    image.distro = dist
                 else:
-                    print("[{0}] not found {1}".format(name_tag, cmd))
-            # search applications versions
+                    print("[{0}] not found {1}".format(repo_name, cmd))
+
+            # search binary versions
             for bin, cmd, regex in self._get_bins(self.versionCommands):
                 #print("[{}] searching {} ".format(image, bin))
                 output = c.run(bin+" "+cmd)
@@ -74,12 +73,13 @@ class Scanner:
                 match = p.search(output)
                 if match:
                     version = match.group(0)
+                    print("[{0}] found {1}".format(repo_name, bin))
                     b = Bin(bin=bin, ver=version)
-                    Image.bins.append(b)
-                else:
-                    pass
-                    print("[{0}] not found {1}".format(name_tag, bin))
-            print('[{}] finish search'.format(name_tag))
+                    image.bins.append(b)
+                #else:
+                #    pass
+                #    print("[{0}] not found {1}".format(repo_name, bin))
+            print('[{}] finish search'.format(repo_name))
 
     def _get_sys(self, yml_cmd):
         apps = yml_cmd['system']

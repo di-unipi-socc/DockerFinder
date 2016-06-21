@@ -5,6 +5,7 @@ class Hub(Document):
     Image description from Docker Hub.
     """
     repo_name = StringField(primary_key=True, required=True)
+    tags = ListField()
     pull_count = IntField()
     star_count = IntField()
     is_automated = BooleanField()
