@@ -1,23 +1,21 @@
 from mongoengine import *
 
-class Hub(EmbeddedDocument):
-    """   "star_count": 0,
-    "pull_count": 236,
-    "repo_owner": null,
-    "short_description": " ",
-    "is_automated": true,
-    "is_official": false,
-    "repo_name": "jess/audacity"
+class Hub(Document):
     """
-    pull = IntField()
-    stars = IntField()
+    Image description from Docker Hub.
+    """
+    repo_name = StringField(primary_key=True, required=True)
+    pull_count = IntField()
+    star_count = IntField()
     is_automated = BooleanField()
     is_official = BooleanField()
     repo_owner = StringField()
     short_description = StringField()
 
+    t_crawl = DateTimeField(default=None)
+
     def __str__(self):
-        # Do whatever you want here
-        return "\n\t pulls: {0} \n\t is_official {1} \n\t is_automated:{2} " \
-               "\n\t repo_owner: {3}, \n\t short_description:{4} \n ".\
-                format(self.pull, self.is_official, self.is_automated, self.repo_owner, self.short_description)
+        return " \n\t repo_name: {0} \n\t pulls: {1} \n\t stars: {2} \n\t is_official {3} \n\t is_automated:{4} " \
+               "\n\t repo_owner: {5}, \n\t short_description:{6} \n ".\
+                format(self. repo_name,self.pull_count, self.star_count, self.is_official, self.is_automated,
+                       self.repo_owner, self.short_description)

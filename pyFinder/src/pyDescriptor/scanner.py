@@ -44,6 +44,7 @@ class Scanner:
         name_tag = Image.repo_name_tag
         print('[{}] docker API ... '.format(name_tag))
 
+
     def info_dofinder(self, Image):
         """
         :param Image: the object representing the image
