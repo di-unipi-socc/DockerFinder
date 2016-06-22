@@ -3,12 +3,8 @@ import re
 import yaml
 import os
 import datetime
-
 from .container import Container
-from .model.bin import Bin
-from .model.image import Image
 from .utils import *
-
 
 
 class Scanner:
@@ -19,19 +15,24 @@ class Scanner:
         # sets the docker host from your environment variables
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
-    def scan(self, repo_name, tag="latest"):
+    def scan(self, repo_name, tag="latest", rmi=False):
         pull_image(repo_name, tag)
 
+        image = {}
         print('Scanning [{0}]'.format(repo_name))
-        image = Image(repo_name_tag=repo_name)
+        #image = Image(repo_name_tag=repo_name)
 
-        self.info_inspect(repo_name, image)
+        image['repo_name'] = repo_name
+        #image['_id'] = repo_name
+        self.info_inspect(repo_name,image)
         self.info_docker_hub(repo_name,image)
-        self.info_dofinder(repo_name, image)
+        self.info_dofinder(repo_name,image)
 
-        image.t_scan = datetime.datetime.now()
+        #image.t_scan = datetime.datetime.now()
+        image['t_scan'] = str(datetime.datetime.now())
 
-        remove_iamge(repo_name)
+        if rmi:
+            remove_image(repo_name, force=True)
         return image
 
     def info_inspect(self, repo_name, image):
@@ -40,12 +41,12 @@ class Scanner:
         """
         print('[{}] docker inspect ... '.format(repo_name))
         dict_inspect = self.client.inspect_image(repo_name)
-        image.size = str(dict_inspect['Size'])
+        image['size'] = dict_inspect['Size']
+        #image.size = str(dict_inspect['Size'])
 
     def info_docker_hub(self, repo_name, image):
         # info from Docker API/Search info (size, stars, pulls)
         print('[{}] docker API ... '.format(repo_name))
-
 
     def info_dofinder(self, repo_name, image):
 
@@ -59,13 +60,14 @@ class Scanner:
                 match = p.search(output)
                 if match:
                     # take the non-capturing group: only the matches, group[0] return all the match
-
                     dist = match.group(0)
-                    image.distro = dist
+                    #image.distro = dist
+                    image['distro'] = dist
                 else:
                     print("[{0}] not found {1}".format(repo_name, cmd))
 
             # search binary versions
+            bins = []
             for bin, cmd, regex in self._get_bins(self.versionCommands):
                 #print("[{}] searching {} ".format(image, bin))
                 output = c.run(bin+" "+cmd)
@@ -74,11 +76,13 @@ class Scanner:
                 if match:
                     version = match.group(0)
                     print("[{0}] found {1}".format(repo_name, bin))
-                    b = Bin(bin=bin, ver=version)
-                    image.bins.append(b)
+                    #b = Bin(bin=bin, ver=version)
+                    #image.bins.append(b)
+                    bins.append({'bin':bin,'ver':version})
                 #else:
                 #    pass
                 #    print("[{0}] not found {1}".format(repo_name, bin))
+            image['bins'] = bins
             print('[{}] finish search'.format(repo_name))
 
     def _get_sys(self, yml_cmd):

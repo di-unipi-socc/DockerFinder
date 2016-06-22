@@ -68,7 +68,7 @@ def pull_image(repo_name, tag="latest"):
             print(line.decode())
 
 
-def remove_iamge(image, force=False):
+def remove_image(image, force=False):
     client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
     print('Removing {} form local docker'.format(image))
     try:
