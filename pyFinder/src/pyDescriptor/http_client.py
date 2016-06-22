@@ -12,7 +12,12 @@ class Client:
         headers = {'Content-type': 'application/json'}
         self.connection.request('POST', url, json_image, headers)
         response = self.connection.getresponse();
-        print(dict_image)
-        print("["+dict_image['repo_name']+"] posting to "+self.connection.host)
+        print("["+dict_image['repo_name']+"] posted to "+self.connection.host)
         return response.read().decode()
+
+
+    def get_images(self, url="/api/images"):
+        self.connection.request('GET', url)
+        response = self.connection.getresponse();
+        return  response.read().decode()
 

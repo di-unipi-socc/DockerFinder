@@ -1,8 +1,13 @@
 #!/bin/bash
 
 
-mkdir -p ~/mongo/
+sudo mkdir -p /data/pyfinder
 
-docker run -v /home/dido/github/DockerFinder/mongo:/data/db -d mongo
+docker stop mongo
+docker rm mongo
 
-echo "started  mongo db, store in /home/dido/github/DockerFinder/mongo ..."
+docker run --name=mongo -v /data/pyfinder:/data/db -d mongo
+
+IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' mongo)"
+
+echo "started mongo db on $IP..."

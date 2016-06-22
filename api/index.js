@@ -4,10 +4,11 @@ var mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 
 // MongoDb
-mongoose.connect('mongodb://172.17.0.2/prova')
+mongoose.connect('mongodb://172.17.0.2/images')
 
 // Express
 var app = express();
+
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
