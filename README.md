@@ -303,3 +303,19 @@ ex
 sha256:0ef7289534be235ec491cc3aae580b2d7a6e03cc954e7688e06520efdb3fdd50
 ```
 
+# Docker run omong
+```
+#!/bin/bash
+
+
+sudo mkdir -p /data/pyfinder
+
+docker stop mongo
+docker rm mongo
+
+docker run --name=mongo -v /data/pyfinder:/data/db -d mongo
+
+IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' mongo)"
+
+echo "started mongo db on $IP..."
+```
