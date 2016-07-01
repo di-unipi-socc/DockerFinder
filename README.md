@@ -1,5 +1,12 @@
 # DockerFinder
-Steps of the thesis:
+
+# Table of Contents
+1. [General](#Thesis)
+1. [PyFinder](#PyDinder)
+2. [ServerApi](#ServerApi)
+
+
+## Thesis
 1.  Identify th useful informations and describe the features od the images,
 and defines a model that describe that informations.
 2. Defines how to extract the information starting from a **Docker image** or a **Docker file**.
@@ -34,7 +41,7 @@ The description of the images can be decomposed in:
 - information from the `Docker file`.
 
 
-### Collects the description
+## PyFinder
 In order to collect the description from the images, i have found a
 [docker-py](https://github.com/docker/docker-py)  that is a Python library  that expose all the docker commnad. Can be useful to run an images directly into a python code.
 
@@ -184,8 +191,6 @@ GET https://index.docker.io/v2/
 Authorization: Bearer TOKEN 
 ```
 
-###Mongo Schemas
-
 Information from  `docker inspect INAME_NAME`
 ```
 {  "_id" : SHA256_IMAGE
@@ -288,10 +293,6 @@ Digest: sha256:0f01a20b205bddee13837169b3ba19028bfe609d5d63c43ab04cfadfda3551f3
 Status: Image is up to date for dido/webofficina:latest
 ```
 
-ex
-
-
-
 
 ### webofficina:v2
 
@@ -303,7 +304,12 @@ ex
 sha256:0ef7289534be235ec491cc3aae580b2d7a6e03cc954e7688e06520efdb3fdd50
 ```
 
-# Docker run omong
+
+## ServerApi
+### Mongo Schemas
+
+gg
+# Docker run mongo
 ```
 #!/bin/bash
 
