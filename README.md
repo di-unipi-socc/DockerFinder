@@ -6,7 +6,7 @@
 2. [ServerApi](#ServerApi)
 
 
-## Thesis
+# Thesis
 1.  Identify th useful informations and describe the features od the images,
 and defines a model that describe that informations.
 2. Defines how to extract the information starting from a **Docker image** or a **Docker file**.
@@ -41,7 +41,7 @@ The description of the images can be decomposed in:
 - information from the `Docker file`.
 
 
-## PyFinder
+# PyFinder
 In order to collect the description from the images, i have found a
 [docker-py](https://github.com/docker/docker-py)  that is a Python library  that expose all the docker commnad. Can be useful to run an images directly into a python code.
 
@@ -305,7 +305,7 @@ sha256:0ef7289534be235ec491cc3aae580b2d7a6e03cc954e7688e06520efdb3fdd50
 ```
 
 
-## ServerApi
+# ServerApi
 ### Mongo Schemas
 
 gg
