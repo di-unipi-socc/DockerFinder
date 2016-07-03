@@ -1,9 +1,18 @@
+
+
 # DockerFinder
 
-# Table of Contents
-1. [General](#Thesis)
-1. [PyFinder](#PyDinder)
-2. [ServerApi](#ServerApi)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Thesis](#thesis)
+  - [regex](#regex)
+- [PyFinder](#pyfinder)
+- [ServerApi](#serverapi)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 
 # Thesis
@@ -18,27 +27,28 @@ Next steps to be performed:
   - decide the structure of the inforamation (relational DB ?? )
   - Write the scripts in order to indentify the capability of the images.
   - starting from docker file ,generate the informations.
-
-# regex 
-This regex extract the version number of the form `number.number[number | letters]` 
- 
-`[0-9]\.[0-9](\.[0-9])*[^\s]*`
-
-
-```
-import re
-p = re.compile('[0-9]\.[0-9](\.[0-9])*[^\s]*')
-p = p.search("python 3.3.4.")
-p.group(0)
-
-```
-
-
+  
 ### Description
 The description of the images can be decomposed in:
 - information related to the `Docker Hub description`.
 - information generated dynamically from the `images` (running scrips inside the containers)
 - information from the `Docker file`.
+
+
+### regex 
+This regex extract the version number of the form `number.number[number | letters]` 
+ 
+`[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*`
+
+
+```
+import re
+regex = re.compile('[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*')
+match = regex.search("python 3.3.4.")
+match.group(0)
+
+```
+
 
 
 # PyFinder
@@ -57,7 +67,7 @@ In order to collect the description from the images, i have found a
     
 
 
-## Docker crawler
+### Docker crawler
 The method available in order to  know th images name fro docker hub
 - API v1 are deprecated
 - API v2 don't allow the search operation
@@ -169,7 +179,7 @@ Goals.
  - no explicit tagging API
  
  
-##### Atherntication 
+#### Atherntication 
 ```
 GET https://auth.docker.io/token?service=registry.docker.io&scope=registry:catalog:*
 
@@ -306,10 +316,22 @@ sha256:0ef7289534be235ec491cc3aae580b2d7a6e03cc954e7688e06520efdb3fdd50
 
 
 # ServerApi
+
+
 ### Mongo Schemas
 
-gg
-# Docker run mongo
+### Server api
+All the request for the api must be prefixed by `/api` anr `Content-Type: application\json`
+
+- `GET /images` : get all the images of the database
+    - `GET /images/?select=repo_name%20bins`
+    - `GET /images/?sort=repo_name` : get all the images sorted by repo_name
+    -  
+- `POST /images`: create a new image from the json in the body
+-  `PUT /images/:id_image`: update the image
+- `DELETE /iamges/:id_image`: delete the image.
+
+### Docker run mongo
 ```
 #!/bin/bash
 

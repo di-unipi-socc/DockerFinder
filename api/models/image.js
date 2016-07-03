@@ -5,8 +5,7 @@ var mongoose = restful.mongoose;
 
 // Schema
 var imageSchema =  new mongoose.Schema({
-  //_id:{type: String},
-  repo_name:{type: String},
+  repo_name:{type: String,  unique : true},
   t_scan: {
       type: Date,
       Default: Date.now
@@ -16,8 +15,9 @@ var imageSchema =  new mongoose.Schema({
       type:Number
   },
   bins :[{
-    bin : String,
-    ver : String
+      _id:false,
+       bin : String,
+       ver : String
   }]
 
 });

@@ -1,0 +1,20 @@
+{
+    "bins": [
+        {
+            "bin": "python",
+            "ver": "3.5.1"
+        },
+        {
+            "bin": "python3",
+            "ver": "3.5.1"
+        },
+        {
+            "bin": "curl",
+            "ver": "7.38.0"
+        }
+    ],
+    "repo_name": "python",
+    "distro": "Debian GNU/Linux 8 (jessie)",
+    "t_scan": "2016-07-01 11:20:11.973605",
+    "size": 697600806
+}

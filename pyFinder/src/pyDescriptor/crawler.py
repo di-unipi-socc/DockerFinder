@@ -14,13 +14,13 @@ class Crawler:
         self.alias_db = alias_db
         connect(alias_db, host=host, port=port)
 
-    def crawl(self):
+    def crawl(self, tot_image=100, page_size=10):
         i = 1
         next = ""
         print("Crawling the images from the docker Hub...")
         crawled_image, saved_images = 0, 0
-        while next is not None:# and i != 5:
-            url = self.build_search_url(i, 100)
+        while next is not None and tot_image > 0:
+            url = self.build_search_url(i, page_size)
             json_response = req_to_json(url)
             hub_images = json_response['results']   # 'results' is a list of images
             crawled_image += len(hub_images)
@@ -40,6 +40,7 @@ class Crawler:
             i += 1
             print("\n {0} Crawled images ".format(str(crawled_image)))
             print(" {0} Saved images \n".format(str(saved_images)))
+            tot_image =  tot_image-1
 
     def get_crawled_images(self):
         return Hub.objects

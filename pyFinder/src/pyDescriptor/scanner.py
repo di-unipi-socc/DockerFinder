@@ -22,7 +22,7 @@ class Scanner:
         print('Scanning [{0}]'.format(repo_name))
         #image = Image(repo_name_tag=repo_name)
 
-        image['repo_name'] = repo_name
+        image["repo_name"] = repo_name
         #image['_id'] = repo_name
         self.info_inspect(repo_name,image)
         self.info_docker_hub(repo_name,image)
