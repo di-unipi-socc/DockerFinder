@@ -7,9 +7,8 @@ import json
 class Crawler:
 
     def __init__(self, port=5672, rabbit_host='172.17.0.2'):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(rabbit_host, port=port))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port))
         self.channel = self.connection.channel()
-
 
     def crawl(self, tot_image=100, page_size=10, page_number=1):
         page_number = page_number
@@ -37,14 +36,20 @@ class Crawler:
             print("\n {0} Crawled images ".format(str(crawled_image)))
             print(" {0} Sent into channel \n".format(str(saved_images)))
             tot_image -= -1
-
+        #close the connectino when finish
+        self.connection.close()
     def build_search_url(self, page_n, page_size=10):
         #https: // hub.docker.com / v2 / search / repositories /?query = * & page_size = 100 & page = 1
         url_images = "https://hub.docker.com/v2/search/repositories/?query=*&page_size="+str(page_size)+"&page="+str(page_n)
         return url_images
 
     def send_to_rabbit(self, msg, rabbit_queue="dofinder"):
-        self.channel.queue_declare(queue=rabbit_queue)
-        self.channel.basic_publish(exchange='', routing_key=rabbit_queue, body=msg)
-        #print("["+msg+ "] sent into channel "+rabbit_queue)
+
+        self.channel.queue_declare(queue=rabbit_queue, durable=True)
+        self.channel.basic_publish(exchange='',
+                                   routing_key=rabbit_queue,
+                                   body=msg,
+                                   properties=pika.BasicProperties(
+                                            delivery_mode = 2, # make message persistent save the message to disk
+                                    ))
 

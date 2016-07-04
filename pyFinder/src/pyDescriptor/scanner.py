@@ -9,23 +9,35 @@ import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/../../resources/versions.yml", rabbit_host='172.17.0.2'):
+    def __init__(self, versions_cmd="/../../resources/versions.yml", port=5672, rabbit_host='172.17.0.2'):
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
         # sets the docker host from your environment variables
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(rabbit_host))
+        # RabbitQm connection
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host,port=port,))
         self.channel = self.connection.channel()
 
-    def receive_from_rabbit(self, rabbit_queue="dofinder"):
-        self.channel.queue_declare(queue='hello')
+    def run(self, rabbit_queue="dofinder"):
+
+        self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
 
         def callback(ch, method, properties, body):
-            print(" [x] Received %r" % body)
+            json_res = json.loads(body.decode())
 
+            print(" [x] Received "+json_res['name'] )
+            # scanning the images
+            self.scan(json_res['name'])
+
+            ## aknowledgment of finish the scanning
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            #print(" [x] Finish scann%r" % body )
+
+        self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(callback, queue=rabbit_queue, no_ack=True)
         print(' [*] Waiting for messages. To exit press CTRL+C')
+
         self.channel.start_consuming()
 
     def scan(self, repo_name, tag="latest", rmi=False):
