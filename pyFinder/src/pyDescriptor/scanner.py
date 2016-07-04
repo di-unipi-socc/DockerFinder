@@ -16,7 +16,7 @@ class Scanner:
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host,port=port,))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port,))
         self.channel = self.connection.channel()
 
     def run(self, rabbit_queue="dofinder"):
@@ -50,69 +50,50 @@ class Scanner:
         """
         pull_image(repo_name, tag)
 
-        image = {}
+        dict_image = {}
         print('Scanning [{0}]'.format(repo_name))
 
-        image["repo_name"] = repo_name
-        self.info_inspect(repo_name, image)
-        self.info_docker_hub(repo_name, image)
-        self.info_dofinder(repo_name, image)
+        dict_image["repo_name"] = repo_name
+        self.info_inspect(repo_name, dict_image)
+        self.info_docker_hub(repo_name, dict_image)
+        self.info_dofinder(repo_name, dict_image)
 
-        image['last_scan'] = str(datetime.datetime.now())
+        dict_image['last_scan'] = str(datetime.datetime.now())
 
         if rmi:
             remove_image(repo_name, force=True)
-        return image
+        return dict_image
 
-    def info_inspect(self, repo_name, image):
+    def info_inspect(self, repo_name, dict_image):
         """
          docker inspect IMAGE
         """
         print('[{}] docker inspect ... '.format(repo_name))
         dict_inspect = self.client.inspect_image(repo_name)
-        image['size'] = dict_inspect['Size']
-        #image.size = str(dict_inspect['Size'])
+        #dict_image['size'] = dict_inspect['Size']
 
-    def info_docker_hub(self, repo_name, image):
-        #
+
+    def info_docker_hub(self, repo_name, dict_image):
         """
-        {
-            "user": "oliverkenyon",
-            "name": "spark_worker",
-            "namespace": "oliverkenyon",
-            "status": 1,
-            "description": "",
-            "is_private": false,
-            "is_automated": false,
-            "can_edit": false,
-            "star_count": 0,
-            "pull_count": 44,
-            "last_updated": "2016-04-27T10:29:50.372403Z",
-            "has_starred": false,
-            "full_description": null,
-            "permissions": {
-                "read": true,
-                "write": false,
-                "admin": false
-            }
-        }
+        Download the image information among Docker API v2.
+        :param repo_name:
+        :param dict_image:
+        :return:
         """
-        # TODO info on tag latest is different from info on repo_name only (last_upadate is different)
-        #https://hub.docker.com/v2/repositories/<name>/tags/latest
         print('[{}] docker API ... '.format(repo_name))
-        url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/latest"
+
         url_namespace = "https://hub.docker.com/v2/repositories/" + repo_name
         json_response = req_to_json(url_namespace)
-        #print(json_response)
+        dict_image['description'] = json_response['description']
+        dict_image['star_count'] = json_response['star_count']
+        dict_image['pull_count'] = json_response['pull_count']
 
-        image['description'] = json_response['description']
-        image['star_count'] = json_response['star_count']
-        image['pull_count'] = json_response['pull_count']
-        image['last_updated'] = json_response['last_updated']
+        url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/latest"
+        json_response = req_to_json(url_tag_latest)
+        dict_image['last_updated'] = json_response['last_updated']
+        dict_image['full_size'] =json_response['full_size']
 
-
-    def info_dofinder(self, repo_name, image):
-
+    def info_dofinder(self, repo_name, dict_image):
 
         local_repo = [im['RepoTags'][0].split(':')[0] for im in self.client.images()]
         if repo_name not in local_repo:
@@ -131,7 +112,7 @@ class Scanner:
                     # take the non-capturing group: only the matches, group[0] return all the match
                     dist = match.group(0)
                     #image.distro = dist
-                    image['distro'] = dist
+                    dict_image['distro'] = dist
                 else:
                     print("[{0}] not found {1}".format(repo_name, cmd))
 
@@ -151,7 +132,7 @@ class Scanner:
                 #else:
                 #    pass
                 #    print("[{0}] not found {1}".format(repo_name, bin))
-            image['bins'] = bins
+            dict_image['bins'] = bins
             print('[{}] finish search'.format(repo_name))
 
     def _get_sys(self, yml_cmd):

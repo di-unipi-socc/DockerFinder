@@ -38,10 +38,14 @@ class Crawler:
             tot_image -= -1
         #close the connectino when finish
         self.connection.close()
+
     def build_search_url(self, page_n, page_size=10):
         #https: // hub.docker.com / v2 / search / repositories /?query = * & page_size = 100 & page = 1
         url_images = "https://hub.docker.com/v2/search/repositories/?query=*&page_size="+str(page_size)+"&page="+str(page_n)
         return url_images
+
+    #def is_newer(self, repo_name):
+
 
     def send_to_rabbit(self, msg, rabbit_queue="dofinder"):
 

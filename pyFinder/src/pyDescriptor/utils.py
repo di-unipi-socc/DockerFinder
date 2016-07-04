@@ -8,25 +8,6 @@ import sys
 
 
 def get_all_tags(repo_name, page_size=50):
-
-    """
-    "count": 256,
-    "next": null,
-    "previous": "https://hub.docker.com/v2/repositories/library/java/tags/?page=25",
-    "results": [ {
-        "name": "openjdk-6b34",
-        "full_size": 418425609,
-        "id": 22107,
-        "repository": 21373,
-        "creator": 7,
-        "last_updater": 7,
-        "last_updated": "2016-04-05T07:57:22.868748Z",
-        "image_id": null,
-        "v2": false,
-        "platforms": []
-     } ]
-    """
-
     url_tags = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/"
     json_response = req_to_json(url_tags)
     #print("["+repo_name+"] tags founds " + str(json_response['count']))
