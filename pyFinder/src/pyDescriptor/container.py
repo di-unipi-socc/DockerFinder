@@ -33,7 +33,9 @@ class Container:
             stdin_open=True
         )['Id']
 
+
         client.start(self.container_id)
+
 
         return self
 
@@ -50,15 +52,20 @@ class Container:
         This is a generator that yields lines of container output.
         """
 
+        ##client.start(self.container_id)
+
         for cmd in command:
             exec_id = client.exec_create(
-                container=self.container_id,
-                cmd=command,
-                stdout=self.stdout,
-                stderr=self.stderr,
+                    container=self.container_id,
+                    cmd=command,
+                    stdout=self.stdout,
+                    stderr=self.stderr,
             )['Id']
 
-        return client.exec_start(exec_id, stream=False).decode()
 
+
+        ret=client.exec_start(exec_id, stream=False).decode()
+
+        return ret
         #for line in client.exec_start(exec_id, stream=True):
         #    yield line

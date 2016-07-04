@@ -20,24 +20,17 @@ def get_all_tags(repo_name, page_size=50):
         "repository": 21373,
         "creator": 7,
         "last_updater": 7,
-        "last_updated": null,
+        "last_updated": "2016-04-05T07:57:22.868748Z",
         "image_id": null,
         "v2": false,
         "platforms": []
      } ]
     """
 
-    url_tags = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/?page=1&page_size=" + str(page_size)
-    #https: // hub.docker.com / v2 / repositories / senorgdev / docker - images / tags /?page = 1 & page_size = 100
+    url_tags = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/"
     json_response = req_to_json(url_tags)
-    print("["+repo_name+"] tags founds " + str(json_response['count']))
-    list_tags = []
-    if json_response['count'] > 0:
-        next = ""
-        while next is not None:
-            json_list_tags = json_response['results']
-            list_tags = list_tags + [res['name'] for res in json_list_tags]
-            next = json_response['next']
+    #print("["+repo_name+"] tags founds " + str(json_response['count']))
+    list_tags = [res['name'] for res in json_response['results']] #list of tags objects
     return list_tags
 
 

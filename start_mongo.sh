@@ -5,8 +5,9 @@ sudo mkdir -p /data/pyfinder
 
 echo "Stopping mongo container"
 docker stop mongo
-echo "Removing mongo contaienr"
+echo "Removing mongo container"
 docker rm mongo
+
 
 docker run --name=mongo -v /data/pyfinder:/data/db -d mongo
 

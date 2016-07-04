@@ -5,31 +5,48 @@ import os
 import datetime
 from .container import Container
 from .utils import *
-
+import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/../../resources/versions.yml"):
+    def __init__(self, versions_cmd="/../../resources/versions.yml", rabbit_host='172.17.0.2'):
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
         # sets the docker host from your environment variables
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(rabbit_host))
+        self.channel = self.connection.channel()
+
+    def receive_from_rabbit(self, rabbit_queue="dofinder"):
+        self.channel.queue_declare(queue='hello')
+
+        def callback(ch, method, properties, body):
+            print(" [x] Received %r" % body)
+
+        self.channel.basic_consume(callback, queue=rabbit_queue, no_ack=True)
+        print(' [*] Waiting for messages. To exit press CTRL+C')
+        self.channel.start_consuming()
+
     def scan(self, repo_name, tag="latest", rmi=False):
+        """
+
+        :param repo_name:
+        :param tag:
+        :param rmi:
+        :return: a dictionary with the description of the image identified by repo_name.
+        """
         pull_image(repo_name, tag)
 
         image = {}
         print('Scanning [{0}]'.format(repo_name))
-        #image = Image(repo_name_tag=repo_name)
 
         image["repo_name"] = repo_name
-        #image['_id'] = repo_name
-        self.info_inspect(repo_name,image)
-        self.info_docker_hub(repo_name,image)
-        self.info_dofinder(repo_name,image)
+        self.info_inspect(repo_name, image)
+        self.info_docker_hub(repo_name, image)
+        self.info_dofinder(repo_name, image)
 
-        #image.t_scan = datetime.datetime.now()
-        image['t_scan'] = str(datetime.datetime.now())
+        image['last_scan'] = str(datetime.datetime.now())
 
         if rmi:
             remove_image(repo_name, force=True)
@@ -45,10 +62,50 @@ class Scanner:
         #image.size = str(dict_inspect['Size'])
 
     def info_docker_hub(self, repo_name, image):
-        # info from Docker API/Search info (size, stars, pulls)
+        #
+        """
+        {
+            "user": "oliverkenyon",
+            "name": "spark_worker",
+            "namespace": "oliverkenyon",
+            "status": 1,
+            "description": "",
+            "is_private": false,
+            "is_automated": false,
+            "can_edit": false,
+            "star_count": 0,
+            "pull_count": 44,
+            "last_updated": "2016-04-27T10:29:50.372403Z",
+            "has_starred": false,
+            "full_description": null,
+            "permissions": {
+                "read": true,
+                "write": false,
+                "admin": false
+            }
+        }
+        """
+        # TODO info on tag latest is different from info on repo_name only (last_upadate is different)
+        #https://hub.docker.com/v2/repositories/<name>/tags/latest
         print('[{}] docker API ... '.format(repo_name))
+        url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/latest"
+        url_namespace = "https://hub.docker.com/v2/repositories/" + repo_name
+        json_response = req_to_json(url_namespace)
+        #print(json_response)
+
+        image['description'] = json_response['description']
+        image['star_count'] = json_response['star_count']
+        image['pull_count'] = json_response['pull_count']
+        image['last_updated'] = json_response['last_updated']
+
 
     def info_dofinder(self, repo_name, image):
+
+
+        local_repo = [im['RepoTags'][0].split(':')[0] for im in self.client.images()]
+        if repo_name not in local_repo:
+            print('No image found locally.')
+            return
 
         print('[{}] searching binaries version ... '.format(repo_name))
 
@@ -94,3 +151,4 @@ class Scanner:
         apps = yml_cmd['applications']
         for app in apps:
             yield app["name"], app["ver"], app["re"]
+

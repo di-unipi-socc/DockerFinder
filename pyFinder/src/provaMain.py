@@ -1,6 +1,6 @@
 from pyDescriptor import Scanner
 from pyDescriptor import Crawler
-from pyDescriptor import Client
+from pyDescriptor import Uploader
 import json
 
 
@@ -17,7 +17,8 @@ if __name__ == "__main__":
     #pull_image(image)
 
     s = Scanner()
-    p = s.scan('python')
+    #p = s.scan('python')
+    #print(p)
     #u = s.scan('ubuntu')
 
     #j = s.scan('nginx')
@@ -28,11 +29,13 @@ if __name__ == "__main__":
    # print(response)
     # print(c.get_images())
 
-    client = Client('127.0.0.1', 3000)
-    #for im in c.get_crawled_images():
-    #  image = s.scan(im.repo_name)
-    #  client.post_image(image)
-    client.post_image(p)
+    uploader = Uploader('127.0.0.1', 3000)
+    for im in c.get_crawled_images():
+         if im.repo_name !="luminarytech/recchanges-server-prod":
+             image = s.scan(im.repo_name)
+             print(im)
+             uploader.post_image(image)
+
 
 
 

@@ -6,14 +6,13 @@ var mongoose = restful.mongoose;
 // Schema
 var imageSchema =  new mongoose.Schema({
   repo_name:{type: String,  unique : true},
-  t_scan: {
-      type: Date,
-      Default: Date.now
-  }, 
-    distro:String,
-  size:{
-      type:Number
-  },
+  last_scan:Date,
+  last_updated: Date,  //last updated time in the docker hub
+  start_count:Number,
+  pull_count:Number,
+  description:String,
+  distro:String,
+  size:Number,
   bins :[{
       _id:false,
        bin : String,

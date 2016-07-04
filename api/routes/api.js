@@ -5,8 +5,7 @@ var router = express.Router();
 // Models
 var Image = require('../models/image')
 
-
-// record all the method
+// record all the methods
 Image.methods(['get','put','post','delete']);
 
 Image.register(router,'/images');

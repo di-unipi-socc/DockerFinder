@@ -2,7 +2,7 @@ import http.client
 import json
 
 
-class Client:
+class Uploader:
 
     def __init__(self, host, port=None):
         self.connection = http.client.HTTPConnection(host, port)
@@ -14,7 +14,6 @@ class Client:
         response = self.connection.getresponse();
         print("["+dict_image['repo_name']+"] posted to "+self.connection.host)
         return response.read().decode()
-
 
     def get_images(self, url="/api/images"):
         self.connection.request('GET', url)
