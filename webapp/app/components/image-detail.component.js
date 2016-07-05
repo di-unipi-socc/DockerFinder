@@ -1,0 +1,33 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+/**
+ * Created by dido on 7/6/16.
+ */
+var core_1 = require('@angular/core');
+var image_1 = require('../image');
+var ImageDetailComponent = (function () {
+    function ImageDetailComponent() {
+    }
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', image_1.Image)
+    ], ImageDetailComponent.prototype, "image", void 0);
+    ImageDetailComponent = __decorate([
+        core_1.Component({
+            selector: 'my-image-detail',
+            template: "\n    <div *ngIf=\"image\">\n      <h2>{{image.name}} details!</h2>\n      <div><label>id: </label>{{image.id}}</div>\n      <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"image.name\" placeholder=\"name\">\n      </div>\n     </div>"
+        }), 
+        __metadata('design:paramtypes', [])
+    ], ImageDetailComponent);
+    return ImageDetailComponent;
+}());
+exports.ImageDetailComponent = ImageDetailComponent;
+//# sourceMappingURL=image-detail.component.js.map

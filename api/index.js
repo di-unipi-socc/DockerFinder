@@ -39,9 +39,14 @@ mongoose.connect(db_path, function (err, database) {
 //authenttication for tha /api route
 //app.all('/api/*', requireAuthentication);
 
-
+app.use(function (req, res, next) {
+    res.TEST='CIAO';
+    console.log(req.originalUrl);
+    next();
+})
 app.get('/', function (req, res) {
-    res.json({message: 'use /search/?python=3.4  or /api/'});
+    console.log(res.TEST)
+    res.json({message: 'use /api/images'});
 });
 
 
