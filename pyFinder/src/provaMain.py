@@ -7,11 +7,12 @@ import json
 if __name__ == "__main__":
 
 
-    c = Crawler()
-    u = Uploader('127.0.0.1', 3000)
-    s = Scanner()
+    c = Crawler(rabbit_host='172.17.0.3')
+    u = Uploader(api_server='127.0.0.1', port=3000)
+    s = Scanner(rabbit_host='172.17.0.3')
 
-    print(u.get_images())
+    #print(s.is_scan_updated("editoo/utils"))
+    print(s.must_scanned("editoo/ut"))
     #c.crawl(page_size=10,tot_image=10)
 
     #print(len(c.get_crawled_images()))
@@ -21,8 +22,8 @@ if __name__ == "__main__":
     #pull_image(image)
 
 
-    p = s.scan('editoo/utils')
-    u.post_image(p)
+    # p = s.scan('editoo/utils')
+    # u.post_image(p)
     #print(p)
     #u = s.scan('ubuntu')
 

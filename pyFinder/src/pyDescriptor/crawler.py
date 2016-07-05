@@ -1,14 +1,15 @@
 import datetime
 from . import utils
-from mongoengine import *
+from . import uploader
 import pika
 import json
 
 class Crawler:
 
-    def __init__(self, port=5672, rabbit_host='172.17.0.2'):
+    def __init__(self, port=5672, rabbit_host='172.17.0.3'):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port))
         self.channel = self.connection.channel()
+
 
     def crawl(self, tot_image=100, page_size=10, page_number=1):
         page_number = page_number
@@ -28,6 +29,7 @@ class Crawler:
                     print("[" + im['repo_name'] + "] crawled from docker Hub")
                     image['name'] = im['repo_name']
                     image['tags'] = list_tags
+                    #save into rabbit MQ
                     self.send_to_rabbit(json.dumps(image,sort_keys=True, indent=4))
                     print("[" + im['repo_name'] + "] sent to the rabbit channel")
                     saved_images += 1
@@ -43,8 +45,6 @@ class Crawler:
         #https: // hub.docker.com / v2 / search / repositories /?query = * & page_size = 100 & page = 1
         url_images = "https://hub.docker.com/v2/search/repositories/?query=*&page_size="+str(page_size)+"&page="+str(page_n)
         return url_images
-
-    #def is_newer(self, repo_name):
 
 
     def send_to_rabbit(self, msg, rabbit_queue="dofinder"):

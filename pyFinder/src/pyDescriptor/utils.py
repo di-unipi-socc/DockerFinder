@@ -2,6 +2,8 @@ import urllib.request
 import json
 import docker
 import sys
+import datetime
+import time
 
 # get ingo of image (pull, stars, last updated, description
 #https://hub.docker.com/v2/repositories/senorgdev/docker-images
@@ -50,3 +52,7 @@ def remove_image(image, force=False):
     except:
         e = sys.exc_info()[0]
         print(e)
+
+
+def string_to_date(string_date):
+    return datetime.datetime(*time.strptime(string_date, "%Y-%m-%dT%H:%M:%S.%fZ")[:7])

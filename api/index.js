@@ -3,7 +3,7 @@ var express = require('express')
 var mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 
-var db_path = 'mongodb://172.17.0.3/images';
+var db_path = 'mongodb://172.17.0.2/images';
 var port = 3000;
 
 

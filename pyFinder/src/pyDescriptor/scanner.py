@@ -3,8 +3,10 @@ import re
 import yaml
 import os
 import datetime
+import time
 from .container import Container
 from .utils import *
+from . import uploader
 import pika
 
 class Scanner:
@@ -19,6 +21,9 @@ class Scanner:
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port,))
         self.channel = self.connection.channel()
 
+        # the upload talk with the server api
+        self.uploader = uploader.Uploader('127.0.0.1', 3000)
+
     def run(self, rabbit_queue="dofinder"):
 
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
@@ -27,10 +32,16 @@ class Scanner:
             json_res = json.loads(body.decode())
 
             print(" [x] Received "+json_res['name'] )
+            repo_name =json_res['name']
             # scanning the images
-            self.scan(json_res['name'])
+            if(not self.is_new(repo_name)):
+                self.scan(json_res['name'])
+            elif (self.must_scanned(repo_name=repo_name)): #not new and not to be scanned
+                self.scan(json_res['name'])
+            else:
+                print("not scanned"+repo_name)
 
-            ## aknowledgment of finish the scanning
+            ## aknowledgment of finish the scanning to the rabbitMQ server
             ch.basic_ack(delivery_tag=method.delivery_tag)
             #print(" [x] Finish scann%r" % body )
 
@@ -111,7 +122,6 @@ class Scanner:
                 if match:
                     # take the non-capturing group: only the matches, group[0] return all the match
                     dist = match.group(0)
-                    #image.distro = dist
                     dict_image['distro'] = dist
                 else:
                     print("[{0}] not found {1}".format(repo_name, cmd))
@@ -126,8 +136,6 @@ class Scanner:
                 if match:
                     version = match.group(0)
                     print("[{0}] found {1}".format(repo_name, bin))
-                    #b = Bin(bin=bin, ver=version)
-                    #image.bins.append(b)
                     bins.append({'bin':bin,'ver':version})
                 #else:
                 #    pass
@@ -144,4 +152,49 @@ class Scanner:
         apps = yml_cmd['applications']
         for app in apps:
             yield app["name"], app["ver"], app["re"]
+
+    def is_new(self, repo_name, tag="latest"):
+        """
+        Check if the repo name exist in the servera pi, if it is already uploaded
+        :param repo_name:
+        :param tag:
+        :return:
+        """
+        response = self.uploader.get_image(repo_name)
+        json_image_list = json.loads(response.read().decode())
+        return True if json_image_list else False
+
+    def must_scanned(self, repo_name, tag="latest"):
+        """
+        Check if the repo_name has been scanned recently and don't require another scannerization.
+         if(local.last_updated > remote.last_scan )
+        :param repo_name:
+        :return:
+        """
+
+
+        # info from server api
+        response = self.uploader.get_scan_updated(repo_name)
+
+        json_image_list = json.loads(response.read().decode())
+
+        for im in json_image_list:
+
+            dofinder_last_scan = string_to_date(im['last_scan'])
+            dofinder_last_update = string_to_date(im['last_updated'])
+
+            # info from docker hub
+            url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/"+tag
+            json_response = req_to_json(url_tag_latest)
+            hub_last_update_string = json_response['last_updated']
+            hub_last_update = string_to_date(hub_last_update_string)
+
+            #if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
+            if (hub_last_update > dofinder_last_update):
+                print(hub_last_update.isoformat() +" id greater than "+dofinder_last_update.isoformat())
+                return True
+            else:
+                print(hub_last_update.isoformat() + " is less than " + dofinder_last_update.isoformat())
+                return False
+
 
