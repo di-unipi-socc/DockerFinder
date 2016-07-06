@@ -12,10 +12,11 @@ import { ImageService}     from '../services/image.service'
         <h1>{{title}}</h1>
         <nav>
             <a [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a>
-            <a [routerLink]="['/images']" routerLinkActive="active">Heroes</a>
+            <a [routerLink]="['/images']" routerLinkActive="active">Images</a>
          </nav>
          <router-outlet></router-outlet>
 `,
+    styleUrls: ['app/styles/app.component.css'],
     directives:[ROUTER_DIRECTIVES],
     providers: [
         ImageService

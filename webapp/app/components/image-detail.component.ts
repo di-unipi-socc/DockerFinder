@@ -19,7 +19,8 @@ import { Image } from '../image';
       </div>
      </div>
      <button (click)="goBack()">Back</button>
-     `
+     `,
+    styleUrls:['app/styles/image-detail.component.css']
 })
 export class ImageDetailComponent implements OnInit, OnDestroy{
     // @Input() image: Image;  // [image] is an input property in ImageComponent ( tell what image to display selectedImage)

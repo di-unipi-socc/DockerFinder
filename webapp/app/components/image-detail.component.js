@@ -36,7 +36,8 @@ var ImageDetailComponent = (function () {
     ImageDetailComponent = __decorate([
         core_1.Component({
             selector: 'my-image-detail',
-            template: "\n    <div *ngIf=\"image\">\n      <h2>{{image.name}} details!</h2>\n      <div><label>id: </label>{{image.id}}</div>\n      <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"image.name\" placeholder=\"name\">\n      </div>\n     </div>\n     <button (click)=\"goBack()\">Back</button>\n     "
+            template: "\n    <div *ngIf=\"image\">\n      <h2>{{image.name}} details!</h2>\n      <div><label>id: </label>{{image.id}}</div>\n      <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"image.name\" placeholder=\"name\">\n      </div>\n     </div>\n     <button (click)=\"goBack()\">Back</button>\n     ",
+            styleUrls: ['app/styles/image-detail.component.css']
         }), 
         __metadata('design:paramtypes', [image_service_1.ImageService, router_1.ActivatedRoute])
     ], ImageDetailComponent);
