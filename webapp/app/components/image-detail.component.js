@@ -12,20 +12,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by dido on 7/6/16.
  */
 var core_1 = require('@angular/core');
-var image_1 = require('../image');
+var router_1 = require('@angular/router');
+var image_service_1 = require('../services/image.service');
 var ImageDetailComponent = (function () {
-    function ImageDetailComponent() {
+    function ImageDetailComponent(imageService, route) {
+        this.imageService = imageService;
+        this.route = route;
     }
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', image_1.Image)
-    ], ImageDetailComponent.prototype, "image", void 0);
+    ImageDetailComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.sub = this.route.params.subscribe(function (params) {
+            var id = +params['id'];
+            _this.imageService.getImage(id)
+                .then(function (image) { return _this.image = image; });
+        });
+    };
+    ImageDetailComponent.prototype.ngOnDestroy = function () {
+        this.sub.unsubscribe();
+    };
+    ImageDetailComponent.prototype.goBack = function () {
+        window.history.back();
+    };
     ImageDetailComponent = __decorate([
         core_1.Component({
             selector: 'my-image-detail',
-            template: "\n    <div *ngIf=\"image\">\n      <h2>{{image.name}} details!</h2>\n      <div><label>id: </label>{{image.id}}</div>\n      <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"image.name\" placeholder=\"name\">\n      </div>\n     </div>"
+            template: "\n    <div *ngIf=\"image\">\n      <h2>{{image.name}} details!</h2>\n      <div><label>id: </label>{{image.id}}</div>\n      <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"image.name\" placeholder=\"name\">\n      </div>\n     </div>\n     <button (click)=\"goBack()\">Back</button>\n     "
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [image_service_1.ImageService, router_1.ActivatedRoute])
     ], ImageDetailComponent);
     return ImageDetailComponent;
 }());

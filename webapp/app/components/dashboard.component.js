@@ -8,28 +8,36 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+/**
+ * Created by dido on 7/6/16.
+ */
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var image_service_1 = require('../services/image.service');
-var ImagesListComponent = (function () {
-    function ImagesListComponent(imageService) {
+var DashboardComponent = (function () {
+    function DashboardComponent(imageService, router) {
         this.imageService = imageService;
+        this.router = router;
+        this.images = [];
     }
-    ImagesListComponent.prototype.ngOnInit = function () {
-        this.getImages();
-    };
-    ImagesListComponent.prototype.getImages = function () {
+    DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.imageService.getImages()
-            .subscribe(function (images) { return _this.images = images; }, function (error) { return _this.errorMessage = error; });
+            .then(function (images) { return _this.images = images.slice(1, 5); });
     };
-    ImagesListComponent = __decorate([
+    DashboardComponent.prototype.gotoDetail = function (image) {
+        var link = ['/detail', image.id];
+        this.router.navigate(link);
+    };
+    DashboardComponent = __decorate([
         core_1.Component({
-            selector: 'image-list',
-            template: "\n    <h1>Tour of Heroes ({{mode}})</h1>\n        <h3>Heroes:</h3>\n        <ul>\n          <li *ngFor=\"let image of images\">\n            {{image.repo_name}}\n          </li>\n        </ul>\n        New hero name:\n        \n    <div class=\"error\" *ngIf=\"errorMessage\">{{errorMessage}}</div>",
+            selector: 'my-dashboard',
+            templateUrl: 'app/template/dashboard.component.html',
+            styleUrls: ["app/styles/dashboard.component.css"]
         }), 
-        __metadata('design:paramtypes', [image_service_1.ImageService])
-    ], ImagesListComponent);
-    return ImagesListComponent;
+        __metadata('design:paramtypes', [image_service_1.ImageService, router_1.Router])
+    ], DashboardComponent);
+    return DashboardComponent;
 }());
-exports.ImagesListComponent = ImagesListComponent;
-//# sourceMappingURL=images-list.componenet.js.map
+exports.DashboardComponent = DashboardComponent;
+//# sourceMappingURL=dashboard.component.js.map

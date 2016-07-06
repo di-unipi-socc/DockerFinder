@@ -2,34 +2,37 @@
  * Created by dido on 7/5/16.
  */
 import { Injectable }     from '@angular/core';
-import { Http, Response } from '@angular/http';
 
-import { Observable }     from 'rxjs/Observable';
+import { Image } from '../image';
+import { IMAGES } from '../mock-images';
 
 @Injectable()
 export class ImageService {
   
-  constructor (private http: Http) {}
+  constructor () {}
   
   private imagesUrl = 'api/images';  // URL to web API
 
-  getImages (): Observable<string[]> {
-    return this.http.get(this.imagesUrl)
-                    .map(this.extractData)
-                    .catch(this.handleError);
+  getImages (){
+     return Promise.resolve(IMAGES);
+    //return IMAGES;
+    // return this.http.get(this.imagesUrl)
+    //                 .map(this.extractData)
+    //                 .catch(this.handleError);
   }
 
-  private extractData(res: Response) {
-    let body = res.json();
-    return body.data || { };
-  }
+  getImage(id:number){
+        return this.getImages()
+            .then(images => images.filter(image => image.id === id)[0]);
+    //   return this.getImages().filter(image => image.id === id)[0];
 
-  private handleError (error: any) {
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to get a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
   }
+  
+  getImagesSlow (){
+     return  new Promise<Image[]>(resolve => setTimeout(() => resolve(IMAGES), 4000)); //resolbe iamges after 4 seconds
+    // return this.http.get(this.imagesUrl)
+    //                 .map(this.extractData)
+    //                 .catch(this.handleError);
+  }
+    
 }

@@ -12,33 +12,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by dido on 7/5/16.
  */
 var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-var Observable_1 = require('rxjs/Observable');
+var mock_images_1 = require('../mock-images');
 var ImageService = (function () {
-    function ImageService(http) {
-        this.http = http;
+    function ImageService() {
         this.imagesUrl = 'api/images'; // URL to web API
     }
     ImageService.prototype.getImages = function () {
-        return this.http.get(this.imagesUrl)
-            .map(this.extractData)
-            .catch(this.handleError);
+        return Promise.resolve(mock_images_1.IMAGES);
+        //return IMAGES;
+        // return this.http.get(this.imagesUrl)
+        //                 .map(this.extractData)
+        //                 .catch(this.handleError);
     };
-    ImageService.prototype.extractData = function (res) {
-        var body = res.json();
-        return body.data || {};
+    ImageService.prototype.getImage = function (id) {
+        return this.getImages()
+            .then(function (images) { return images.filter(function (image) { return image.id === id; })[0]; });
+        //   return this.getImages().filter(image => image.id === id)[0];
     };
-    ImageService.prototype.handleError = function (error) {
-        // In a real world app, we might use a remote logging infrastructure
-        // We'd also dig deeper into the error to get a better message
-        var errMsg = (error.message) ? error.message :
-            error.status ? error.status + " - " + error.statusText : 'Server error';
-        console.error(errMsg); // log to console instead
-        return Observable_1.Observable.throw(errMsg);
+    ImageService.prototype.getImagesSlow = function () {
+        return new Promise(function (resolve) { return setTimeout(function () { return resolve(mock_images_1.IMAGES); }, 4000); }); //resolbe iamges after 4 seconds
+        // return this.http.get(this.imagesUrl)
+        //                 .map(this.extractData)
+        //                 .catch(this.handleError);
     };
     ImageService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [])
     ], ImageService);
     return ImageService;
 }());
