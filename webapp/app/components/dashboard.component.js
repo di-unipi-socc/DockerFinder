@@ -26,7 +26,7 @@ var DashboardComponent = (function () {
             .then(function (images) { return _this.images = images.slice(1, 5); });
     };
     DashboardComponent.prototype.gotoDetail = function (image) {
-        var link = ['/detail', image.id];
+        var link = ['/detail', image._id];
         this.router.navigate(link);
     };
     DashboardComponent = __decorate([

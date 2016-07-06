@@ -23,21 +23,23 @@ var ImagesComponent = (function () {
         this.getImages();
     };
     ImagesComponent.prototype.getImages = function () {
+        // this.imageService.getImagesObservable().subscribe(
+        //     images => this.images = images,
+        //     error =>  this.errorMessage = <any>error)
+        //
         var _this = this;
         this.imageService.getImages().then(function (images) { return _this.images = images; });
-        //this.images = this.imageService.getImages();
-        // this.imageService.getImagesSlow().then(images => this.images = images)
     };
     ImagesComponent.prototype.onSelect = function (image) {
         this.selectedImage = image;
     };
     ImagesComponent.prototype.gotoDetail = function () {
-        this.router.navigate(['/detail', this.selectedImage.id]);
+        this.router.navigate(['/detail', this.selectedImage._id]);
     };
     ImagesComponent = __decorate([
         core_1.Component({
             selector: 'my-images',
-            template: "\n    <h1>DoFinder Images Component</h1>\n    <ul class=\"images\">\n        <li *ngFor=\"let image of images\"  [class.selected]=\"image === selectedImage\" (click)=\"onSelect(image)\"> \n           <span class=\"badge\"> {{image.id}}</span> {{image.name}}\n        </li>\n    </ul>\n    <div *ngIf=\"selectedImage\">\n      <h2>\n        {{selectedImage.name | uppercase}} is my hero\n      </h2>\n      <button (click)=\"gotoDetail()\">View Details</button>\n    </div>\n    ",
+            template: "\n    <h1>DoFinder Images Component</h1>\n    <ul class=\"images\">\n        <li *ngFor=\"let image of images\"  [class.selected]=\"image === selectedImage\" (click)=\"onSelect(image)\"> \n           <span class=\"badge\"> {{image._id}}</span> {{image.repo_name}}\n        </li>\n    </ul>\n    <div *ngIf=\"selectedImage\">\n      <h2>\n        {{selectedImage.repo_name | uppercase}} is my hero\n      </h2>\n      <button (click)=\"gotoDetail()\">View Details</button>\n    </div>\n    ",
             styleUrls: ['app/styles/images.component.css'],
         }), 
         __metadata('design:paramtypes', [router_1.Router, image_service_1.ImageService])

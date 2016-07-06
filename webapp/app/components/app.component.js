@@ -14,6 +14,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../services/image.service');
+// Add the RxJS Observable operators we need in this app.
+//import './rxjs-operators';
 var AppComponent = (function () {
     function AppComponent() {
         this.title = 'DoFinder Images';

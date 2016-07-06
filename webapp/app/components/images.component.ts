@@ -16,22 +16,21 @@ import { ImageDetailComponent}        from './image-detail.component';
     <h1>DoFinder Images Component</h1>
     <ul class="images">
         <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
-           <span class="badge"> {{image.id}}</span> {{image.name}}
+           <span class="badge"> {{image._id}}</span> {{image.repo_name}}
         </li>
     </ul>
     <div *ngIf="selectedImage">
       <h2>
-        {{selectedImage.name | uppercase}} is my hero
+        {{selectedImage.repo_name | uppercase}} is my hero
       </h2>
       <button (click)="gotoDetail()">View Details</button>
     </div>
     `,
-
   styleUrls: ['app/styles/images.component.css'],
 
 })
 export class ImagesComponent implements OnInit{
-    
+    errorMessage:string;
     selectedImage : Image;
     images: Image [];
 
@@ -44,9 +43,12 @@ export class ImagesComponent implements OnInit{
     }
 
     getImages(){
+        // this.imageService.getImagesObservable().subscribe(
+        //     images => this.images = images,
+        //     error =>  this.errorMessage = <any>error)
+        //
+        
        this.imageService.getImages().then(images => this.images = images)
-        //this.images = this.imageService.getImages();
-       // this.imageService.getImagesSlow().then(images => this.images = images)
     }
 
     onSelect(image: Image){
@@ -54,6 +56,6 @@ export class ImagesComponent implements OnInit{
     }
 
     gotoDetail() {
-        this.router.navigate(['/detail', this.selectedImage.id]);
+        this.router.navigate(['/detail', this.selectedImage._id]);
     }
 }

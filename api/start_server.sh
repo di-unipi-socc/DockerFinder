@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-nodemon . &
+PORT_API=808 nodemon index.js  &

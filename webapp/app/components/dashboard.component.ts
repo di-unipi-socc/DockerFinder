@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit{
   }
 
   gotoDetail(image:Image) {
-      let link = ['/detail', image.id];
+      let link = ['/detail', image._id];
       this.router.navigate(link);
   }
 

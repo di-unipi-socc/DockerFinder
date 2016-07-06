@@ -5,6 +5,8 @@ import { Component }       from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 import { ImageService}     from '../services/image.service'
 
+// Add the RxJS Observable operators we need in this app.
+//import './rxjs-operators';
 
 @Component({
   selector: 'my-app',
