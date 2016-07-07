@@ -51,7 +51,7 @@ mongoose.connect(db_path, function (err, database) {
 
 
 app.use(function (req, res, next) {
-    console.log("GET " +req.originalUrl);
+    console.log(req.method +" "+req.originalUrl);
     next();
 })
 
@@ -87,7 +87,7 @@ app.get('/', function (req, res) {
 });
 
 var images = [{
-        "_id": 577,
+        "_id": "577",
         "distro": "Description:\tUbuntu 14.04.4 LTS",
         "last_scan": "2016-07-04T20:22:07.092Z",
         "description": "description java",
@@ -118,7 +118,7 @@ var images = [{
 
     },
     {
-        "_id": 574,
+        "_id": "574",
         "distro": "Ubuntu 14.04.4 LTS",
         "last_scan": "2016-07-04T20:22:07.092Z",
         "description": "other description python",
@@ -148,7 +148,7 @@ var images = [{
         ]
     },
      {
-        "_id": 579,
+        "_id": "579",
         "distro": "Ubuntu 14.04.4 LTS",
         "last_scan": "2016-07-04T20:22:07.092Z",
         "description": "something ",
@@ -178,31 +178,12 @@ var images = [{
         ]
     }
     ];
-/*
-"bins": [
-            {
-                "bin": "python",
-                "ver": "2.7.6"
-            },
-            {
-                "bin": "python3",
-                "ver": "3.4.3"
-            },
-            {
-                "bin": "python2",
-                "ver": "2.7.6"
-            },
-            {
-                "bin": "curl",
-                "ver": "7.35.0"
-            }
-        ]
-*/
 
-app.get('/api/images', function(req, res){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(images)
-});
+//
+// app.get('/api/images', function(req, res){
+//     res.setHeader('Content-Type', 'application/json');
+//     res.send(images)
+// });
 
 
 app.use('/search', require('./routes/search'))

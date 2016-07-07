@@ -5,15 +5,15 @@ import json
 
 class Uploader:
 
-    def __init__(self, api_server="127.0.0.1", port=None):
-        self.connection = http.client.HTTPConnection(api_server, port)
+    def __init__(self, host_api="127.0.0.1", port_api=3000):
+        self.connection = http.client.HTTPConnection(host_api, port_api)
         self.base_url = "/api/images"
 
     def post_image(self, dict_image):
         json_image = json.dumps(dict_image, indent=4)
         print(json_image)
         headers = {'Content-type': 'application/json'}
-        self.connection.request('POST', self.url, json_image, headers)
+        self.connection.request('POST', self.base_url, json_image, headers)
         response = self.connection.getresponse();
         print("["+dict_image['repo_name']+"] posted to "+self.connection.host)
         return json.loads(response.read().decode())

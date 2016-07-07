@@ -16,7 +16,7 @@ import { ImageDetailComponent}        from './image-detail.component';
     <h1>DoFinder Images</h1>
     <ul class="images">
         <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
-           <span class="badge"> {{image._id}}</span> {{image.repo_name}}
+           <span class="badge"> {{image.star_count}}</span> {{image.repo_name}}
         </li>
     </ul>
     <div *ngIf="selectedImage">

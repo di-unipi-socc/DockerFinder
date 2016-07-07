@@ -26,7 +26,7 @@ export class ImageService {
                      .catch(this.handleError);
   }
 
-  getImage(id:number){
+  getImage(id:string){
         return this.getImages()
             .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
 

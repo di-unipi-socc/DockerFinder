@@ -12,7 +12,7 @@ import { Image } from '../image';
    template: `
     <div *ngIf="image">
       <h2>{{image.repo_name}} details!</h2>
-      <div><label>id: </label>{{image._id}}</div>
+      <!--div><label>id: </label>{{image._id}}</div-->
       <div>
         <label>name: </label> {{image.repo_name}}
         <!--input [(ngModel)]="image.repo_name" placeholder="name"-->
@@ -27,6 +27,7 @@ import { Image } from '../image';
           <label> name</label> {{bins.bin}} <label> ver </label> {{bins.ver}}
         </li>
      </ul>
+     </div>
      `,
     styleUrls:['app/styles/image-detail.component.css']
 })
@@ -45,7 +46,8 @@ export class ImageDetailComponent implements OnInit, OnDestroy{
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
-          let id = +params['id'];
+          //let id = +params['id'];
+          let id:string = params['id'];
           this.imageService.getImage(id)
             .then(image => this.image = image);
         });

@@ -4,7 +4,7 @@
 
     
 export class Image {
-    _id: number;
+    _id: string;
     name:string;
     distro: string;
     last_scan: string;

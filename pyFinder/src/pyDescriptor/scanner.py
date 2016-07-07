@@ -11,18 +11,18 @@ import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/../../resources/versions.yml", port=5672, rabbit_host='172.17.0.2'):
+    def __init__(self, versions_cmd="/../../resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', port_api=3000, host_api="127.0.0.1"):
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
         # sets the docker host from your environment variables
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port,))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
         self.channel = self.connection.channel()
 
         # the upload talk with the server api
-        self.uploader = uploader.Uploader('127.0.0.1', 3000)
+        self.uploader = uploader.Uploader(host_api, port_api)
 
     def run(self, rabbit_queue="dofinder"):
 
@@ -36,7 +36,7 @@ class Scanner:
             # scanning the images
             if(not self.is_new(repo_name)):
                 self.scan(json_res['name'])
-            elif (self.must_scanned(repo_name=repo_name)): #not new and not to be scanned
+            elif(self.must_scanned(repo_name=repo_name)): #not new and not to be scanned
                 self.scan(json_res['name'])
             else:
                 print("not scanned"+repo_name)
@@ -95,6 +95,7 @@ class Scanner:
 
         url_namespace = "https://hub.docker.com/v2/repositories/" + repo_name
         json_response = req_to_json(url_namespace)
+        print(json_response)
         dict_image['description'] = json_response['description']
         dict_image['star_count'] = json_response['star_count']
         dict_image['pull_count'] = json_response['pull_count']
@@ -106,10 +107,10 @@ class Scanner:
 
     def info_dofinder(self, repo_name, dict_image):
 
-        local_repo = [im['RepoTags'][0].split(':')[0] for im in self.client.images()]
-        if repo_name not in local_repo:
-            print('No image found locally.')
-            return
+        # local_repo = [im['RepoTags'][0].split(':')[0] for im in self.client.images()]
+        # if repo_name not in local_repo:
+        #     print('No image found locally.')
+        #     return
 
         print('[{}] searching binaries version ... '.format(repo_name))
 
@@ -161,6 +162,7 @@ class Scanner:
         :return:
         """
         response = self.uploader.get_image(repo_name)
+        print(response)
         json_image_list = json.loads(response.read().decode())
         return True if json_image_list else False
 
