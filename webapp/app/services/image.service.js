@@ -17,9 +17,10 @@ require('rxjs/add/operator/toPromise'); //for toPromise()
 var http_1 = require("@angular/http");
 var Rx_1 = require("rxjs/Rx");
 var ImageService = (function () {
+    // private imagesUrl = 'app/images.json';
     function ImageService(http) {
         this.http = http;
-        this.imagesUrl = 'app/images.json';
+        this.imagesUrl = 'http://127.0.0.1:8000/api/images'; //'app/images.json'
     }
     ImageService.prototype.getImages = function () {
         //return Promise.resolve(IMAGES);
@@ -31,8 +32,7 @@ var ImageService = (function () {
     };
     ImageService.prototype.getImage = function (id) {
         return this.getImages()
-            .then(function (images) { return images.filter(function (image) { return image._id === id; })[0]; });
-        //return this.getImages().filter(image => image.id === id)[0];
+            .then(function (images) { return images.filter(function (image) { return image._id === id; })[0]; }); //[0]);===id
     };
     // getImagesSlow (){
     //    return  new Promise<Image[]>(resolve => setTimeout(() => resolve(IMAGES), 4000));

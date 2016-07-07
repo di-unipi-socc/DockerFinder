@@ -1,4 +1,4 @@
 #!/bin/bash
 
-
-PORT_API=808 nodemon index.js  &
+echo "Starting the api server..."
+PORT=8000 nodemon index.js

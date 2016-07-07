@@ -13,7 +13,7 @@ import { ImageDetailComponent}        from './image-detail.component';
 @Component({
   selector: 'my-images',
   template: `
-    <h1>DoFinder Images Component</h1>
+    <h1>DoFinder Images</h1>
     <ul class="images">
         <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
            <span class="badge"> {{image._id}}</span> {{image.repo_name}}
@@ -21,7 +21,7 @@ import { ImageDetailComponent}        from './image-detail.component';
     </ul>
     <div *ngIf="selectedImage">
       <h2>
-        {{selectedImage.repo_name | uppercase}} is my hero
+        {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}
       </h2>
       <button (click)="gotoDetail()">View Details</button>
     </div>

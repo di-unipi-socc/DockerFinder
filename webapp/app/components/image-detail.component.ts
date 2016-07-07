@@ -14,11 +14,19 @@ import { Image } from '../image';
       <h2>{{image.repo_name}} details!</h2>
       <div><label>id: </label>{{image._id}}</div>
       <div>
-        <label>name: </label>
-        <input [(ngModel)]="image.repo_name" placeholder="name">
+        <label>name: </label> {{image.repo_name}}
+        <!--input [(ngModel)]="image.repo_name" placeholder="name"-->
       </div>
-     </div>
-     <button (click)="goBack()">Back</button>
+      <div><label>distro: </label>{{image.distro}} </div>
+      <div><label>description: </label>{{image.description}} </div>
+      <div><label>stars: </label>{{image.star_count}} </div>
+      <div><label>pulls: </label>{{image.pull_count}} </div>
+      <label>Binary:</label>
+      <ul >
+        <li *ngFor="let bins of image.bins"> 
+          <label> name</label> {{bins.bin}} <label> ver </label> {{bins.ver}}
+        </li>
+     </ul>
      `,
     styleUrls:['app/styles/image-detail.component.css']
 })

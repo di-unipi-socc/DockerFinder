@@ -12,11 +12,15 @@ var app = express();
 
 // Environment configurations
 
-app.set('port', process.env.PORT_API || 3000);
-console.log()
+app.set('port', process.env.PORT || 8080);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+// app.config(function($httpProvider) {
+//     //Enable cross domain calls
+//     $httpProvider.defaults.useXDomain = true;
+// }
+
 
 
 //###################################################################################
@@ -45,49 +49,79 @@ mongoose.connect(db_path, function (err, database) {
 //authenttication for tha /api route
 //app.all('/api/*', requireAuthentication);
 
+
 app.use(function (req, res, next) {
-    console.log(req.originalUrl);
+    console.log("GET " +req.originalUrl);
     next();
 })
+
+app.all('*', function(req, res,next) {
+    /**
+     * Response settings
+     * @type {Object}
+     */
+    var responseSettings = {
+        "AccessControlAllowOrigin": req.headers.origin,
+        "AccessControlAllowHeaders": "Content-Type,X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5,  Date, X-Api-Version, X-File-Name",
+        "AccessControlAllowMethods": "POST, GET, PUT, DELETE, OPTIONS",
+        "AccessControlAllowCredentials": true
+    };
+    /**
+     * Headers
+     */
+    res.header("Access-Control-Allow-Credentials", responseSettings.AccessControlAllowCredentials);
+    res.header("Access-Control-Allow-Origin", responseSettings.AccessControlAllowOrigin);
+    res.header("Access-Control-Allow-Headers", (req.headers['access-control-request-headers']) ? req.headers['access-control-request-headers'] : "x-requested-with");
+    res.header("Access-Control-Allow-Methods", (req.headers['access-control-request-method']) ? req.headers['access-control-request-method'] : responseSettings.AccessControlAllowMethods);
+
+    if ('OPTIONS' == req.method) {
+        res.send(200);
+    }
+    else {
+        next();
+    }
+});
+
 app.get('/', function (req, res) {
     res.json({message: 'use /api/images'});
 });
 
 var images = [{
-        "_id": "577ac56f0ecbc24b284e2526",
+        "_id": 577,
         "distro": "Description:\tUbuntu 14.04.4 LTS",
         "last_scan": "2016-07-04T20:22:07.092Z",
-        "description": "",
+        "description": "description java",
         "full_size": 289459071,
-        "repo_name": "editoo/utils",
+        "repo_name": "java",
         "star_count": 8,
         "last_updated": "2016-07-01T14:56:07.236Z",
         "pull_count": 5,
         "__v": 0,
         "bins": [
-            {
-                "bin": "python",
-                "ver": "2.7.6"
-            },
-            {
-                "bin": "python3",
-                "ver": "3.4.3"
-            },
-            {
-                "bin": "python2",
-                "ver": "2.7.6"
-            },
-            {
-                "bin": "curl",
-                "ver": "7.35.0"
-            }
-        ]
+                {
+                    "bin": "python",
+                    "ver": "2.7.6"
+                },
+                {
+                    "bin": "python3",
+                    "ver": "3.4.3"
+                },
+                {
+                    "bin": "python2",
+                    "ver": "2.7.6"
+                },
+                {
+                    "bin": "curl",
+                    "ver": "7.35.0"
+                }
+            ]
+
     },
     {
-        "_id": "577ac56f0ecbc24b284e2568",
+        "_id": 574,
         "distro": "Ubuntu 14.04.4 LTS",
         "last_scan": "2016-07-04T20:22:07.092Z",
-        "description": "",
+        "description": "other description python",
         "full_size": 289459071,
         "repo_name": "python",
         "star_count": 4,
@@ -112,8 +146,58 @@ var images = [{
                 "ver": "7.35.0"
             }
         ]
+    },
+     {
+        "_id": 579,
+        "distro": "Ubuntu 14.04.4 LTS",
+        "last_scan": "2016-07-04T20:22:07.092Z",
+        "description": "something ",
+        "full_size": 289459071,
+        "repo_name": "fedora",
+        "star_count": 4,
+        "last_updated": "2016-07-01T14:56:07.236Z",
+        "pull_count": 5,
+        "__v": 0,
+         "bins": [
+            {
+                "bin": "python",
+                "ver": "2.7.6"
+            },
+            {
+                "bin": "python3",
+                "ver": "3.4.3"
+            },
+            {
+                "bin": "python2",
+                "ver": "2.7.6"
+            },
+            {
+                "bin": "curl",
+                "ver": "7.35.0"
+            }
+        ]
     }
     ];
+/*
+"bins": [
+            {
+                "bin": "python",
+                "ver": "2.7.6"
+            },
+            {
+                "bin": "python3",
+                "ver": "3.4.3"
+            },
+            {
+                "bin": "python2",
+                "ver": "2.7.6"
+            },
+            {
+                "bin": "curl",
+                "ver": "7.35.0"
+            }
+        ]
+*/
 
 app.get('/api/images', function(req, res){
     res.setHeader('Content-Type', 'application/json');
@@ -135,5 +219,5 @@ app.use(function(err, req, res, next) {
 
 
 // Start server
-app.listen(app.get('port') );
-console.log('API is running on port ' + app.get('port') );
+app.listen(app.get('port'));
+console.log('API is running on ' + app.get('port') );//+app.get('domain')+":"

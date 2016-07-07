@@ -15,4 +15,5 @@ export class Image {
     last_updated: string;
     pull_count: number;
     __v : number;
+    bins: [ {bin:string, ver: string} ];
 }

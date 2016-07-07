@@ -6,12 +6,13 @@ import 'rxjs/add/operator/toPromise';  //for toPromise()
 
 import { Image } from '../image';
 //import { IMAGES } from '../mock-images';
-import {Http,Response} from "@angular/http";
+import {Http,Response,Jsonp} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 
 @Injectable()
 export class ImageService {
-  private imagesUrl = 'app/images.json';
+  private imagesUrl = 'http://127.0.0.1:8000/api/images'; //'app/images.json'
+  // private imagesUrl = 'app/images.json';
   
   constructor (private http: Http) {}
 
@@ -19,15 +20,15 @@ export class ImageService {
      //return Promise.resolve(IMAGES);
     //return IMAGES;
     return this.http.get(this.imagesUrl)
-                    .toPromise()
+      //return this.jsonp.get(this.imagesUrl)
+                    . toPromise()
                      .then(response => response.json())//.data)
                      .catch(this.handleError);
   }
 
   getImage(id:number){
         return this.getImages()
-            .then(images => images.filter(image =>image._id === id)[0]);
-        //return this.getImages().filter(image => image.id === id)[0];
+            .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
 
   }
   
