@@ -1,3 +1,3 @@
 from .scanner import Scanner
 from .crawler import Crawler
-from .uploader import Uploader
+from .client_api import ClientApi

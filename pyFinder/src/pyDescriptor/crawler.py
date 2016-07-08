@@ -1,6 +1,5 @@
 import datetime
 from . import utils
-from . import uploader
 import pika
 import json
 

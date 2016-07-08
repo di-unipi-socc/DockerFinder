@@ -16,6 +16,7 @@ app.set('port', process.env.PORT || 8080);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(bodyParser.json({type:'application/vnd.api+json'}));
 // app.config(function($httpProvider) {
 //     //Enable cross domain calls
 //     $httpProvider.defaults.useXDomain = true;

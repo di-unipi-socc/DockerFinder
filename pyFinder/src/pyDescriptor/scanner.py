@@ -6,12 +6,12 @@ import datetime
 import time
 from .container import Container
 from .utils import *
-from . import uploader
+from .client_api import  ClientApi
 import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/../../resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', port_api=3000, host_api="127.0.0.1"):
+    def __init__(self, versions_cmd="/../../resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_api="127.0.0.1:8000/api/images"):
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
         # sets the docker host from your environment variables
@@ -21,25 +21,29 @@ class Scanner:
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
         self.channel = self.connection.channel()
 
-        # the upload talk with the server api
-        self.uploader = uploader.Uploader(host_api, port_api)
+        # the clientApi talks with the server api in order to post the image description
+        self.client_api = ClientApi(url_api=url_api)
 
     def run(self, rabbit_queue="dofinder"):
 
+        # TODO: rabbitQm server can be down. check and retry on orde to connect
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
 
         def callback(ch, method, properties, body):
             json_res = json.loads(body.decode())
+            repo_name = json_res['name']
+            print(" [scanner] Received " + repo_name)
+            # scanning the image
+            res_list_image = self.client_api.get_image(repo_name)
+            if not res_list_image:              # if response is empty list [] the image is not present to the server
+                dict_image =self.scan(json_res['name'])     # new totally image
+                self.client_api.post_image(dict_image)
+            elif self.must_scanned(repo_name):
+                dict_image = self.scan(json_res['name'])
 
-            print(" [x] Received "+json_res['name'] )
-            repo_name =json_res['name']
-            # scanning the images
-            if(not self.is_new(repo_name)):
-                self.scan(json_res['name'])
-            elif(self.must_scanned(repo_name=repo_name)): #not new and not to be scanned
-                self.scan(json_res['name'])
+                self.client_api.put_image(dict_image)       # update image
             else:
-                print("not scanned"+repo_name)
+                print("["+repo_name+"] not scannerized")
 
             ## aknowledgment of finish the scanning to the rabbitMQ server
             ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -47,7 +51,7 @@ class Scanner:
 
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(callback, queue=rabbit_queue, no_ack=True)
-        print(' [*] Waiting for messages. To exit press CTRL+C')
+        print(' [scanner] Waiting for messages. To exit press CTRL+C')
 
         self.channel.start_consuming()
 
@@ -65,12 +69,13 @@ class Scanner:
         print('Scanning [{0}]'.format(repo_name))
 
         dict_image["repo_name"] = repo_name
+
         self.info_inspect(repo_name, dict_image)
         self.info_docker_hub(repo_name, dict_image)
         self.info_dofinder(repo_name, dict_image)
 
+        print('[{0}] finish scanning'.format(repo_name))
         dict_image['last_scan'] = str(datetime.datetime.now())
-
         if rmi:
             remove_image(repo_name, force=True)
         return dict_image
@@ -142,7 +147,7 @@ class Scanner:
                 #    pass
                 #    print("[{0}] not found {1}".format(repo_name, bin))
             dict_image['bins'] = bins
-            print('[{}] finish search'.format(repo_name))
+
 
     def _get_sys(self, yml_cmd):
         apps = yml_cmd['system']
@@ -153,50 +158,5 @@ class Scanner:
         apps = yml_cmd['applications']
         for app in apps:
             yield app["name"], app["ver"], app["re"]
-
-    def is_new(self, repo_name, tag="latest"):
-        """
-        Check if the repo name exist in the servera pi, if it is already uploaded
-        :param repo_name:
-        :param tag:
-        :return:
-        """
-        response = self.uploader.get_image(repo_name)
-        print(response)
-        json_image_list = json.loads(response.read().decode())
-        return True if json_image_list else False
-
-    def must_scanned(self, repo_name, tag="latest"):
-        """
-        Check if the repo_name has been scanned recently and don't require another scannerization.
-         if(local.last_updated > remote.last_scan )
-        :param repo_name:
-        :return:
-        """
-
-
-        # info from server api
-        response = self.uploader.get_scan_updated(repo_name)
-
-        json_image_list = json.loads(response.read().decode())
-
-        for im in json_image_list:
-
-            dofinder_last_scan = string_to_date(im['last_scan'])
-            dofinder_last_update = string_to_date(im['last_updated'])
-
-            # info from docker hub
-            url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/"+tag
-            json_response = req_to_json(url_tag_latest)
-            hub_last_update_string = json_response['last_updated']
-            hub_last_update = string_to_date(hub_last_update_string)
-
-            #if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
-            if (hub_last_update > dofinder_last_update):
-                print(hub_last_update.isoformat() +" id greater than "+dofinder_last_update.isoformat())
-                return True
-            else:
-                print(hub_last_update.isoformat() + " is less than " + dofinder_last_update.isoformat())
-                return False
 
 
