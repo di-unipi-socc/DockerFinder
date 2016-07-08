@@ -36,16 +36,18 @@ class ClientApi:
         else:
             return res.json()
 
-    def put_image(self, dict_image, id_image):
+    def put_image(self, dict_image):
         try:
+            id_image = self.get_id_image(dict_image['repo_name'])
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_image)
-            print(res)
-            if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                print("[" + dict_image['repo_name'] + "] successfully UPDATED into")
+            if res.status_code == requests.codes.ok:
+                print("[" + dict_image['repo_name'] + "] successfully UPDATED into server")
             else:
                 print(str(res.status_code) + " Error code " + res.text)
         except requests.exceptions.ConnectionError as e:
             print("ConnectionError: " + str(e))
+        except Exception as e:
+            print("Exception" + str(e))
         except:
             print("Unexpected error:", sys.exc_info()[0])
             raise
@@ -55,7 +57,6 @@ class ClientApi:
     def get_images(self):
         try:
             res = self.session.get(self.url_api)
-            print(res)
             if res.status_code == requests.codes.ok:
                 return res.json()
             else:
@@ -66,12 +67,20 @@ class ClientApi:
             print("Unexpected error:", sys.exc_info()[0])
             raise
 
+    def get_id_image(self, repo_name):
+        json_image_list = self.get_image(repo_name)
+        if json_image_list:
+            if "_id" in json_image_list[0].keys():
+                return json_image_list[0]['_id']
+            else:
+                raise Exception(" _id not found in "+repo_name)
+
+
 
     def get_image(self, repo_name):
         url = self.url_api + "?repo_name=" + repo_name
         try:
             res = self.session.get(url)
-            print(res)
             return res.json()
         except requests.exceptions.ConnectionError as e:
             print("ConnectionError: " + str(e))

@@ -52,7 +52,7 @@ if __name__ == "__main__":
             }
         ]
     }
-    print("put "+ str(u.put_image(d,"577ec2eb8098458616f181bc")))
+    u.put_image(d)
     #u.post_image()
     #s.scan("nakosung/lein_git")
 
