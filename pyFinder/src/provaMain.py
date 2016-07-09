@@ -2,6 +2,7 @@ from pyDescriptor import Scanner
 from pyDescriptor import Crawler
 from pyDescriptor import ClientApi
 from pyDescriptor import  pull_image
+import py
 import json
 import re
 

@@ -4,6 +4,7 @@ click==6.6
 docker-py==1.8.1
 idna==2.1
 mongoengine==0.10.6
+pika==0.10.0
 pyasn1==0.1.9
 pycparser==2.14
 pymongo==3.2.2
