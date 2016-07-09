@@ -1,6 +1,7 @@
 from pyDescriptor import Scanner
 from pyDescriptor import Crawler
 from pyDescriptor import ClientApi
+from pyDescriptor import  pull_image
 import json
 import re
 
@@ -22,12 +23,13 @@ if __name__ == "__main__":
     match = regex.search(v)
     #print(match.group(0)+"#######################à")
 
-    #c = Crawler(rabbit_host='172.17.0.3')
-    #s = Scanner(host_rabbit='172.17.0.3', host_api="127.0.0.1", port_api=8000)
+    #c = Crawler(rabbit_host='172.17.0.3,  url_api="http://127.0.0.1:8000/api/images"')
+    #s = Scanner(host_rabbit='172.17.0.3',  url_api="http://127.0.0.1:8000/api/images")
 
-    u = ClientApi(url_api="http://127.0.0.1:8000/api/images/")
-    ## u.post_image({"repo_name":"prova4", "bins": [ { "bin": "python", "ver": "2.7.6" },{"bin": "python3","ver": "3.4.3"}]})
-    #u.get_images()
+    #u = ClientApi(url_api="http://127.0.0.1:8000/api/images/")
+
+    pull_image("vimagick/python")
+
     d = {
         "description": "Python is nothing.",
         "full_size": 5,
@@ -52,9 +54,9 @@ if __name__ == "__main__":
             }
         ]
     }
-    u.put_image(d)
+    #u.put_image(d)
     #u.post_image()
-    #s.scan("nakosung/lein_git")
+    #s.scan("kino/fedora")
 
     #s = s.scan("library/java")
 

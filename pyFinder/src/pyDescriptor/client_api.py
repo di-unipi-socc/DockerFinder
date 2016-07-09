@@ -94,7 +94,7 @@ class ClientApi:
             print("ConnectionError: " + str(e))
 
     def is_new(self, repo_name):
-        return True if self.get_image(repo_name) else False
+        return False if self.get_image(repo_name) else True
 
     def must_scanned(self, repo_name, tag="latest"):
         """

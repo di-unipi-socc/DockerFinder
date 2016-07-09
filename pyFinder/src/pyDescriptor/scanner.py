@@ -32,16 +32,16 @@ class Scanner:
         def callback(ch, method, properties, body):
             json_res = json.loads(body.decode())
             repo_name = json_res['name']
-            print(" [scanner] Received " + repo_name)
-            # scanning the image
-            res_list_image = self.client_api.get_image(repo_name)
-            if not res_list_image:              # if response is empty list [] the image is not present to the server
-                dict_image =self.scan(json_res['name'])     # new totally image
-                self.client_api.post_image(dict_image)
-            elif self.must_scanned(repo_name):
-                dict_image = self.scan(json_res['name'])
+            print("[scanner] Received " + repo_name)
+            # scann the image received from the queue
 
-                self.client_api.put_image(dict_image)       # update image
+            #res_list_image = self.client_api.get_image(repo_name)
+            if self.client_api.is_new(repo_name):           # the image is totally new
+                dict_image = self.scan(repo_name)
+                self.client_api.post_image(dict_image)      # POST the description of the image
+            elif self.client_api.must_scanned(repo_name):   # the image must be scan again
+                dict_image = self.scan(repo_name)
+                self.client_api.put_image(dict_image)       # PUT the new image description of the image
             else:
                 print("["+repo_name+"] not scannerized")
 
@@ -112,43 +112,40 @@ class Scanner:
 
     def info_dofinder(self, repo_name, dict_image):
 
-        # local_repo = [im['RepoTags'][0].split(':')[0] for im in self.client.images()]
-        # if repo_name not in local_repo:
-        #     print('No image found locally.')
-        #     return
-
         print('[{}] searching binaries version ... '.format(repo_name))
 
-        with Container(repo_name) as c:
-            # search distribution
-            for cmd, reg in self._get_sys(self.versionCommands):
-                output = c.run(cmd)
-                p = re.compile(reg)
-                match = p.search(output)
-                if match:
-                    # take the non-capturing group: only the matches, group[0] return all the match
-                    dist = match.group(0)
-                    dict_image['distro'] = dist
-                else:
-                    print("[{0}] not found {1}".format(repo_name, cmd))
+        try:
+            with Container(repo_name) as c:
+                # search distribution
+                for cmd, reg in self._get_sys(self.versionCommands):
+                    output = c.run(cmd)
+                    p = re.compile(reg)
+                    match = p.search(output)
+                    if match:
+                        # take the non-capturing group: only the matches, group[0] return all the match
+                        dist = match.group(0)
+                        dict_image['distro'] = dist
+                    else:
+                        print("[{0}] not found {1}".format(repo_name, cmd))
 
-            # search binary versions
-            bins = []
-            for bin, cmd, regex in self._get_bins(self.versionCommands):
-                #print("[{}] searching {} ".format(image, bin))
-                output = c.run(bin+" "+cmd)
-                p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
-                match = p.search(output)
-                if match:
-                    version = match.group(0)
-                    print("[{0}] found {1}".format(repo_name, bin))
-                    bins.append({'bin':bin,'ver':version})
-                #else:
-                #    pass
-                #    print("[{0}] not found {1}".format(repo_name, bin))
-            dict_image['bins'] = bins
-
-
+            with Container(repo_name) as c:
+                # search binary versions
+                bins = []
+                for bin, cmd, regex in self._get_bins(self.versionCommands):
+                    #print("[{}] searching {} ".format(image, bin))
+                    output = c.run(bin+" "+cmd)
+                    p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
+                    match = p.search(output)
+                    if match:
+                        version = match.group(0)
+                        print("[{0}] found {1}: {2}".format(repo_name, bin, version))
+                        bins.append({'bin':bin,'ver':version})
+                    #else:
+                    #    pass
+                    #    print("[{0}] not found {1}".format(repo_name, bin))
+                dict_image['bins'] = bins
+        except docker.errors.APIError as e:
+            print("Error"+str(e))
     def _get_sys(self, yml_cmd):
         apps = yml_cmd['system']
         for app in apps:
@@ -158,5 +155,4 @@ class Scanner:
         apps = yml_cmd['applications']
         for app in apps:
             yield app["name"], app["ver"], app["re"]
-
 

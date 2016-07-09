@@ -37,11 +37,16 @@ def pull_image(repo_name, tag="latest"):
     # get image if not available locally
     im_names = [im['RepoTags'][0] for im in client.images()]  # all the images in the host (first tag)
 
-    if (not any([repo_name in imname for imname in im_names])) and client.search(
-            repo_name):  # not found locally and found remote
+    if (not any([repo_name in imname for imname in im_names])) and client.search(repo_name):  # not found locally and found remote
         print('Image {} not found locally. Pulling from docker hub.'.format(repo_name))
         for line in client.pull(repo_name, tag, stream=True):
-            print(line.decode())
+            json_image = json.loads(line.decode())
+            if 'progress' in json_image.keys():
+                print('\r'+json_image['id']+":"+json_image['progress'], end='')
+            if 'status' in json_image.keys() and "Downloaded" in json_image['status']:
+                print("\n"+json_image['status'])
+    else:
+        print("[" +repo_name +"] already exists")
 
 
 def remove_image(image, force=False):
