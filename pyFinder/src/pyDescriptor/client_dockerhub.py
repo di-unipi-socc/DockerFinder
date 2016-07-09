@@ -1,5 +1,8 @@
 import requests
 import sys
+import urllib.parse
+
+
 class ClientHub:
 
     def __init__(self, docker_hub_endpoint="https://hub.docker.com/"):
@@ -50,39 +53,72 @@ class ClientHub:
          If None all the images will be crawled. Default None.
         :return:
         """
-        url_images = self.build_search_url(page=page, page_size=page_size)
-        next_page = None
+        url_next_page = self.build_search_url(page=page, page_size=page_size)
+        count = self.count_all_images()
+        max_images = count if not max_images else max_images  # download all images if max_images=None
+        crawled_images = 0
+        print("[Crawler] total images to crawl: " + str(max_images))
         try:
-            res = requests.get(url_images)
-            if res.status_code == requests.codes.ok:
-                json_response = res.json()
-                next_page = json_response['next']
-                count = json_response['count']
-                max_images = count if not max_images else max_images  # download all images if max_images=None
-            else:
-                print(str(res.status_code) + " error response: " + res.text)
-            print("[Crawler] total images to crawl: "+str(max_images))
-            while next_page and max_images:         # there is another page and max_images >0
-                res = requests.get(url_images)
+            while url_next_page and max_images > 0:
+                res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
                     list_json_image = json_response['results']
-                    next_page = json_response['next']
-                    page +=1
+                    url_next_page = json_response['next']
+                    page += 1
                     max_images -= len(list_json_image)
-                    url_images = self.build_search_url(page=page, page_size=page_size)
                 else:
                     print(str(res.status_code) + " error response: " + res.text)
-                    return
+                    return []
                 yield list_json_image
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            print("\nConnectionError: " + str(e))
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            raise
+            print("\nUnexpected error:", sys.exc_info()[0])
+
 
     def build_search_url(self, page, page_size=10):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
-        url_images = "https://hub.docker.com/v2/search/repositories/?query=*&page_size=" + str(
-            page_size) + "&page=" + str(page)
+        params = (('query', '*'), ('page', page), ('page_size', page_size))
+        url_encode = urllib.parse.urlencode(params)
+        url_images = self.docker_hub+"/v2/search/repositories/?"+url_encode
         return url_images
+
+    def get_json_repo(self, repo_name):
+        url_namespace = self.docker_hub+"/v2/repositories/" + repo_name
+        try:
+            res = self.session.get(url_namespace)
+            if res.status_code == requests.codes.ok:
+                json_response = res.json()
+                return json_response
+            else:
+                print("\nerror response: "+str(res.status_code) +":" + res.text)
+                return {}
+        except requests.exceptions.ConnectionError as e:
+            print("\nConnectionError: " + str(e))
+
+    def get_json_tag(self, repo_name, tag="latest"):
+        url_tag = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
+        try:
+            res = self.session.get(url_tag)
+            if res.status_code == requests.codes.ok:
+                json_response = res.json()
+                return json_response
+            else:
+                print(str(res.status_code) + " error response: " + res.text)
+                return {}
+        except requests.exceptions.ConnectionError as e:
+            print("ConnectionError: " + str(e))
+
+    def count_all_images(self):
+        url_hub = self.build_search_url(page_size=10, page=1)
+        try:
+            res = self.session.get(url_hub)
+            if res.status_code == requests.codes.ok:
+                json_response = res.json()
+                return json_response['count']
+            else:
+                print(str(res.status_code) + " error response: " + res.text)
+                return
+        except requests.exceptions.ConnectionError as e:
+            print("ConnectionError: " + str(e))

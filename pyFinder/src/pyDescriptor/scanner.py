@@ -7,6 +7,7 @@ import time
 from .container import Container
 from .utils import *
 from .client_api import  ClientApi
+from .client_dockerhub import ClientHub
 import pika
 
 class Scanner:
@@ -23,6 +24,8 @@ class Scanner:
 
         # the clientApi talks with the server api in order to post the image description
         self.client_api = ClientApi(url_api=url_api)
+        # the clienthub interacts with the dockerHub registry
+        self.clientHub = ClientHub()
 
     def run(self, rabbit_queue="dofinder"):
 
@@ -30,24 +33,21 @@ class Scanner:
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
 
         def callback(ch, method, properties, body):
-            json_res = json.loads(body.decode())
-            repo_name = json_res['name']
+            repo_name = body.decode()
             print("[scanner] Received " + repo_name)
-            # scann the image received from the queue
-
-            #res_list_image = self.client_api.get_image(repo_name)
             if self.client_api.is_new(repo_name):           # the image is totally new
                 dict_image = self.scan(repo_name)
                 self.client_api.post_image(dict_image)      # POST the description of the image
+                print("[" + repo_name + "] scan uploaded")
             elif self.client_api.must_scanned(repo_name):   # the image must be scan again
                 dict_image = self.scan(repo_name)
                 self.client_api.put_image(dict_image)       # PUT the new image description of the image
+                print("[" + repo_name + "] scan refresh uploaded")
             else:
-                print("["+repo_name+"] not scannerized")
+                print("["+repo_name+"] scan already up to date.")
 
-            ## aknowledgment of finish the scanning to the rabbitMQ server
+            # aknowledgment of finish the scanning to the rabbitMQ server
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            #print(" [x] Finish scann%r" % body )
 
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(callback, queue=rabbit_queue, no_ack=True)
@@ -57,7 +57,6 @@ class Scanner:
 
     def scan(self, repo_name, tag="latest", rmi=False):
         """
-
         :param repo_name:
         :param tag:
         :param rmi:
@@ -96,17 +95,18 @@ class Scanner:
         :param dict_image:
         :return:
         """
-        print('[{}] docker API ... '.format(repo_name))
+        print('[{}] adding Docker Hub info ... '.format(repo_name))
 
-        url_namespace = "https://hub.docker.com/v2/repositories/" + repo_name
-        json_response = req_to_json(url_namespace)
-        print(json_response)
+        json_response = self.clientHub.get_json_repo(repo_name)
+
         dict_image['description'] = json_response['description']
         dict_image['star_count'] = json_response['star_count']
         dict_image['pull_count'] = json_response['pull_count']
 
-        url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/latest"
-        json_response = req_to_json(url_tag_latest)
+
+        # TODO : here must be included the tags lists of the image
+        json_response = self.clientHub.get_json_tag(repo_name)
+
         dict_image['last_updated'] = json_response['last_updated']
         dict_image['full_size'] =json_response['full_size']
 
