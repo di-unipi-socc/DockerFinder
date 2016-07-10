@@ -11,7 +11,6 @@ applications:
   - {name: java  , ver: -version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' }
   - {name: curl  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: nano  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
-  - {name: curl  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: node  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
   - {name: ruby  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
   - {name: perl  , ver: -version , re: '[0-9]\.[0-9](\.[0-9])'}

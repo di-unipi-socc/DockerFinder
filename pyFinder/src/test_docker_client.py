@@ -6,11 +6,14 @@ class TestClientHub(unittest.TestCase):
     def setUp(self):
         self.cHub = ClientHub()
 
-    @unittest.skip("Skipping test_get_tags")
+    #@unittest.skip("Skipping test_get_tags")
     def test_get_tags(self):
-        repo_name = "library/java"
+        #repo_name = "library/java"
+        repo_name ="andoladockeradmin/ubuntu"
         list_tags = self.cHub.get_all_tags(repo_name)
-        count_tags = self.cHub.get_count_tags(repo_name)
+        count_tags = self.cHub.get_num_tags(repo_name)
+        print(repo_name+": ")
+        print(list_tags)
         self.assertEquals(len(list_tags), count_tags)
 
     @unittest.skip("Skipping test_crawl_images")

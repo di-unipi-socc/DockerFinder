@@ -18,8 +18,10 @@ class Crawler:
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images):
             for image in list_images:
                 crawled_image += 1
+                print("############" +image['repo_name'] +"#################")
                 list_tags = self.client_hub.get_all_tags(image['repo_name'])
-                print("[" + image['repo_name'] + "] found tags " + str(len(list_tags)))
+                print("[ " + image['repo_name'] + " ] found tags " + str(len(list_tags)))
+                print(list_tags)
                 if list_tags and 'latest' in list_tags:   # only the images that  contains "latest" tag
                     print("[" + image['repo_name'] + "] crawled from docker Hub")
                     saved_images += 1
@@ -33,7 +35,7 @@ class Crawler:
 
         #close the connectino with rabbitMQ server
         self.connection.close()
-        print("[scanner] closed connection of rabbitMq channel "+self.channel)
+        print("\n[scanner] closed connection of rabbitMq channel ")
 
     def send_to_rabbit(self, msg, rabbit_queue="dofinder"):
         self.channel.queue_declare(queue=rabbit_queue, durable=True)

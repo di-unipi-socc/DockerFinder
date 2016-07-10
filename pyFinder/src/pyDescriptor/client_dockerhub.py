@@ -9,7 +9,7 @@ class ClientHub:
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
 
-    def get_count_tags(self, repo_name):
+    def get_num_tags(self, repo_name):
         url_tags = self.docker_hub + "/v2/repositories/" + repo_name + "/tags/"
         try:
             res = self.session.get(url_tags)
@@ -23,7 +23,7 @@ class ClientHub:
 
     def get_all_tags(self, repo_name):
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
-        list_tags = []
+        #list_tags = []
         try:
             res = self.session.get(url_tags)
             if res.status_code == requests.codes.ok:
@@ -36,9 +36,11 @@ class ClientHub:
                     json_response = res.json()
                     list_tags += [res['name'] for res in json_response['results']]
                     next_page = json_response['next']
+                return list_tags
             else:
                 print(str(res.status_code) +" error response: "+ res.text)
-            return list_tags
+                return []
+
         except requests.exceptions.ConnectionError as e:
             print("ConnectionError: " + str(e))
         except:
