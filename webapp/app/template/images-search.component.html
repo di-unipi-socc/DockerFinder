@@ -1,7 +1,6 @@
 <div class="container">
     <div [hidden]="submitted">
     <h1>Search Images form</h1>
-    {{diagnostic}}
       <form (ngSubmit)="onSubmit()" #imageForm="ngForm">
 
           <div class="row">
@@ -19,7 +18,6 @@
                   <div class="form-group">
                       <label for="version">Version</label>
                       <input type="text" class="form-control" required [(ngModel)]="version" name="alterEgo" name="version">
-                      TODO: remove this: {{version}}
                   </div>
 
           </div>
@@ -30,7 +28,6 @@
                       <select class="form-control" [(ngModel)]="sort" name="sort">
                         <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
                       </select>
-                      ODO: remove this: {{sort}}
                   </div>
                   <div class="col-md-6">
                        <label for="order">Ordering </label>
@@ -44,26 +41,29 @@
       </form>
 
     </div>
-        <!--< component to show when thw query is submetted>-->
+        <!--< component to show when the query is submitted>-->
+
         <div [hidden]="!submitted">
-          <h2>You submitted the following:</h2>
-          <div class="row">
-            <div class="col-xs-3">Name</div>
-            <div class="col-xs-9  pull-left">{{ bin}}</div>
-          </div>
-          <div class="row">
-            <div class="col-xs-3">Version</div>
-            <div class="col-xs-9 pull-left">{{ version }}</div>
-          </div>
-          <div class="row">
-            <div class="col-xs-3">Order</div>
-            <div class="col-xs-9 pull-left">{{ order }}</div>
-          </div>
-            <div class="row">
-            <div class="col-xs-3">Sort</div>
-            <div class="col-xs-9 pull-left">{{ sort }}</div>
-          </div>
-          <br>
+            <my-images [images]="resultImages" ></my-images>
+
+            <!--<h2>You submitted the following query :</h2>-->
+          <!--<div class="row">-->
+            <!--<div class="col-xs-3">Name</div>-->
+            <!--<div class="col-xs-9  pull-left">{{ bin}}</div>-->
+          <!--</div>-->
+          <!--<div class="row">-->
+            <!--<div class="col-xs-3">Version</div>-->
+            <!--<div class="col-xs-9 pull-left">{{ version }}</div>-->
+          <!--</div>-->
+          <!--<div class="row">-->
+            <!--<div class="col-xs-3">Order</div>-->
+            <!--<div class="col-xs-9 pull-left">{{ order }}</div>-->
+          <!--</div>-->
+            <!--<div class="row">-->
+            <!--<div class="col-xs-3">Sort</div>-->
+            <!--<div class="col-xs-9 pull-left">{{ sort }}</div>-->
+          <!--</div>-->
+          <!--<br>-->
         <button class="btn btn-default" (click)="submitted=false">Edit</button>
     </div>
 </div>

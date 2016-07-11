@@ -41,7 +41,7 @@ var ImageService = (function () {
     ImageService.prototype.searchImages = function (queryString) {
         return this.http.get(this.searchUrl + queryString)
             .toPromise()
-            .then(function (response) { console.log(response.json()); return response.json(); })
+            .then(function (response) { return response.json().images; })
             .catch(this.handleError);
     };
     ImageService.prototype.extractData = function (res) {

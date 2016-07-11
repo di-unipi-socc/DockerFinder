@@ -1,7 +1,7 @@
 /**
  * Created by dido on 7/6/16.
  */
-import { Component ,OnInit }         from '@angular/core';
+import {Component, OnInit, Input}         from '@angular/core';
 import { Router } from '@angular/router';
 
 import {Image } from '../image';
@@ -13,40 +13,43 @@ import {ImageService} from "../services/image.service";
   selector: 'my-images',
   template: `
     <h1>DoFinder Images</h1>
-    <ul class="images">
-        <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
-           <span class="badge"> {{image.star_count}}</span> {{image.repo_name}}
-        </li>
-    </ul>
-    <div *ngIf="selectedImage">
-      <h2>
-        {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}
-      </h2>
-      <button (click)="gotoDetail()">View Details</button>
+     <div *ngIf="images && images.length > 0">
+       <p> Found images : {{images.length}} </p>
+        <ul class="images">
+            <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
+               <span class="badge"> {{image.star_count}}</span> {{image.repo_name}}
+            </li>
+        </ul>
+        <div *ngIf="selectedImage">
+          <h2>
+            {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}
+          </h2>
+          <button (click)="gotoDetail()">View Details</button>
+        </div>
+    </div>
+    <div *ngIf="!images">
+        Images not found
     </div>
     `,
   styleUrls: ['app/styles/images.component.css'],
 
 })
-export class ImagesComponent implements OnInit {
+export class ImagesComponent {//implements OnInit
     errorMessage:string;
     selectedImage:Image;
-    images:Image [];
+
+    @Input()
+    images:Image [] = [];
 
     constructor(private router:Router,
                 private imageService:ImageService) {
     }
 
-    ngOnInit() {
-        this.getImages();
-    }
+    // ngOnInit() {
+    //     this.getImages();
+    // }
 
     getImages() {
-        // this.imageService.getImagesObservable().subscribe(
-        //     images => this.images = images,
-        //     error =>  this.errorMessage = <any>error)
-        //
-
         this.imageService.getImages().then(images => this.images = images)
     }
 
