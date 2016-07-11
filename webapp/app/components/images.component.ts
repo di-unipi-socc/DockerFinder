@@ -27,31 +27,32 @@ import {ImageService} from "../services/image.service";
           <button (click)="gotoDetail()">View Details</button>
         </div>
     </div>
-    <div *ngIf="!images">
+    <div *ngIf="images && images.length == 0">
         Images not found
     </div>
     `,
   styleUrls: ['app/styles/images.component.css'],
 
 })
-export class ImagesComponent {//implements OnInit
+export class ImagesComponent implements OnInit{
     errorMessage:string;
     selectedImage:Image;
 
     @Input()
-    images:Image [] = [];
+    images:Image [];
 
     constructor(private router:Router,
                 private imageService:ImageService) {
     }
 
-    // ngOnInit() {
-    //     this.getImages();
-    // }
-
-    getImages() {
-        this.imageService.getImages().then(images => this.images = images)
+     ngOnInit() {
+        // this.getImages();
+        //this.images =[]
     }
+    //
+    // getImages() {
+    //     this.imageService.getImages().then(images => this.images = images)
+    // }
 
     onSelect(image:Image) {
         this.selectedImage = image;

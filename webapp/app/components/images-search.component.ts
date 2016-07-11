@@ -5,6 +5,7 @@ import { Component} from '@angular/core';
 import {ImageService} from '../services/image.service'
 import {Image }  from '../models/image'
 import {ImagesComponent}  from '../components/images.component'
+import {Router} from "@angular/router";
 
 @Component({
         selector: 'my-search-images',
@@ -22,9 +23,10 @@ export class ImagesSearchComponent {
     order : string;
 
     resultImages : Image[];
-    count =0;
+    count = 0;
 
-    constructor( private imageService: ImageService){
+    constructor( private router: Router, private imageService: ImageService){
+
     }
 
     onSubmit() {
@@ -37,10 +39,16 @@ export class ImagesSearchComponent {
                 }
             });   //res in the json
         this.submitted = true;
+        //this.router.navigate(['/images']);
     }
 
      // TODO: Remove this when we're done
     get diagnostic() { return this.bin+"="+this.version }
+
+    edit(){
+        this.submitted=false;
+        this.resultImages = [];
+    }
 
 }
 

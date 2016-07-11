@@ -2,7 +2,7 @@
  * Created by dido on 7/6/16.
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import { ImageService } from '../services/image.service';
 import { Image } from '../image';
@@ -28,6 +28,7 @@ import { Image } from '../image';
         </li>
      </ul>
      </div>
+     <button (click)="goBack()">Back</button>
      `,
     styleUrls:['app/styles/image-detail.component.css']
 })
@@ -40,6 +41,7 @@ export class ImageDetailComponent implements OnInit, OnDestroy{
     sub: any;
 
     constructor(
+        private router: Router,
       private imageService: ImageService,
       private route: ActivatedRoute) {
     }
@@ -58,6 +60,7 @@ export class ImageDetailComponent implements OnInit, OnDestroy{
     }
 
     goBack() {
+       //this.router.navigate(['/images']);
       window.history.back();
     }
 

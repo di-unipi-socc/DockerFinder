@@ -18,15 +18,15 @@ var ImagesComponent = (function () {
     function ImagesComponent(router, imageService) {
         this.router = router;
         this.imageService = imageService;
-        this.images = [];
     }
-    // ngOnInit() {
-    //     this.getImages();
-    // }
-    ImagesComponent.prototype.getImages = function () {
-        var _this = this;
-        this.imageService.getImages().then(function (images) { return _this.images = images; });
+    ImagesComponent.prototype.ngOnInit = function () {
+        // this.getImages();
+        //this.images =[]
     };
+    //
+    // getImages() {
+    //     this.imageService.getImages().then(images => this.images = images)
+    // }
     ImagesComponent.prototype.onSelect = function (image) {
         this.selectedImage = image;
     };
@@ -40,7 +40,7 @@ var ImagesComponent = (function () {
     ImagesComponent = __decorate([
         core_1.Component({
             selector: 'my-images',
-            template: "\n    <h1>DoFinder Images</h1>\n     <div *ngIf=\"images && images.length > 0\">\n       <p> Found images : {{images.length}} </p>\n        <ul class=\"images\">\n            <li *ngFor=\"let image of images\"  [class.selected]=\"image === selectedImage\" (click)=\"onSelect(image)\"> \n               <span class=\"badge\"> {{image.star_count}}</span> {{image.repo_name}}\n            </li>\n        </ul>\n        <div *ngIf=\"selectedImage\">\n          <h2>\n            {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}\n          </h2>\n          <button (click)=\"gotoDetail()\">View Details</button>\n        </div>\n    </div>\n    <div *ngIf=\"!images\">\n        Images not found\n    </div>\n    ",
+            template: "\n    <h1>DoFinder Images</h1>\n     <div *ngIf=\"images && images.length > 0\">\n       <p> Found images : {{images.length}} </p>\n        <ul class=\"images\">\n            <li *ngFor=\"let image of images\"  [class.selected]=\"image === selectedImage\" (click)=\"onSelect(image)\"> \n               <span class=\"badge\"> {{image.star_count}}</span> {{image.repo_name}}\n            </li>\n        </ul>\n        <div *ngIf=\"selectedImage\">\n          <h2>\n            {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}\n          </h2>\n          <button (click)=\"gotoDetail()\">View Details</button>\n        </div>\n    </div>\n    <div *ngIf=\"images && images.length == 0\">\n        Images not found\n    </div>\n    ",
             styleUrls: ['app/styles/images.component.css'],
         }), 
         __metadata('design:paramtypes', [router_1.Router, image_service_1.ImageService])
