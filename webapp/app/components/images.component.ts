@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import {Image } from '../image';
 import {ImageService} from "../services/image.service";
 
-import { ImageDetailComponent}        from './image-detail.component';
 
 
 @Component({
@@ -29,33 +28,34 @@ import { ImageDetailComponent}        from './image-detail.component';
   styleUrls: ['app/styles/images.component.css'],
 
 })
-export class ImagesComponent implements OnInit{
+export class ImagesComponent implements OnInit {
     errorMessage:string;
-    selectedImage : Image;
-    images: Image [];
+    selectedImage:Image;
+    images:Image [];
 
-    constructor(
-          private router: Router,
-          private imageService: ImageService){}
-
-    ngOnInit(){
-         this.getImages();
+    constructor(private router:Router,
+                private imageService:ImageService) {
     }
 
-    getImages(){
+    ngOnInit() {
+        this.getImages();
+    }
+
+    getImages() {
         // this.imageService.getImagesObservable().subscribe(
         //     images => this.images = images,
         //     error =>  this.errorMessage = <any>error)
         //
-        
-       this.imageService.getImages().then(images => this.images = images)
+
+        this.imageService.getImages().then(images => this.images = images)
     }
 
-    onSelect(image: Image){
+    onSelect(image:Image) {
         this.selectedImage = image;
     }
 
     gotoDetail() {
         this.router.navigate(['/detail', this.selectedImage._id]);
     }
+
 }

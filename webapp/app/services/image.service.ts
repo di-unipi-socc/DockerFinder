@@ -4,23 +4,29 @@
 import { Injectable }     from '@angular/core';
 import 'rxjs/add/operator/toPromise';  //for toPromise()
 
-import { Image } from '../image';
-//import { IMAGES } from '../mock-images';
-import {Http,Response,Jsonp} from "@angular/http";
+import { Image } from '../models/image';
+import { Configuration } from '../app.constants';
+// import { Image } from '../image';
+// //import { IMAGES } from '../mock-images';
+import {Http,Response, Headers} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 
 @Injectable()
 export class ImageService {
-  private imagesUrl = 'http://127.0.0.1:8000/api/images'; //'app/images.json'
-  // private imagesUrl = 'app/images.json';
-  
-  constructor (private http: Http) {}
+  private imagesUrl :string; //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
+  private searchUrl =  'http://127.0.0.1:8000/search?';
+  private headers: Headers;
+
+
+  constructor (private http: Http, private configuration:Configuration) {
+      this.imagesUrl = configuration.ServerWithApiUrl;
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'application/json');
+  }
 
   getImages(): Promise<Image[]>{
-     //return Promise.resolve(IMAGES);
-    //return IMAGES;
     return this.http.get(this.imagesUrl)
-      //return this.jsonp.get(this.imagesUrl)
                     . toPromise()
                      .then(response => response.json())//.data)
                      .catch(this.handleError);
@@ -31,10 +37,14 @@ export class ImageService {
             .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
 
   }
-  
-  // getImagesSlow (){
-  //    return  new Promise<Image[]>(resolve => setTimeout(() => resolve(IMAGES), 4000));
-  // }
+
+  searchImages(queryString: string): Promise<Image[]>{
+      return this.http.get(this.searchUrl+queryString)
+          .toPromise()
+          .then(response =>{console.log(response.json()); return response.json();})
+          .catch(this.handleError)
+
+  }
 
     private extractData(res: Response) {
         let body = res.json();

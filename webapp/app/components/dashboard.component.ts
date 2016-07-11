@@ -7,11 +7,14 @@ import { Router } from '@angular/router';
 import { Image } from '../image';
 import { ImageService } from '../services/image.service';
 
+import {ImagesSearchComponent} from './images-search.component'
+
 
 @Component({
   selector: 'my-dashboard',
   templateUrl: 'app/template/dashboard.component.html',
-  styleUrls: [`app/styles/dashboard.component.css`]
+  styleUrls: [`app/styles/dashboard.component.css`],
+  directives:[ImagesSearchComponent]
 })
 export class DashboardComponent implements OnInit{
 

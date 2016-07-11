@@ -1,9 +1,10 @@
 /**
  * Created by dido on 7/5/16.
  */
-import { Component }       from '@angular/core';
-import { ROUTER_DIRECTIVES } from '@angular/router';
-import { ImageService}     from '../services/image.service'
+import { Component }            from '@angular/core';
+import { ROUTER_DIRECTIVES }    from '@angular/router';
+import { ImageService }         from '../services/image.service'
+import { Configuration }        from '../app.constants'
 
 // Add the RxJS Observable operators we need in this app.
 //import './rxjs-operators';
@@ -21,9 +22,9 @@ import { ImageService}     from '../services/image.service'
     styleUrls: ['app/styles/app.component.css'],
     directives:[ROUTER_DIRECTIVES],
     providers: [
-        ImageService
+        ImageService,
+        Configuration
     ]
-
 })
 export class AppComponent{
      title = 'DoFinder Images';

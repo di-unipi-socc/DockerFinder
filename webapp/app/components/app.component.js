@@ -14,6 +14,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../services/image.service');
+var app_constants_1 = require('../app.constants');
 // Add the RxJS Observable operators we need in this app.
 //import './rxjs-operators';
 var AppComponent = (function () {
@@ -27,7 +28,8 @@ var AppComponent = (function () {
             styleUrls: ['app/styles/app.component.css'],
             directives: [router_1.ROUTER_DIRECTIVES],
             providers: [
-                image_service_1.ImageService
+                image_service_1.ImageService,
+                app_constants_1.Configuration
             ]
         }), 
         __metadata('design:paramtypes', [])

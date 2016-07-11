@@ -14,6 +14,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../services/image.service');
+var images_search_component_1 = require('./images-search.component');
 var DashboardComponent = (function () {
     function DashboardComponent(imageService, router) {
         this.imageService = imageService;
@@ -33,7 +34,8 @@ var DashboardComponent = (function () {
         core_1.Component({
             selector: 'my-dashboard',
             templateUrl: 'app/template/dashboard.component.html',
-            styleUrls: ["app/styles/dashboard.component.css"]
+            styleUrls: ["app/styles/dashboard.component.css"],
+            directives: [images_search_component_1.ImagesSearchComponent]
         }), 
         __metadata('design:paramtypes', [image_service_1.ImageService, router_1.Router])
     ], DashboardComponent);

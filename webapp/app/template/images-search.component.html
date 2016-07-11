@@ -1,0 +1,69 @@
+<div class="container">
+    <div [hidden]="submitted">
+    <h1>Search Images form</h1>
+    {{diagnostic}}
+      <form (ngSubmit)="onSubmit()" #imageForm="ngForm">
+
+          <div class="row">
+                  <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" required #spy  [(ngModel)]="bin" name="name" #name="ngModel">
+                      <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                          Name is required
+                      </div>
+                      TODO: remove this: {{spy.className}}
+                      <!--<input type="text" class="form-control" required id="name">-->
+                  </div>
+
+
+                  <div class="form-group">
+                      <label for="version">Version</label>
+                      <input type="text" class="form-control" required [(ngModel)]="version" name="alterEgo" name="version">
+                      TODO: remove this: {{version}}
+                  </div>
+
+          </div>
+
+          <div class="form-group row">
+                  <div class="col-md-6">
+                      <label for="sort">Sort</label>
+                      <select class="form-control" [(ngModel)]="sort" name="sort">
+                        <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
+                      </select>
+                      ODO: remove this: {{sort}}
+                  </div>
+                  <div class="col-md-6">
+                       <label for="order">Ordering </label>
+                      <select class="form-control" [(ngModel)]="order" name="order">
+                        <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
+                      </select>
+                </div>
+            </div>
+          <button type="submit" class="btn btn-default" [disabled]="!imageForm.form.valid" (ngSubmit)="onSubmit()"> Search</button>
+
+      </form>
+
+    </div>
+        <!--< component to show when thw query is submetted>-->
+        <div [hidden]="!submitted">
+          <h2>You submitted the following:</h2>
+          <div class="row">
+            <div class="col-xs-3">Name</div>
+            <div class="col-xs-9  pull-left">{{ bin}}</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-3">Version</div>
+            <div class="col-xs-9 pull-left">{{ version }}</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-3">Order</div>
+            <div class="col-xs-9 pull-left">{{ order }}</div>
+          </div>
+            <div class="row">
+            <div class="col-xs-3">Sort</div>
+            <div class="col-xs-9 pull-left">{{ sort }}</div>
+          </div>
+          <br>
+        <button class="btn btn-default" (click)="submitted=false">Edit</button>
+    </div>
+</div>

@@ -13,18 +13,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 require('rxjs/add/operator/toPromise'); //for toPromise()
-//import { IMAGES } from '../mock-images';
+var app_constants_1 = require('../app.constants');
+// import { Image } from '../image';
+// //import { IMAGES } from '../mock-images';
 var http_1 = require("@angular/http");
 var Rx_1 = require("rxjs/Rx");
 var ImageService = (function () {
-    // private imagesUrl = 'app/images.json';
-    function ImageService(http) {
+    function ImageService(http, configuration) {
         this.http = http;
-        this.imagesUrl = 'http://127.0.0.1:8000/api/images'; //'app/images.json'
+        this.configuration = configuration;
+        this.searchUrl = 'http://127.0.0.1:8000/search?';
+        this.imagesUrl = configuration.ServerWithApiUrl;
+        this.headers = new http_1.Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'application/json');
     }
     ImageService.prototype.getImages = function () {
-        //return Promise.resolve(IMAGES);
-        //return IMAGES;
         return this.http.get(this.imagesUrl)
             .toPromise()
             .then(function (response) { return response.json(); }) //.data)
@@ -34,9 +38,12 @@ var ImageService = (function () {
         return this.getImages()
             .then(function (images) { return images.filter(function (image) { return image._id === id; })[0]; }); //[0]);===id
     };
-    // getImagesSlow (){
-    //    return  new Promise<Image[]>(resolve => setTimeout(() => resolve(IMAGES), 4000));
-    // }
+    ImageService.prototype.searchImages = function (queryString) {
+        return this.http.get(this.searchUrl + queryString)
+            .toPromise()
+            .then(function (response) { console.log(response.json()); return response.json(); })
+            .catch(this.handleError);
+    };
     ImageService.prototype.extractData = function (res) {
         var body = res.json();
         console.log(body);
@@ -51,7 +58,7 @@ var ImageService = (function () {
     };
     ImageService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [http_1.Http, app_constants_1.Configuration])
     ], ImageService);
     return ImageService;
 }());
