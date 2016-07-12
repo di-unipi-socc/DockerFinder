@@ -105,7 +105,9 @@ class Scanner:
 
 
         # TODO : here must be included the tags lists of the image
-        json_response = self.clientHub.get_json_tag(repo_name)
+        #josn_reposnse = slef.clientHub.get_all_tags(repo_name)
+
+        json_response = self.clientHub.get_json_tag(repo_name, tag="latest")
 
         dict_image['last_updated'] = json_response['last_updated']
         dict_image['full_size'] =json_response['full_size']

@@ -1,9 +1,9 @@
 FROM python:3.4-alpine
 
-RUN mkdir /pyFinder
-WORKDIR /pyFinder
-ADD  requirements.txt /pyFinder/
+RUN mkdir /code
+WORKDIR /code
+ADD  requirements.txt /code/
 RUN pip install  --upgrade pip
 RUN pip install -r requirements.txt
-ADD . /pyFinder/
-ENTRYPOINT python ../pyFinder/src/pyDescriptor/mainDescriptor.py
+ADD . /code/
+ENTRYPOINT python ./src/start_crawler.py.py
