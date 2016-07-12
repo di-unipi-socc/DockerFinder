@@ -22,11 +22,6 @@ and defines a model that describe that informations.
 3. Develops a intelligent **search system** that is able to identify the images that
 offer determined features and not only based on the name and the tag.
 
-
-Next steps to be performed:
-  - decide the structure of the inforamation (relational DB ?? )
-  - Write the scripts in order to indentify the capability of the images.
-  - starting from docker file ,generate the informations.
   
 ### Description
 The description of the images can be decomposed in:
@@ -49,32 +44,20 @@ match.group(0)
 
 ```
 
-
-
 # PyFinder
 In order to collect the description from the images, i have found a
 [docker-py](https://github.com/docker/docker-py)  that is a Python library  that expose all the docker commnad. Can be useful to run an images directly into a python code.
 
 
-1. **docker finder**:
-    -  Create a local Registry.
-    -  Download all the images from the DockerHub (create a copy).
-    -  Create a database with more useful information for all the images downloaded.
-
-<div style="text-align:center">
-<img src="https://cloud.githubusercontent.com/assets/9201530/15286937/e62ac2a6-1b5f-11e6-97d4-9a01d5d135ac.png" width="500">
-</div>
-    
-
 
 ### Docker crawler
-The method available in order to  know th images name fro docker hub
-- API v1 are deprecated
-- API v2 don't allow the search operation
-- ```docker search TERM``` is not sufficient
-- call directly  the `docker HUB'
+The *crawler* is a python class that crawl from the docker Hub all the images name.
 
-### Docker HUB
+- *client_dockerhub.py* is the module that parforms the requests to the docker hub.
+- The crawler is a *rabbotMQ* client. It sends into the channel the  name of th eimages found.
+
+
+#### Docker HUB crawling
 
 ```
   next = 1
@@ -106,17 +89,6 @@ the previous call return:
 }
 ```
 
-
-### Docker search
-Docker provides through the *Command line* the `search` utility that search in the Docker Hub. The sysntax is of the form:
-
-``` $ docker search [OPTIONS] TERM ```
-
-Term is searched in all the fields:
-- **image name** (top-level namespace of official repository does not show the repository `reposUser/imagesNmae`).
-- **user name**.
-- **description** (match also substring in the description)
-- 
 
 #### Docker API v1
 
@@ -164,7 +136,6 @@ Goals.
     - performance  
     - implementatian (move to Go)
 
- 
 **digest**: uniquely identify content (each layer is a content-addressable blob, Sha256)
 
 **Manifest** describes the component of an image ina single object (layers can be fetched in parallel)
@@ -179,7 +150,7 @@ Goals.
  - no explicit tagging API
  
  
-#### Atherntication 
+#### Athentication 
 ```
 GET https://auth.docker.io/token?service=registry.docker.io&scope=registry:catalog:*
 
@@ -201,77 +172,6 @@ GET https://index.docker.io/v2/
 Authorization: Bearer TOKEN 
 ```
 
-Information from  `docker inspect INAME_NAME`
-```
-{  "_id" : SHA256_IMAGE
-   "RepoTags": [ TAGS_IMAGE ]
-   
-   
-   "RootFS": {
-            "Type": "layers",
-            "Layers": [
-                "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
-            ]
-        }
-}
-```
-
-Information from `docker search IMAGE_NAME`
-```
-{
-    "Stars": NUMBER,
-    "Official": "YES/NO"
-}
-```
-Information from `doFinder NAME_IMAGE`
-
-```
-  "System": { "Distro": NAME_DISTRO
-             }
-  "Bins": [ 
-           {"Bin": NAME_BINARY
-            "Ver": VERSION},
-        ]
-```
-
-
-Description of Image from official 
-
-```
-{  
-  "_id" : STRING (name:tag)
-  "t_scan": TIME/DATE
-  "t_crawl": TIME/DATE
-  "sha254": STRING (pint he version of the image)
-  "inspect":{
-         "RepoTags": [ TAGS_IMAGE ]
-         "RootFS": {
-                  "Type": "layers",
-                  "Layers": [
-                      "sha256:4dcab49015d47e8f300ec33400a02cebc7b54cadd09c37e49eccbc655279da90"
-                  ]
-              },
-      }
-  "hub":{
-        "star_count": INT,
-        "pull_count": INT,
-        "repo_owner": STRING,
-        "short_description": STRING,
-        "is_automated": BOOLEAN,
-        "is_official": BOOLEAN
-    }
-}
-```
-
-Description of `DockerFinder`
-```
-{
- "_id": STRING (name:tag)
- "dofinder":{
-    "system":{ "distro":STRING;}
-    "bins": [ {"bin":STRING, "ver":STRING},
- }
-```
 
 
 # ServerApi
