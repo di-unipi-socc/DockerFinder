@@ -347,3 +347,7 @@ IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' mongo)"
 
 echo "started mongo db on $IP..."
 ```
+
+## Elastic search 
+
+- [stack overlflow](http://stackoverflow.com/questions/29841348/how-reliable-is-elasticsearch-as-a-primary-datastore-against-factors-like-write)
