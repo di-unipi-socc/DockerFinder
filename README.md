@@ -184,7 +184,6 @@ All the request for the api must be prefixed by `/api` anr `Content-Type: applic
 - `GET /images` : get all the images of the database
     - `GET /images/?select=repo_name%20bins`
     - `GET /images/?sort=repo_name` : get all the images sorted by repo_name
-    - 
 - `POST /images`: create a new image from the json in the body
 -  `PUT /images/:id_image`: update the image
 - `DELETE /iamges/:id_image`: delete the image.
