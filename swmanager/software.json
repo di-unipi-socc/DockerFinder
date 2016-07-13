@@ -1,0 +1,40 @@
+[{
+  "name": "python",
+  "alias": [
+    {
+      "software": "python",
+      "cmd": "--version",
+      "regex": "[0-9]*[.][0-9]*[.0-9]*"
+    },
+    {
+      "software": "python2",
+      "cmd": "--version",
+      "regex": "[0-9]*[.][0-9]*[.0-9]*"
+    },
+    {
+      "software": "python3",
+      "cmd": "--version",
+      "regex": "[0-9]*[.][0-9]*[.0-9]*"
+    }
+  ]
+},
+{
+  "name": "java",
+  "alias": [
+    {
+      "software": "java",
+      "cmd": "--version",
+      "regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
+    }
+  ]
+}
+]
+{"name":"python3","ver": --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+{"name":"python2","ver": --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+{"name":"java   ","ver": -version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' }
+{"name":"curl   ","ver": --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+{"name":"nano   ","ver": --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+{"name":"node   ","ver": --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+{"name":"ruby   ","ver": --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+{"name":"perl   ","ver": -version , re: '[0-9]\.[0-9](\.[0-9])'}
+

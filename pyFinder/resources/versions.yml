@@ -5,7 +5,7 @@ system:
     - {cmd: 'bash -c "lsb_release -a"'   ,  re: 'Description:.*'}
 
 applications:
-  - {name: python, ver: [python2 --version], re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+  - {name: python, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: python3, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: python2, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: java  , ver: -version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' }
