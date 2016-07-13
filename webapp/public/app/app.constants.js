@@ -14,9 +14,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var Configuration = (function () {
     function Configuration() {
-        this.Server = "http://127.0.0.1:8000/";
+        // public Server: string = "http://127.0.0.1:8000/";
         this.ApiUrl = "api/images";
-        this.ServerWithApiUrl = this.Server + this.ApiUrl;
+        this.ServerWithApiUrl = this.ApiUrl;
     }
     Configuration = __decorate([
         core_1.Injectable(), 

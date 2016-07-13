@@ -22,7 +22,7 @@ var ImageService = (function () {
     function ImageService(http, configuration) {
         this.http = http;
         this.configuration = configuration;
-        this.searchUrl = 'http://127.0.0.1:8000/search?';
+        this.searchUrl = '/search?'; // 'http://127.0.0.1:8000/search?';
         this.imagesUrl = configuration.ServerWithApiUrl;
         this.headers = new http_1.Headers();
         this.headers.append('Content-Type', 'application/json');

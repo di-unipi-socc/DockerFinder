@@ -12,7 +12,7 @@ import { Configuration }        from '../app.constants'
 @Component({
   selector: 'my-app',
     template: `
-        <h1>{{title}}</h1>
+        <h1>{{title}} - ciao funzioni?!</h1>
         <nav>
             <a [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a>
             <a [routerLink]="['/images']" routerLinkActive="active">Images</a>

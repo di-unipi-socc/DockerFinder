@@ -14,7 +14,7 @@ import {Observable} from "rxjs/Rx";
 @Injectable()
 export class ImageService {
   private imagesUrl :string; //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
-  private searchUrl =  'http://127.0.0.1:8000/search?';
+  private searchUrl = '/search?';// 'http://127.0.0.1:8000/search?';
   private headers: Headers;
 
 

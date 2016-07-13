@@ -1,0 +1,20 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+   "main": "server.js",
+  "scripts": {
+    "postinstall": "cd public && npm install",
+    "start": "concurrently \"npm --prefix ./public run tsc:w\" \"nodemon .\""
+
+  },
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.5.4",
+    "node-restful": "^0.2.5"
+  },
+  "devDependencies": {
+    "concurrently": "^2.0.0"
+  }
+}
