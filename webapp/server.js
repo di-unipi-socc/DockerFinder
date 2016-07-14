@@ -42,6 +42,7 @@ app.use(function (req, res, next) {
 });
 
 var http = require('http');
+
 app.get('/api/search', function (req, res) {
     console.log(req._parsedUrl.search);
 
