@@ -12,7 +12,7 @@ import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/../../resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_api="127.0.0.1:8000/api/images"):
+    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_api="127.0.0.1:8000/api/images"):
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
         # sets the docker host from your environment variables

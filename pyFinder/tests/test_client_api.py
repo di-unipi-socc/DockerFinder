@@ -1,5 +1,6 @@
 import unittest
-from pyDescriptor import ClientApi
+from .context import  pyfinder
+
 
 class ClientApiTestCase(unittest.TestCase):
     "tests  for `client_api.py`"

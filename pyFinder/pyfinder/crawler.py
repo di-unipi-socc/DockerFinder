@@ -5,7 +5,6 @@ import pika
 import json
 
 class Crawler:
-
     def __init__(self, port=5672, rabbit_host='172.17.0.3'):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port))
         self.channel = self.connection.channel()

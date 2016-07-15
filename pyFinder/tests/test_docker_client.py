@@ -1,4 +1,4 @@
-from pyDescriptor import ClientHub
+from pyfinder import ClientHub
 import unittest
 
 class TestClientHub(unittest.TestCase):

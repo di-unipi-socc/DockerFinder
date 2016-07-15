@@ -1,8 +1,7 @@
-from pyDescriptor import Scanner
-from pyDescriptor import Crawler
-from pyDescriptor import ClientApi
-from pyDescriptor import  pull_image
-import py
+from pyfinder import Scanner
+from pyfinder import Crawler
+from pyfinder import ClientApi
+from pyfinder import pull_image
 import json
 import re
 

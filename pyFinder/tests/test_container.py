@@ -1,8 +1,7 @@
 import unittest
-from  pyDescriptor import Container
+from pyfinder import Container
 import re
 import yaml
-import os
 
 class TestContainer(unittest.TestCase):
 
