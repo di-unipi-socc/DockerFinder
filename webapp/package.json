@@ -15,6 +15,7 @@
     "node-restful": "^0.2.5"
   },
   "devDependencies": {
-    "concurrently": "^2.0.0"
+    "concurrently": "^2.0.0",
+    "nodemon": "^1.9.2"
   }
 }

@@ -19,8 +19,10 @@ class Scanner:
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
-        self.channel = self.connection.channel()
+        self.host_rabbit = host_rabbit;
+        self.port_rabbit = port_rabbit;
+        #self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
+        #self.channel = self.connection.channel()
 
         # the clientApi talks with the server api in order to post the image description
         self.client_api = ClientApi(url_api=url_api)
@@ -29,10 +31,13 @@ class Scanner:
 
     def run(self, rabbit_queue="dofinder"):
 
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
+        self.channel = self.connection.channel()
+
         # TODO: rabbitQm server can be down. check and retry on orde to connect
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
 
-        def callback(ch, method, properties, body):
+        def on_message(ch, method, properties, body):
             repo_name = body.decode()
             print("[scanner] Received " + repo_name)
             if self.client_api.is_new(repo_name):           # the image is totally new
@@ -50,10 +55,13 @@ class Scanner:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(callback, queue=rabbit_queue, no_ack=True)
+        self.channel.basic_consume(on_message, queue=rabbit_queue, no_ack=True)
         print(' [scanner] Waiting for messages. To exit press CTRL+C')
-
-        self.channel.start_consuming()
+        try:
+            self.channel.start_consuming()
+        except KeyboardInterrupt:
+            self.channel.stop_consuming()
+        self.channel.close()
 
     def scan(self, repo_name, tag="latest", rmi=False):
         """

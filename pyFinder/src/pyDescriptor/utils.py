@@ -25,7 +25,7 @@ def pull_image(repo_name, tag="latest"):
         for line in client.pull(repo_name, tag, stream=True):
             json_image = json.loads(line.decode())
             if 'progress' in json_image.keys():
-                print('\r'+json_image['id']+":"+json_image['progress'], end='')
+                print('\r'+json_image['id']+":"+json_image['progress'], end=" ")
             if 'status' in json_image.keys() and "Downloaded" in json_image['status']:
                 print("\n"+json_image['status'])
     else:

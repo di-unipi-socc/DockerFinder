@@ -11,3 +11,8 @@ services:
 
   mongo:
     image: mongo:3
+
+networks:
+  default:
+    external:
+      name: dofinder-network
