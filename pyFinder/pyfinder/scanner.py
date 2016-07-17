@@ -12,27 +12,39 @@ import pika
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_api="127.0.0.1:8000/api/images"):
+    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images"):
+
         # path of the file containing the command of versions
         self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
+
         # sets the docker host from your environment variables
+        # environment-file: key=value
+
+        #f = docker.utils.kwargs_from_env(assert_hostname=False)
+        #-v / var / run / docker.sock: / var / run / dockerhost / docker.sock
         self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+        #self.client = docker.Client(base_url='unix://var/run/docker.sock')#**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
-        self.host_rabbit = host_rabbit;
-        self.port_rabbit = port_rabbit;
-        #self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
-        #self.channel = self.connection.channel()
+        self.host_rabbit = host_rabbit
+        self.port_rabbit = port_rabbit
+        # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
+        # self.channel = self.connection.channel()
 
         # the clientApi talks with the server api in order to post the image description
-        self.client_api = ClientApi(url_api=url_api)
+        self.client_api = ClientApi(url_api=url_imagesservice)
+
         # the clienthub interacts with the dockerHub registry
         self.clientHub = ClientHub()
 
     def run(self, rabbit_queue="dofinder"):
-
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
-        self.channel = self.connection.channel()
+        print("[scanner] connecting to " + self.host_rabbit + ":" + str(self.port_rabbit) + "...")
+        try:
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
+            self.channel = self.connection.channel()
+        except pika.exceptions.ConnectionClosed as e:
+            print("[scanner] error:" + str(e))
+            return
 
         # TODO: rabbitQm server can be down. check and retry on orde to connect
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
@@ -41,6 +53,7 @@ class Scanner:
             repo_name = body.decode()
             print("[scanner] Received " + repo_name)
             if self.client_api.is_new(repo_name):           # the image is totally new
+
                 dict_image = self.scan(repo_name)
                 self.client_api.post_image(dict_image)      # POST the description of the image
                 print("[" + repo_name + "] scan uploaded")

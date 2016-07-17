@@ -1,0 +1,53 @@
+version: "2"
+services:
+  #run -d --hostname my-rabbit --name rabbitMq -p 8081:15672 --net core-net rabbitmq:3-management
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    restart: always
+    container_name: rabbit_mq
+    ports:
+      - 8081:15672
+    networks:
+      - pyfinder_back-tier
+
+
+  crawler:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_crawler
+    image: dofinder/crawler:latest
+    container_name: crawler
+    volumes:
+      - .:/code
+    depends_on:
+     - rabbitmq
+    #links:
+    # - rabbitmq
+    networks:
+      - pyfinder_back-tier
+
+  scanner:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_scanner
+    image: dofinder/scanner:latest
+    container_name: scanner
+    volumes:
+      - .:/code
+    depends_on:
+     - rabbitmq
+     - crawler
+    #links:
+    # - rabbitmq
+    networks:
+      - pyfinder_back-tier
+      - core-net
+
+networks:
+  pyfinder_back-tier:
+    driver: bridge
+  core-net:
+    external: true
+    #driver: bridge
+    #external: true

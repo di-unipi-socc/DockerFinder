@@ -1,9 +1,13 @@
 import unittest
-from .context import  pyfinder
+from pyfinder import ClientApi
 
 
-class ClientApiTestCase(unittest.TestCase):
-    "tests  for `client_api.py`"
+class TestClientApi(unittest.TestCase):
 
-    def test_pull(self):
-       pass
+    def setUp(self):
+        self.client_api = ClientApi(url_api="http://127.0.0.1:3000/api/images/") ##;url_api="127.0.0.1:3000/api/images/")
+
+    def test_is_new(self):
+        f = self.client_api.is_new('repo/nonesiste')
+        self.assertTrue(f)
+

@@ -14,6 +14,7 @@ services:
      - images_db
     networks:
       - back-tier
+      - core-net
 
   images_db:
     image: mongo:3
@@ -26,3 +27,5 @@ services:
 networks:
   back-tier:
     driver: bridge
+  core-net:
+    external: true

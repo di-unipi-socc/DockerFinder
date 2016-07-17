@@ -1,8 +1,7 @@
-
 import requests
 import json
 import sys
-from .utils import  *
+from .utils import *
 
 # if r.status_code == requests.codes.ok:
 
@@ -74,8 +73,6 @@ class ClientApi:
             else:
                 raise Exception(" _id not found in "+repo_name)
 
-
-
     def get_image(self, repo_name):
         url = self.url_api + "?repo_name=" + repo_name
         try:
@@ -93,6 +90,7 @@ class ClientApi:
             print("ConnectionError: " + str(e))
 
     def is_new(self, repo_name):
+        print( " veryfind that is new the repo"+repo_name)
         return False if self.get_image(repo_name) else True
 
     def must_scanned(self, repo_name, tag="latest"):

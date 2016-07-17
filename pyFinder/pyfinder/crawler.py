@@ -5,19 +5,31 @@ import pika
 import json
 
 class Crawler:
-    def __init__(self, port=5672, rabbit_host='172.17.0.3'):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=port))
-        self.channel = self.connection.channel()
-        self.client_hub = ClientHub();
 
+    def __init__(self, port_rabbit=5672, host_rabbit='127.0.0.1'):
+        #self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host_rabbit, port=port_rabbit))
+        #self.channel = self.connection.channel()
+        self.host_rabbit = host_rabbit
+        self.port_rabbit = port_rabbit
+        self.client_hub = ClientHub()
 
     def crawl(self, max_images=100, page_size=10, from_page=1):
+        print("[crawler] connecting to " + self.host_rabbit+":"+str(self.port_rabbit)+"...")
+
+        #try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
+        self.channel = connection.channel()
+        #except pika.exceptions.ConnectionClosed as e:
+        #    print("[crawler] error:" + str(e))
+        #    return
+
+
         print("Crawling the images from the docker Hub...")
         crawled_image, saved_images = 0, 0
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images):
             for image in list_images:
                 crawled_image += 1
-                print("############" +image['repo_name'] +"#################")
+                #print(image['repo_name'] )
                 list_tags = self.client_hub.get_all_tags(image['repo_name'])
                 print("[ " + image['repo_name'] + " ] found tags " + str(len(list_tags)))
                 print(list_tags)
@@ -26,14 +38,14 @@ class Crawler:
                     saved_images += 1
 
                     # send into rabbitMQ server
-                    self.send_to_rabbit(image['repo_name'])#json.dumps(image, sort_keys=True, indent=4))
+                    self.send_to_rabbit(image['repo_name']) #json.dumps(image, sort_keys=True, indent=4))
                     print("[" + image['repo_name'] + "] sent to the rabbit channel")
 
             print("\n {0} numbers of images crawled : {1}".format("[scanner]", str(crawled_image)))
             print(" {0} number of images sent to scanners: {1}\n".format("[scanner]", str(saved_images)))
 
         #close the connectino with rabbitMQ server
-        self.connection.close()
+        connection.close()
         print("\n[scanner] closed connection of rabbitMq channel ")
 
     def send_to_rabbit(self, msg, rabbit_queue="dofinder"):

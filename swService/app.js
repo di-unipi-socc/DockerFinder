@@ -12,7 +12,8 @@ var bodyParser = require('body-parser');
 var app = express();
 
 app.set('port', process.env.PORT || 3001);
-app.set('db_path', 'mongo');
+//app.set('db_path', 'mongo');sw_mongo
+app.set('db_path', 'sw_mongo')
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -23,7 +24,7 @@ app.use(methodOverride());
 
 var env = process.env.NODE_ENV || 'development';
 //table name of the mongo database
-var table ="/software"
+var table ="/software";
 //###################################################################################
 //                                 ROUTES
 // ################################################################################
