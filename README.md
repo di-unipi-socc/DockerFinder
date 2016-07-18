@@ -50,8 +50,26 @@ In order to collect the description from the images, i have found a
 
 
 
+
 ### Docker crawler
 The *crawler* is a python class that crawl from the docker Hub all the images name.
+
+
+<div style="text-align:center">
+<img src="https://cloud.githubusercontent.com/assets/9201530/15286937/e62ac2a6-1b5f-11e6-97d4-9a01d5d135ac.png" width="500">
+</div>
+  
+## RabbitMQ server 
+The rabbit MQ runs in a docker container.
+
+
+```
+docker run -d --hostname my-rabbit --name rabbitMq -p 8081:15672 --net core-net rabbitmq:3-management
+```
+
+- *--hostname* my-rabbit: is the hostname of the node running the rabbitMQ:
+         connect to then node: rabbit@my-rabbit
+- *--name* some-rabbit : is only the name of the container
 
 - *client_dockerhub.py* is the module that parforms the requests to the docker hub.
 - The crawler is a *rabbotMQ* client. It sends into the channel the  name of th eimages found.

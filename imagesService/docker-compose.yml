@@ -1,0 +1,32 @@
+version: '2'
+services:
+  images:
+    build: .
+    image: dofinder/imageserver:latest
+    container_name: images_server
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/code
+    depends_on:
+     - images_db
+    links:
+     - images_db
+    networks:
+      #- back-tier
+      - core-net
+
+  images_db:
+    image: mongo:3
+    container_name: images_mongo
+    volumes:
+      - /data/pyfinder:/data/db
+    networks:
+      - core-net
+      #- back-tier
+
+networks:
+#  back-tier:
+#    driver: bridge
+  core-net:
+    external: true

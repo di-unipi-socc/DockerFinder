@@ -1,0 +1,19 @@
+FROM python:3.4-alpine
+
+RUN mkdir /code
+
+WORKDIR /code
+
+ADD  requirements.txt /code/
+ADD . /code/
+
+RUN pip install  --upgrade pip
+RUN pip install -r requirements.txt
+
+#install pyfinder module in the container
+RUN python setup.py install
+
+COPY ./start_crawler.py /code
+ENTRYPOINT ["python","/code/start_crawler.py" ]
+# CMD ["--help"]
+CMD ["crawl"]

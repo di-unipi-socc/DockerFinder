@@ -1,0 +1,25 @@
+version: '2'
+services:
+  sw:
+    build: .
+    container_name: sw_server
+    image: dofinder/swserver:latest
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/code
+    depends_on:
+     - sw_mongo
+    links:
+     - sw_mongo         # it is resolved by internal DNS, must be set in the server express config
+    networks:
+     - sw-back-tier
+
+  sw_mongo:
+    image: mongo:3
+    container_name: sw_mongo
+    volumes:
+     - /data/dofinder/sw:/data/db
+    networks:
+     - sw-back-tier
+

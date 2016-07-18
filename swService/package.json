@@ -1,0 +1,22 @@
+{
+  "name": "swmanager",
+  "version": "0.0.0",
+  "description": "Software manager service",
+  "author": "Davide Neri",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "morgan": "~1.7.0",
+    "mongoose": "^4.5.0",
+    "node-restful": "^0.2.5",
+    "method-override": "2.3.3"
+
+  }
+}
