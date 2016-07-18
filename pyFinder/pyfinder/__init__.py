@@ -6,3 +6,6 @@ from . container import Container
 from .utils import pull_image
 
 __all__ = [Scanner, Crawler, ClientApi, ClientHub]
+
+
+__LOGNAME__ = "dofinder.log"

@@ -5,11 +5,14 @@ services:
     image: rabbitmq:3-management
     hostname: rabbitmq
     restart: always
-    container_name: rabbit_mq
+    container_name: rabbitmq
     ports:
       - 8081:15672
     networks:
-      - pyfinder_back-tier
+      - core-net
+    #volumes:
+    # # - /opt/Data/Rabbitmq:/var/lib/rabbitmq
+    #  #- pyfinder_back-tier
 
 
   crawler:
@@ -25,28 +28,29 @@ services:
     #links:
     # - rabbitmq
     networks:
-      - pyfinder_back-tier
-
-  scanner:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_scanner
-    image: dofinder/scanner:latest
-    container_name: scanner
-    volumes:
-      - .:/code
-    depends_on:
-     - rabbitmq
-     - crawler
-    #links:
-    # - rabbitmq
-    networks:
-      - pyfinder_back-tier
       - core-net
+      #- pyfinder_back-tier
+#
+#  scanner:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile_scanner
+#    image: dofinder/scanner:latest
+#    container_name: scanner
+#    volumes:
+#      - .:/code
+#    depends_on:
+#     - rabbitmq
+#     - crawler
+#    #links:
+#    # - rabbitmq
+#    networks:
+#      - pyfinder_back-tier
+#      - core-net
 
 networks:
-  pyfinder_back-tier:
-    driver: bridge
+#  pyfinder_back-tier:
+#    driver: bridge
   core-net:
     external: true
     #driver: bridge

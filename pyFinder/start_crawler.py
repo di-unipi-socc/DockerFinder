@@ -23,7 +23,7 @@ Options:
 """
 
 if __name__ == '__main__':
-    time.sleep(5)
+    time.sleep(10)
     print("waited 5 sec::")
     crawler = Crawler(host_rabbit="rabbitmq")
     args = docopt(__doc__, version='Crawler 0.0.1')

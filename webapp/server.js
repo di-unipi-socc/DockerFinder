@@ -51,7 +51,7 @@ app.get('/api/search', function (req, res) {
 
     var reqApi = http.request({
             //host: '127.0.0.1',
-            host: 'api_images_1',
+            host: 'images_server',
             path: '/search' + req._parsedUrl.search,
             //since we are listening on a custom port, we need to specify it by hand
             port: '8000',

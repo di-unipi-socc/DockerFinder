@@ -1,4 +1,5 @@
 import docker
+import pyfinder
 import re
 import yaml
 import os
@@ -9,6 +10,7 @@ from .utils import *
 from .client_api import  ClientApi
 from .client_dockerhub import ClientHub
 import pika
+import logging
 
 class Scanner:
 
@@ -22,7 +24,7 @@ class Scanner:
 
         #f = docker.utils.kwargs_from_env(assert_hostname=False)
         #-v / var / run / docker.sock: / var / run / dockerhost / docker.sock
-        self.client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+        self.client = docker.Client(base_url='unix://var/run/docker.sock')
         #self.client = docker.Client(base_url='unix://var/run/docker.sock')#**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
@@ -37,44 +39,55 @@ class Scanner:
         # the clienthub interacts with the dockerHub registry
         self.clientHub = ClientHub()
 
+        # logging
+        # self.lgr = logging.getLogger(pyfinder.__LOGNAME__)
+
     def run(self, rabbit_queue="dofinder"):
+
         print("[scanner] connecting to " + self.host_rabbit + ":" + str(self.port_rabbit) + "...")
         try:
-            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit,
+                                                                                port=self.port_rabbit))
             self.channel = self.connection.channel()
         except pika.exceptions.ConnectionClosed as e:
+            self.channel.close()
             print("[scanner] error:" + str(e))
             return
 
         # TODO: rabbitQm server can be down. check and retry on orde to connect
         self.channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
+        print('[scanner] Waiting for messages. To exit press CTRL+C')
 
         def on_message(ch, method, properties, body):
             repo_name = body.decode()
             print("[scanner] Received " + repo_name)
-            if self.client_api.is_new(repo_name):           # the image is totally new
-
-                dict_image = self.scan(repo_name)
-                self.client_api.post_image(dict_image)      # POST the description of the image
-                print("[" + repo_name + "] scan uploaded")
-            elif self.client_api.must_scanned(repo_name):   # the image must be scan again
-                dict_image = self.scan(repo_name)
-                self.client_api.put_image(dict_image)       # PUT the new image description of the image
-                print("[" + repo_name + "] scan refresh uploaded")
-            else:
-                print("["+repo_name+"] scan already up to date.")
-
-            # aknowledgment of finish the scanning to the rabbitMQ server
+            self.process_repo_name(repo_name)
+            # aknowledgment to the rabbitMQ server
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
+        # tell to rabbitMQ not to give moe than one message to a worker at a time
+        # OR BETTER don't dispatch a new message to a worker until it has processed and acknowledged the previous one
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(on_message, queue=rabbit_queue, no_ack=True)
-        print(' [scanner] Waiting for messages. To exit press CTRL+C')
+        self.channel.basic_consume(on_message, queue=rabbit_queue)
+
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
             self.channel.stop_consuming()
         self.channel.close()
+
+    def process_repo_name(self, repo_name):
+
+        if self.client_api.is_new(repo_name):       # the image is totally new
+            dict_image = self.scan(repo_name)
+            self.client_api.post_image(dict_image)  # POST the description of the image
+            print("[" + repo_name + "] scan uploaded the new image")
+        elif self.client_api.must_scanned(repo_name):  # the image must be scan again
+            dict_image = self.scan(repo_name)
+            self.client_api.put_image(dict_image)  # PUT the new image description of the image
+            print("[" + repo_name + "] scan updated the image")
+        else:
+            print("[" + repo_name + "] scan already up to date.")
 
     def scan(self, repo_name, tag="latest", rmi=False):
         """
@@ -83,6 +96,7 @@ class Scanner:
         :param rmi:
         :return: a dictionary with the description of the image identified by repo_name.
         """
+
         pull_image(repo_name, tag)
 
         dict_image = {}
@@ -120,9 +134,12 @@ class Scanner:
 
         json_response = self.clientHub.get_json_repo(repo_name)
 
-        dict_image['description'] = json_response['description']
-        dict_image['star_count'] = json_response['star_count']
-        dict_image['pull_count'] = json_response['pull_count']
+        if 'description' in json_response:
+            dict_image['description'] = json_response['description']
+        if 'star_count' in json_response:
+            dict_image['star_count'] = json_response['star_count']
+        if 'pull_count' in json_response:
+            dict_image['pull_count'] = json_response['pull_count']
 
 
         # TODO : here must be included the tags lists of the image
@@ -130,8 +147,10 @@ class Scanner:
 
         json_response = self.clientHub.get_json_tag(repo_name, tag="latest")
 
-        dict_image['last_updated'] = json_response['last_updated']
-        dict_image['full_size'] =json_response['full_size']
+        if 'last_updated' in json_response:
+            dict_image['last_updated'] = json_response['last_updated']
+        if 'full_size' in json_response:
+            dict_image['full_size'] =json_response['full_size']
 
     def info_dofinder(self, repo_name, dict_image):
 

@@ -13,7 +13,7 @@ services:
     links:
      - images_db
     networks:
-      - back-tier
+      #- back-tier
       - core-net
 
   images_db:
@@ -22,10 +22,11 @@ services:
     volumes:
       - /data/pyfinder:/data/db
     networks:
-      - back-tier
+      - core-net
+      #- back-tier
 
 networks:
-  back-tier:
-    driver: bridge
+#  back-tier:
+#    driver: bridge
   core-net:
     external: true
