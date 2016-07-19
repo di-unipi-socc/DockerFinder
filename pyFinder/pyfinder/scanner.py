@@ -7,7 +7,7 @@ import datetime
 import time
 from .container import Container
 from .utils import *
-from .client_api import  ClientApi
+from .client_imagessrvice import  ClientApi
 from .client_dockerhub import ClientHub
 import pika
 import logging
@@ -198,3 +198,9 @@ class Scanner:
         for app in apps:
             yield app["name"], app["ver"], app["re"]
 
+    def pull_officials(self):
+        # TODO excpetion raise for the connection to docke hub
+        # download all the official library
+        images_libraries =self.clientHub.crawl_official_images()
+        for image in images_libraries:
+            pull_image(image)

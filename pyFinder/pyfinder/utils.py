@@ -8,7 +8,8 @@ import time
 
 def pull_image(repo_name, tag="latest"):
     # sets the docker host from your environment variables
-    client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+    #client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+    client = docker.Client(base_url='unix://var/run/docker.sock')
     # try to set image
     if not repo_name:
         ims = client.images()

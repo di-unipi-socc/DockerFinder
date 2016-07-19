@@ -1,5 +1,6 @@
 from pyfinder import ClientHub
 import unittest
+import requests
 
 class TestClientHub(unittest.TestCase):
 
@@ -34,3 +35,10 @@ class TestClientHub(unittest.TestCase):
     def test_count_all_images(self):
         count = self.cHub.count_all_images()
         self.assertGreater(count, 323650)   # 9 Luglio 2016
+
+    def test_crawl_official(self):
+        json = self.cHub.get_dockerhub("/v2/repositories/library")
+        count = json['count']
+        list_images = self.cHub.crawl_official_images()
+        self.assertEqual(count, len(list_images))
+

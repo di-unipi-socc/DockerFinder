@@ -124,3 +124,43 @@ class ClientHub:
                 return
         except requests.exceptions.ConnectionError as e:
             print("ConnectionError: " + str(e))
+
+    def crawl_official_images(self):
+        #https://hub.docker.com/v2/repositories/library
+        url_repositories = self.docker_hub + "/v2/repositories/library?"
+        params = (('page', 1), ('page_size', 100))
+        url_encode = urllib.parse.urlencode(params)
+        count = 0
+        try:
+            res = self.session.get(url_repositories+url_encode)
+            if res.status_code == requests.codes.ok:
+                json_response = res.json()
+                list_images =[res['user']+"/"+res['name'] for res in json_response['results']]
+                count += json_response['count']
+                next_page = json_response['next']
+                while next_page:
+                    res = self.session.get(next_page)
+                    json_response = res.json()
+                    list_images += [res['user']+"/"+res['name'] for res in json_response['results']]
+                    next_page = json_response['next']
+                return list_images
+            else:
+                print(str(res.status_code) + " error response: " + res.text)
+                return []
+        except requests.exceptions.ConnectionError as e:
+            print("ConnectionError: " + str(e))
+
+
+    def get_dockerhub(self, path_url):
+        url_repositories = self.docker_hub + path_url
+        res =self.session.get(url_repositories)
+        try:
+            if res.status_code == requests.codes.ok:
+                json_response = res.json()
+                return json_response
+            else:
+                print(str(res.status_code) + "error response: " + res.text)
+                return []
+        except requests.exceptions.ConnectionError as e:
+             print("ConnectionError: " + str(e))
+

@@ -56,3 +56,4 @@ class Crawler:
                                             delivery_mode=2,       #make message persistent save the message to disk
                                     ))
 
+

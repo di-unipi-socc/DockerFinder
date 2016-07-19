@@ -7,6 +7,8 @@ __doc__= """Crawler
 
 Usage:
   entryScanner.py crawl  [--rmq=<127.0.0.1>] [--queue=<dofinder>] [--fp=<1>] [--ps=<10>]  [--mi=<100>]
+  entryScanner.py build test
+  entryScanner.py run test
   entryScanner.py (-h | --help)
   entryScanner.py --version
 

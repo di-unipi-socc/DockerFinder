@@ -1,13 +1,13 @@
 import unittest
 from pyfinder import Scanner
 
-class TestCScanner(unittest.TestCase):
+class TestScanner(unittest.TestCase):
 
 
     def setUp(self):
         self.scanner = Scanner(versions_cmd="../res/versions.yml")
 
 
-    def test_scarn(self):
-         dict = self.scanner.scan('ianbr/ebase-data')
+    def test_scan(self):
+         dict = self.scanner.scan('mongo-express')
 
