@@ -7,7 +7,7 @@ WORKDIR /code
 
 # Install app dependencies
 COPY package.json /code
-RUN npm install
+RUN npm install --save
 
 # Bundle app source
 #COPY . /usr/src/imagesServer

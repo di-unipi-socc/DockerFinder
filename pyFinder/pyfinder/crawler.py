@@ -17,7 +17,7 @@ class Crawler:
 
 
     def crawl(self, max_images=100, page_size=10, from_page=1):
-        print("[crawler] connecting to " + self.host_rabbit+":"+str(self.port_rabbit)+"...")
+        print("[crawler] connecting to " + self.host_rabbit+":"+str(self.port_rabbit)+" queue:"+self.queue_rabbit+"...")
 
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit, port=self.port_rabbit))
         self.channel = connection.channel()

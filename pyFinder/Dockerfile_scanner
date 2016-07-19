@@ -19,8 +19,8 @@ RUN pip install -r requirements.txt
 #ADD setup.py /code
 RUN python setup.py install
 
-#COPY ./start_scanner.py /code
-ENTRYPOINT ["python","/code/start_scanner.py"]
+#COPY ./entryScanner.py /code
+ENTRYPOINT ["python","/code/entryScanner.py"]
 CMD ["--help"]
 
 #CMD ["run"]

@@ -4,12 +4,12 @@ import time
 __doc__= """Scanner.
 
 Usage:
-  start_scanner.py run
-  start_scanner.py scan <name>  [--tag=<latest>]
-  start_scanner.py process <shoot>
-  start_scanner.py mine (set|remove) <x> <y> [--moored | --drifting]
-  start_scanner.py (-h | --help)
-  start_scanner.py --version
+  entryScanner.py run
+  entryScanner.py scan <name>  [--tag=<latest>]
+  entryScanner.py process <shoot>
+  entryScanner.py mine (set|remove) <x> <y> [--moored | --drifting]
+  entryScanner.py (-h | --help)
+  entryScanner.py --version
 
 Options:
   -h --help     Show this screen.

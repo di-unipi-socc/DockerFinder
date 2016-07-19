@@ -13,7 +13,6 @@ RUN pip install -r requirements.txt
 #install pyfinder module in the container
 RUN python setup.py install
 
-COPY ./start_crawler.py /code
-ENTRYPOINT ["python","/code/start_crawler.py" ]
-# CMD ["--help"]
-CMD ["crawl"]
+COPY ./entryCrawler.py /code
+ENTRYPOINT ["python","/code/entryCrawler.py" ]
+CMD ["--help"]
