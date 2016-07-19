@@ -12,7 +12,10 @@ class ClientSoftware(requests.Session):
              ("python2", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
              ("java", "-version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
              ("curl", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-             ("nano", "-version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'))
+             ("nano", "-version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
+             ("node", "--version", '[0-9]\.[0-9](\.[0-9])*[^\s]*'),
+             ("ruby", "--version",'[0-9]\.[0-9](\.[0-9])*[^\s]*'),
+             ("perl", "-version",'[0-9]\.[0-9](\.[0-9])'))
         for l in d:
             yield l[0], l[1], l[2]
 
