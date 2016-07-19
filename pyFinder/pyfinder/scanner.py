@@ -210,7 +210,7 @@ class Scanner:
 
         for image in images_libraries:
             try:
-                self.client_daemon.gpull_image(image)
+                self.client_daemon.pull_image(image)
             except docker.errors.APIError:
                 print("[scanner] erro in pulling "+ image)
                 pass
