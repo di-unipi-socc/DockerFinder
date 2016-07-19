@@ -70,19 +70,22 @@ class Crawler:
                                     ))
 
     def build_test(self, num_images_test=100):
+        list_image = self.get_test_image(num_images_test)
+        for image in list_image:
+            self.send_to_rabbit(image)
 
+    def get_test_image(self, num_images_test=100):
         images_for_test = []
-
-        while len(images_for_test) < num_images_test:
-                for list_images in self.client_hub.crawl_images():
-                        for image in list_images:
-                            list_tags = self.client_hub.get_all_tags(image['repo_name'])
-                            if list_tags and 'latest' in list_tags and len(images_for_test) < num_images_test:  # only the images that  contains "latest" tag
-                                print("[" + image['repo_name'] + "] crawled from docker Hub")
-                                images_for_test.append(image['repo_name'])
-                        if len(images_for_test) == num_images_test:
-                            self.dump_images(images_for_test)
-                            return images_for_test
+        for list_images in self.client_hub.crawl_images():
+            for image in list_images:
+                list_tags = self.client_hub.get_all_tags(image['repo_name'])
+                if list_tags and 'latest' in list_tags and len(
+                        images_for_test) < num_images_test:  # only the images that  contains "latest" tag
+                    print("[" + image['repo_name'] + "] crawled from docker Hub")
+                    images_for_test.append(image['repo_name'])
+            if len(images_for_test) == num_images_test:
+                self.dump_images(images_for_test)
+                return images_for_test
 
 
     def dump_images(self, list_images):
