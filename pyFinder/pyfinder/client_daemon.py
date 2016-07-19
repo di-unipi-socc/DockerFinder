@@ -10,7 +10,7 @@ class ClientDaemon(docker.Client):
         #base_url = None, version = None,
         #timeout = constants.DEFAULT_TIMEOUT_SECONDS, tls = False
         # client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
-        # self.client = docker.Client(base_url='unix://var/run/docker.sock')
+        # client = docker.Client(base_url='unix://var/run/docker.sock')
 
     def pull_image(self, repo_name, tag="latest"):
         # try to set image
