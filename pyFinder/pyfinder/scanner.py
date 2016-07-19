@@ -1,5 +1,4 @@
 import docker
-import pyfinder
 import re
 import yaml
 import os
@@ -7,7 +6,8 @@ import datetime
 import time
 from .container import Container
 from .utils import *
-from .client_imagessrvice import  ClientApi
+from .client_images_service import ClientImages
+from .client_daemon import ClientDaemon
 from .client_dockerhub import ClientHub
 import pika
 import logging
@@ -24,7 +24,8 @@ class Scanner:
 
         #f = docker.utils.kwargs_from_env(assert_hostname=False)
         #-v / var / run / docker.sock: / var / run / dockerhost / docker.sock
-        self.client = docker.Client(base_url='unix://var/run/docker.sock')
+        self.client_daemon = ClientDaemon()
+        #docker.Client(base_url='unix://var/run/docker.sock')
         #self.client = docker.Client(base_url='unix://var/run/docker.sock')#**docker.utils.kwargs_from_env(assert_hostname=False))
 
         # RabbitQm connection
@@ -34,10 +35,10 @@ class Scanner:
         # self.channel = self.connection.channel()
 
         # the clientApi talks with the server api in order to post the image description
-        self.client_api = ClientApi(url_api=url_imagesservice)
+        self.client_images = ClientImages(url_api=url_imagesservice)
 
         # the clienthub interacts with the dockerHub registry
-        self.clientHub = ClientHub()
+        self.client_hub = ClientHub()
 
         # logging
         # self.lgr = logging.getLogger(pyfinder.__LOGNAME__)
@@ -47,7 +48,7 @@ class Scanner:
         print("[scanner] connecting to " + self.host_rabbit + ":" + str(self.port_rabbit) + "...")
         try:
             self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host_rabbit,
-                                                                                port=self.port_rabbit))
+                                                                                 port=self.port_rabbit))
             self.channel = self.connection.channel()
         except pika.exceptions.ConnectionClosed as e:
             self.channel.close()
@@ -78,13 +79,13 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
 
-        if self.client_api.is_new(repo_name):       # the image is totally new
+        if self.client_images.is_new(repo_name):       # the image is totally new
             dict_image = self.scan(repo_name)
-            self.client_api.post_image(dict_image)  # POST the description of the image
+            self.client_images.post_image(dict_image)  # POST the description of the image
             print("[" + repo_name + "] scan uploaded the new image")
-        elif self.client_api.must_scanned(repo_name):  # the image must be scan again
+        elif self.client_images.must_scanned(repo_name):  # the image must be scan again
             dict_image = self.scan(repo_name)
-            self.client_api.put_image(dict_image)  # PUT the new image description of the image
+            self.client_images.put_image(dict_image)  # PUT the new image description of the image
             print("[" + repo_name + "] scan updated the image")
         else:
             print("[" + repo_name + "] scan already up to date.")
@@ -119,7 +120,7 @@ class Scanner:
          docker inspect IMAGE
         """
         print('[{}] docker inspect ... '.format(repo_name))
-        dict_inspect = self.client.inspect_image(repo_name)
+        dict_inspect = self.client_daemon.inspect_image(repo_name)
         #dict_image['size'] = dict_inspect['Size']
 
 
@@ -132,7 +133,7 @@ class Scanner:
         """
         print('[{}] adding Docker Hub info ... '.format(repo_name))
 
-        json_response = self.clientHub.get_json_repo(repo_name)
+        json_response = self.client_hub.get_json_repo(repo_name)
 
         if 'description' in json_response:
             dict_image['description'] = json_response['description']
@@ -145,7 +146,7 @@ class Scanner:
         # TODO : here must be included the tags lists of the image
         #josn_reposnse = slef.clientHub.get_all_tags(repo_name)
 
-        json_response = self.clientHub.get_json_tag(repo_name, tag="latest")
+        json_response = self.client_hub.get_json_tag(repo_name, tag="latest")
 
         if 'last_updated' in json_response:
             dict_image['last_updated'] = json_response['last_updated']
@@ -201,6 +202,6 @@ class Scanner:
     def pull_officials(self):
         # TODO excpetion raise for the connection to docke hub
         # download all the official library
-        images_libraries =self.clientHub.crawl_official_images()
+        images_libraries =self.client_hub.crawl_official_images()
         for image in images_libraries:
             pull_image(image)

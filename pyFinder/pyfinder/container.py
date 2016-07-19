@@ -1,7 +1,10 @@
 import docker
 
+from .client_daemon import ClientDaemon
 # sets the docker host from your environment variables
-client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+#client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
+
+client = ClientDaemon(base_url='unix://var/run/docker.sock')
 
 
 class Container:
@@ -11,6 +14,7 @@ class Container:
     """
 
     def __init__(self, image, memory_limit_gb=4, stderr=True, stdout=True, volumes=[], cleanup=False, environment=[]):
+
         self.image = image
         self.memory_limit_bytes = int(memory_limit_gb * 1e9)
         self.stderr = stderr
@@ -53,6 +57,7 @@ class Container:
         list_of_dict_status = client.containers(filters={'id': self.container_id})
         if not list_of_dict_status or list_of_dict_status[0]['State'] is not 'running':
             client.start(self.container_id)
+
         exec_id = client.exec_create(
                     container=self.container_id,
                     cmd=command,

@@ -11,7 +11,7 @@ from .utils import *
 # r = requests.head(url=url)
 # r.links["next"]
 
-class ClientApi:
+class ClientImages:
 
     def __init__(self, url_api="127.0.0.1:3000/api/images/"):
         # self.connection = http.client.HTTPConnection(host_api, port_api)
