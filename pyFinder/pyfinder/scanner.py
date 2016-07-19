@@ -204,13 +204,13 @@ class Scanner:
             yield app["name"], app["ver"], app["re"]
 
     def pull_officials(self):
-        # TODO excpetion raise for the connection to docke hub
+        # TODO excpetion raise for the connection to docker hub
         # download all the official library
         images_libraries = self.client_hub.crawl_official_images()
 
         for image in images_libraries:
             try:
-                self.client_daemon.client.pull_image(image)
+                self.client_daemon.gpull_image(image)
             except docker.errors.APIError:
                 print("[scanner] erro in pulling "+ image)
                 pass
