@@ -25,6 +25,10 @@ class TestClientHub(unittest.TestCase):
             num_images += len(list_images)
         self.assertEquals(max_images, num_images)
 
+    def test_json_tag(self):
+        json_response = self.cHub.get_json_tag("library/nginx", tag="latest")
+        self.assertEqual(json_response['name'], 'latest')
+
     def test_get_repo(self):
         json_image= self.cHub.get_json_repo("library/java")
         self.assertEquals(json_image['name'], 'java')

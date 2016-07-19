@@ -4,7 +4,7 @@ from .client_images_service import ClientImages
 from .client_daemon import ClientDaemon
 from .client_dockerhub import ClientHub
 from . container import Container
-from .utils import pull_image
+from .client_sw_service import ClientSoftware
 
 __all__ = [Scanner, Crawler, ClientImages, ClientDaemon, ClientHub]
 

@@ -9,6 +9,7 @@ from .utils import *
 from .client_images_service import ClientImages
 from .client_daemon import ClientDaemon
 from .client_dockerhub import ClientHub
+from .client_sw_service import ClientSoftware
 import pika
 import logging
 
@@ -17,7 +18,9 @@ class Scanner:
     def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images"):
 
         # path of the file containing the command of versions
-        self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
+        #self.versionCommands = yaml.load(open(os.path.dirname(__file__) + versions_cmd))
+        #self.versionCommands = yaml.load(versions_cmd)
+        self.client_software = ClientSoftware() #.get_software()
 
         # sets the docker host from your environment variables
         # environment-file: key=value
@@ -97,8 +100,8 @@ class Scanner:
         :param rmi:
         :return: a dictionary with the description of the image identified by repo_name.
         """
-
-        pull_image(repo_name, tag)
+        self.client_daemon.pull_image(repo_name, tag)
+        #pull_image(repo_name, tag)
 
         dict_image = {}
         print('Scanning [{0}]'.format(repo_name))
@@ -112,7 +115,7 @@ class Scanner:
         print('[{0}] finish scanning'.format(repo_name))
         dict_image['last_scan'] = str(datetime.datetime.now())
         if rmi:
-            remove_image(repo_name, force=True)
+            self.client_daemon.remove_image(repo_name, force=True)
         return dict_image
 
     def info_inspect(self, repo_name, dict_image):
@@ -146,6 +149,7 @@ class Scanner:
         # TODO : here must be included the tags lists of the image
         #josn_reposnse = slef.clientHub.get_all_tags(repo_name)
 
+        # info of only the image with the tag latest
         json_response = self.client_hub.get_json_tag(repo_name, tag="latest")
 
         if 'last_updated' in json_response:
@@ -160,7 +164,7 @@ class Scanner:
         try:
             with Container(repo_name) as c:
                 # search distribution
-                for cmd, reg in self._get_sys(self.versionCommands):
+                for cmd, reg in self.client_software.get_system():# self._get_sys(self.versionCommands):
                     output = c.run(cmd)
                     p = re.compile(reg)
                     match = p.search(output)
@@ -174,8 +178,8 @@ class Scanner:
             with Container(repo_name) as c:
                 # search binary versions
                 bins = []
-                for bin, cmd, regex in self._get_bins(self.versionCommands):
-                    #print("[{}] searching {} ".format(image, bin))
+                for bin, cmd, regex in self.client_software.get_software():#elf._get_bins(self.versionCommands):
+                    print("[{}] searching {} ".format(repo_name, bin))
                     output = c.run(bin+" "+cmd)
                     p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
                     match = p.search(output)
@@ -202,6 +206,11 @@ class Scanner:
     def pull_officials(self):
         # TODO excpetion raise for the connection to docke hub
         # download all the official library
-        images_libraries =self.client_hub.crawl_official_images()
+        images_libraries = self.client_hub.crawl_official_images()
+
         for image in images_libraries:
-            pull_image(image)
+            try:
+                self.client_daemon.client.pull_image(image)
+            except docker.errors.APIError:
+                print("[scanner] erro in pulling "+ image)
+                pass
