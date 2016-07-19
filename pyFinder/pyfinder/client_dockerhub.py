@@ -52,7 +52,7 @@ class ClientHub:
         :param page:
         :param page_size:
         :param max_images: (int) the maximun number of images crawled from the docker hub.
-         If None all the images will be crawled. Default None.
+         If None all the images will be crawled [default: None]
         :return:
         """
         url_next_page = self.build_search_url(page=page, page_size=page_size)
@@ -61,7 +61,7 @@ class ClientHub:
         crawled_images = 0
         print("[Crawler] total images to crawl: " + str(max_images))
         try:
-            while url_next_page and max_images > 0:
+            while url_next_page and max_images > 0 :
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
@@ -69,10 +69,11 @@ class ClientHub:
                     url_next_page = json_response['next']
                     page += 1
                     max_images -= len(list_json_image)
+                    yield list_json_image
                 else:
                     print(str(res.status_code) + " error response: " + res.text)
                     return []
-                yield list_json_image
+
         except requests.exceptions.ConnectionError as e:
             print("\nConnectionError: " + str(e))
         except:

@@ -7,8 +7,8 @@ __doc__= """Crawler
 
 Usage:
   entryScanner.py crawl  [--rmq=<127.0.0.1>] [--queue=<dofinder>] [--fp=<1>] [--ps=<10>]  [--mi=<100>]
-  entryScanner.py build test
-  entryScanner.py run test
+  entryScanner.py build test  [--rmq=<127.0.0.1>]  [--queue=<test>] [--ni=<10>]
+  entryScanner.py run test   [--rmq=<127.0.0.1>]  [--queue=<test>]
   entryScanner.py (-h | --help)
   entryScanner.py --version
 
@@ -19,6 +19,7 @@ Options:
   --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
   --ps=PAGE_SIZE      number of images in a single page [default: 10].
   --mi=MAX_PAGE       Max number of images to be craw from the docker hub [default: 100].
+  --ni=NUMBER_IMAGES  Number of images to crawl in order to run the test
   --version     Show version.
 """
 
@@ -29,3 +30,13 @@ if __name__ == '__main__':
     if args['crawl']:
         crawler = Crawler(host_rabbit=args['--rmq'], queue_rabbit=args['--queue'])
         crawler.crawl(max_images=int(args['--mi']), page_size=int(args['--ps']), from_page=int(args['--fp']))
+
+    if args['build'] and args['test']:
+        crawler = Crawler(host_rabbit=args['--rmq'], queue_rabbit=args['--queue'])
+        number_image = int(args['--ni'])
+        crawler.build_test(num_images_test=number_image)
+
+    if args['run'] and args['test']:
+        crawler = Crawler(host_rabbit=args['--rmq'], queue_rabbit=args['--queue'])
+        crawler.run_test()
+
