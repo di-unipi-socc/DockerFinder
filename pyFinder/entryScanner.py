@@ -4,8 +4,8 @@ import time
 __doc__= """Scanner.
 
 Usage:
-  entryScanner.py run [--rmi]  [--rmq=<127.0.0.1>] [--queue=<dofinder>]  [--hi=<rabbitmq>] [--pi=<3000>] [--ui=</api/images>]
-  entryScanner.py scan <name>  [--tag=<latest>]
+  entryScanner.py run [--rmi] [--hr=<127.0.0.1>] [--qr=<dofinder>] [--hi=<images_server>] [--pi=<3000>] [--bi=</api/images>]
+  entryScanner.py scan <name> [--tag=<latest>]
   entryScanner.py pull officials
   entryScanner.py (-h | --help)
   entryScanner.py --version
@@ -13,10 +13,10 @@ Usage:
 Options:
   -h --help             Show this screen.
   --hr=HOST_RABBIT      Host of the rabbitMQ  running server [default: 127.0.0.1]
-  --qr=QUEUE_RABBIT     Name of the queue where to get info from the rabbitMQ [default: dofinder
-  --hi=HOST_IMAGES      Host of the images service [default:rabbitmq]
-  --pi=PORT_IMAGES      Port of the images service [default:3000]
-  --bi=BASE_IMAGES      Base path of the images service. [default:/api/images]
+  --qr=QUEUE_RABBIT     Name of the queue where to get info from the rabbitMQ [default: dofinder]
+  --hi=HOST_IMAGES      Host of the images service [default: images_server]
+  --pi=PORT_IMAGES      Port of the images service [default: 3000]
+  --bi=BASE_IMAGES      Base path of the images service. [default: /api/images]
   -rmi                  Remove the images after the scan.
   --tag=TAG             TAG  of the image to scan [default: latest]
   --version             Show version.
@@ -28,9 +28,11 @@ Options:
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
     print(args)
-    scanner = Scanner(host_rabbit=args['--rmq'], queue_rabbit=args['--queue'],
-                      url_imagesservice='http://images_server:3000/api/images',
-                      rmi=args['--rmi'])
+    scanner = Scanner(host_rabbit=args['--hr'], queue_rabbit=args['--qr'],
+                      host_images=args['--hi'],
+                      port_images=args['--pi'],
+                      path_images=args['--bi'],
+                      rmi=int(args['--rmi']))
 
     if args['scan']:
         image_name = args['<name>']
