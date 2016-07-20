@@ -4,6 +4,7 @@ services:
     build: .
     image: dofinder/imageserver:latest
     container_name: images_server
+    restart: always 
     ports:
       - "3000:3000"
     volumes:
