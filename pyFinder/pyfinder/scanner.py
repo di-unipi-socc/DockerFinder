@@ -19,9 +19,12 @@ from .utils import get_logger
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images", rmi=True):
+    def __init__(self, port_rabbit=5672, host_rabbit='127.0.0.1', queue_rabbit=None,
+                 host_images='127.0.0.1', port_images="3000", path_images="/api/images", rmi=True):
 
         self.rmi = rmi  # remove an image ofter the scan
+
+        self.queue_rabbit = queue_rabbit
 
         self.logger = get_logger(__name__, logging.DEBUG)
 
@@ -36,22 +39,23 @@ class Scanner:
         # self.host_rabbit = host_rabbit
         # self.port_rabbit = port_rabbit
 
+
         # the clientApi talks with the server api in order to post the image description
-        self.client_images = ClientImages(url_api=url_imagesservice)
+        self.client_images = ClientImages(host_service=host_images, port_service=port_images, url_path=path_images)
 
         # the client hub interacts with the docker Hub registry
         self.client_hub = ClientHub()
 
-    def run(self, rabbit_queue="dofinder"):
+    def run(self):
         try:
-            self.logger.info("Connecting to " + self.parameters.host + ":" + str(self.parameters.port))
+            self.logger.info("Connecting to " + self.parameters.host + ":" + str(self.parameters.port)+" queue: "+self.queue_rabbit)
             connection = pika.BlockingConnection(self.parameters)
             channel = connection.channel()
         except pika.exceptions.ConnectionClosed :
             self.logger.exception("Connection Closed from rabbitMQ")
             return
 
-        channel.queue_declare(queue=rabbit_queue, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
+        channel.queue_declare(queue=self.queue_rabbit, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
         self.logger.info(" Waiting for messages. To exit press CTRL+C")
 
         def on_message(ch, method, properties, body):
@@ -66,7 +70,7 @@ class Scanner:
         # tell to rabbitMQ not to give moe than one message to a worker at a time
         # OR BETTER don't dispatch a new message to a worker until it has processed and acknowledged the previous one
         channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(on_message, queue=rabbit_queue)
+        channel.basic_consume(on_message, queue=self.queue_rabbit)
 
         try:
             channel.start_consuming()
