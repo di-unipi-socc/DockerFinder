@@ -81,9 +81,10 @@ class Crawler:
         self.logger.info("[" + msg + "] sent to queue: " + self.queue_rabbit)
 
     def build_test(self, num_images_test=100):
-        list_image = self.get_test_image(num_images_test)
-        for image in list_image:
-            self.send_to_rabbit(image)
+        list_images_test = self.get_test_image(num_images_test)
+        self.dump_test_images(list_images_test)
+        #for image in list_image:
+        #    self.send_to_rabbit(image)
 
     def get_test_image(self, num_images_test=100):
         images_for_test = []
@@ -95,10 +96,10 @@ class Crawler:
                     images_for_test.append(image['repo_name'])
                     self.logger.debug("[" + image['repo_name'] + "] crawled from docker Hub")
             if len(images_for_test) == num_images_test:
-                self.dump_images(images_for_test)
+                self.dump_test_images(images_for_test)
                 return images_for_test
 
-    def dump_images(self, list_images):
+    def dump_test_images(self, list_images):
         pickle.dump(list_images, open(os.path.dirname(__file__)+constants.FILE_NAME_IMAGES_TEST, "wb"))
         self.logger.debug(" {0} saved {1} images for testing in {1}".format("[crawler]",
                                                                                len(list_images),

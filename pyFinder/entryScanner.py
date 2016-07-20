@@ -27,7 +27,7 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
-    print(args)
+    # print(args)
     scanner = Scanner(host_rabbit=args['--hr'], queue_rabbit=args['--qr'],
                       host_images=args['--hi'],
                       port_images=args['--pi'],
