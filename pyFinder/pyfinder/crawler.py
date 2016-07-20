@@ -65,8 +65,8 @@ class Crawler:
                     self.send_to_rabbit(image['repo_name'])
                     self.logger.info("[" + image['repo_name'] + "] sent to the queue "+self.queue_rabbit)
 
-            self.logger.info(" {0} numbers of images crawled : {1}".format("[crawler]", str(crawled_image)))
-            self.logger.info(" {0} number of images sent to queue: {1}\n".format("[crawler]", str(saved_images)))
+            self.logger.info("Numbers of images crawled : {0}".format(str(crawled_image)))
+            self.logger.info("Number of images sent to queue: {0}\n".format(str(saved_images)))
 
         self.connection.close()
         #print("\n[crawler] closed connection of rabbitMq channel ")

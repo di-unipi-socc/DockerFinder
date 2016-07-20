@@ -21,7 +21,7 @@ class Scanner:
 
     def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images"):
 
-        self.logger = get_logger(__file__, logging.DEBUG)
+        self.logger = get_logger(__name__, logging.DEBUG)
 
         # client of software service
         self.client_software = ClientSoftware()
