@@ -1,8 +1,8 @@
 import unittest
-from pyfinder import ClientApi
+from pyfinder import ClientImages
 
 
-class TestClientApi(unittest.TestCase):
+class TestClientIamges(unittest.TestCase):
 
     def setUp(self):
         self.client_api = ClientApi(url_api="http://127.0.0.1:3000/api/images/") ##;url_api="127.0.0.1:3000/api/images/")
