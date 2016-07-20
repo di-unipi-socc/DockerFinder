@@ -40,6 +40,6 @@ class ClientDaemon(docker.Client):
 
         try:
             self.remove_image(image, force)
-            self.logger.info('[{0}] removed image'.format(image))
         except :
             e = sys.exc_info()[0]
+        self.logger.info('[{0}] removed image'.format(image))
