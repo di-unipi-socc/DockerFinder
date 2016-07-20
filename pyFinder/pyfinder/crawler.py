@@ -7,7 +7,6 @@ import json
 import pickle
 import os
 import logging
-from . import constants
 from .utils import get_logger
 
 
