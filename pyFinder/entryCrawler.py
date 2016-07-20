@@ -1,7 +1,5 @@
 from pyfinder import Crawler
 from docopt import docopt
-import time
-
 
 __doc__= """Crawler
 
@@ -24,9 +22,8 @@ Options:
 """
 
 if __name__ == '__main__':
-
     args = docopt(__doc__, version='Crawler 0.0.1')
-    print(args)
+    #print(args)
     if args['crawl']:
         crawler = Crawler(host_rabbit=args['--rmq'], queue_rabbit=args['--queue'])
         crawler.crawl(max_images=int(args['--mi']), page_size=int(args['--ps']), from_page=int(args['--fp']))
