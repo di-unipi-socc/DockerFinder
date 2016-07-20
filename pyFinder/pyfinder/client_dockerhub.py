@@ -1,6 +1,8 @@
 import requests
 import sys
 import urllib.parse
+import logging
+from .utils import get_logger
 
 
 class ClientHub:
@@ -8,6 +10,7 @@ class ClientHub:
     def __init__(self, docker_hub_endpoint="https://hub.docker.com/"):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
+        self.logger = get_logger(__name__, logging.INFO)
 
     def get_num_tags(self, repo_name):
         url_tags = self.docker_hub + "/v2/repositories/" + repo_name + "/tags/"
@@ -18,12 +21,10 @@ class ClientHub:
                 count = json_response['count']
                 return count
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
-
+            self.logger.exception("ConnectionError: ")
 
     def get_all_tags(self, repo_name):
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
-        #list_tags = []
         try:
             res = self.session.get(url_tags)
             if res.status_code == requests.codes.ok:
@@ -38,14 +39,13 @@ class ClientHub:
                     next_page = json_response['next']
                 return list_tags
             else:
-                print(str(res.status_code) +" error response: "+ res.text)
+                self.logger.error(str(res.status_code) +" error response: "+ res.text)
                 return []
 
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: ")
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            raise
+            self.logger.exception("Unexpected error:")
 
     def crawl_images(self, page=1, page_size=10, max_images=None):
         """
@@ -59,7 +59,7 @@ class ClientHub:
         count = self.count_all_images()
         max_images = count if not max_images else max_images  # download all images if max_images=None
         crawled_images = 0
-        print("[Crawler] total images to crawl: " + str(max_images))
+        self.logger.info("Total images to crawl: " + str(max_images))
         try:
             while url_next_page and max_images > 0 :
                 res = requests.get(url_next_page)
@@ -71,14 +71,13 @@ class ClientHub:
                     max_images -= len(list_json_image)
                     yield list_json_image
                 else:
-                    print(str(res.status_code) + " error response: " + res.text)
+                    self.logger.error(str(res.status_code) + " Error response: " + res.text)
                     return []
 
         except requests.exceptions.ConnectionError as e:
-            print("\nConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: ")
         except:
-            print("\nUnexpected error:", sys.exc_info()[0])
-
+            self.logger.exception("Unexpected error:")
 
     def build_search_url(self, page, page_size=10):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
@@ -95,10 +94,10 @@ class ClientHub:
                 json_response = res.json()
                 return json_response
             else:
-                print("\nerror response: "+str(res.status_code) +":" + res.text)
+                self.logger.error("Error response: "+str(res.status_code) +": " + res.text)
                 return {}
         except requests.exceptions.ConnectionError as e:
-            print("\nConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: ")
 
     def get_json_tag(self, repo_name, tag="latest"):
         url_tag = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
@@ -108,10 +107,10 @@ class ClientHub:
                 json_response = res.json()
                 return json_response
             else:
-                print(str(res.status_code) + " error response: " + res.text)
+                self.logger.error(str(res.status_code) + " error response: " + res.text)
                 return {}
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " )
 
     def count_all_images(self):
         url_hub = self.build_search_url(page_size=10, page=1)
@@ -121,10 +120,10 @@ class ClientHub:
                 json_response = res.json()
                 return json_response['count']
             else:
-                print(str(res.status_code) + " error response: " + res.text)
+                self.logger.error(str(res.status_code) + " error response: " + res.text)
                 return
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " )
 
     def crawl_official_images(self):
         #https://hub.docker.com/v2/repositories/library
@@ -146,10 +145,10 @@ class ClientHub:
                     next_page = json_response['next']
                 return list_images
             else:
-                print(str(res.status_code) + " error response: " + res.text)
+                self.logger.error(str(res.status_code) + " error response: " + res.text)
                 return []
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " + str(e))
 
 
     def get_dockerhub(self, path_url):
@@ -160,8 +159,8 @@ class ClientHub:
                 json_response = res.json()
                 return json_response
             else:
-                print(str(res.status_code) + "error response: " + res.text)
+                self.logger.error(str(res.status_code) + "error response: " + res.text)
                 return []
         except requests.exceptions.ConnectionError as e:
-             print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " + str(e))
 

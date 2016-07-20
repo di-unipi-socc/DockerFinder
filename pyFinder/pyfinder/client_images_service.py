@@ -2,19 +2,12 @@ import requests
 import json
 import sys
 from .utils import *
-
-# if r.status_code == requests.codes.ok:
-
-#Any requests that you make within a session will automatically reuse the appropriate connection!
-
-
-# r = requests.head(url=url)
-# r.links["next"]
+import logging
 
 class ClientImages:
 
     def __init__(self, url_api="127.0.0.1:3000/api/images/"):
-        # self.connection = http.client.HTTPConnection(host_api, port_api)
+        self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
         self.url_api = url_api
 
@@ -22,35 +15,31 @@ class ClientImages:
         try:
             res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                print("["+dict_image['repo_name']+"] successfully created into "+res.url)
-
+                self.logger.info("POST ["+dict_image['repo_name']+"]  into  "+res.url)
             else:
-                print(str(res.status_code)+" Error code "+res.text)
+                self.logger.error(str(res.status_code)+" response: "+res.text)
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: ")
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            raise
-        else:
-            return res.json()
+            self.logger.exception("Unexpected error:")
+        # else:
+        #     return res.json()
 
     def put_image(self, dict_image):
         try:
             id_image = self.get_id_image(dict_image['repo_name'])
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
-                print("[" + dict_image['repo_name'] + "] successfully UPDATED into server")
+                self.logger.info("UPDATED [" + dict_image['repo_name'] + "] into "+res.url)
             else:
-                print(str(res.status_code) + " Error code " + res.text)
+                self.logger.error(str(res.status_code) + " Error code " + res.text)
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
-        except Exception as e:
-            print("Exception" + str(e))
+            self.logger.exception("ConnectionError: " )
         except:
-            print("Unexpected error:", sys.exc_info()[0])
+            self.logger.exception("Unexpected error:")
             raise
-        else:
-            return res.json()
+        # else:
+        #     return res.json()
 
     def get_images(self):
         try:
@@ -58,11 +47,11 @@ class ClientImages:
             if res.status_code == requests.codes.ok:
                 return res.json()
             else:
-                print(str(res.status_code) + " Error code. " + res.text)
+                self.logger.error(str(res.status_code) + " Error code. " + res.text)
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: ")
         except:
-            print("Unexpected error:", sys.exc_info()[0])
+            self.logger.exception("Unexpected error:")
             raise
 
     def get_id_image(self, repo_name):
@@ -79,7 +68,7 @@ class ClientImages:
             res = self.session.get(url)
             return res.json()
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " )
 
     def get_scan_updated(self, repo_name):
         payload = {'repo_name': repo_name, 'select': 'last_scan last_updated'}
@@ -87,10 +76,10 @@ class ClientImages:
             res = requests.get(self.url_api, params=payload)
             return res.json()
         except requests.exceptions.ConnectionError as e:
-            print("ConnectionError: " + str(e))
+            self.logger.exception("ConnectionError: " )
 
     def is_new(self, repo_name):
-        print( " veryfind that is new the repo"+repo_name)
+        self.logger.debug("["+repo_name+"] verify if is new ")
         return False if self.get_image(repo_name) else True
 
     def must_scanned(self, repo_name, tag="latest"):
@@ -116,12 +105,10 @@ class ClientImages:
 
             # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
             if hub_last_update > dofinder_last_update:
-                #print("[" + repo_name + "] NOT need to update into doFinder, docker hub last updated is less or equal")
-                #print(hub_last_update.isoformat() + " is greater than " + dofinder_last_update.isoformat())
+                self.logger.debug("[" + repo_name + "] need to update, last update of docker Hub is greater than last scan")
                 return True
             else:
-                #print(hub_last_update.isoformat() + " is less or equal than " + dofinder_last_update.isoformat())
-                print("["+repo_name+"] NOT need to scann, doFinder is greater or equal to docker hub last updated")
+                self.logger.debug("["+repo_name+"] NOT need to scan, last update into docker Hub is less or equal")
                 return False
 
 
