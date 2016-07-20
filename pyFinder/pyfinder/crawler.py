@@ -80,11 +80,7 @@ class Crawler:
                                     ))
         self.logger.info("[" + msg + "] sent to queue: " + self.queue_rabbit)
 
-    def build_test(self, num_images_test=100):
-        list_images_test = self.get_test_image(num_images_test)
-        self.dump_test_images(list_images_test)
-        #for image in list_image:
-        #    self.send_to_rabbit(image)
+
 
     def get_test_image(self, num_images_test=100):
         images_for_test = []
@@ -99,20 +95,25 @@ class Crawler:
                 self.dump_test_images(images_for_test)
                 return images_for_test
 
-    def dump_test_images(self, list_images):
-        pickle.dump(list_images, open(os.path.dirname(__file__)+constants.FILE_NAME_IMAGES_TEST, "wb"))
-        self.logger.debug(" {0} saved {1} images for testing in {1}".format("[crawler]",
-                                                                               len(list_images),
-                                                                               os.path.dirname(__file__)+
-                                                                               constants.FILE_NAME_IMAGES_TEST))
+    def dump_test_images(self, list_images, path_name):
+        #pickle.dump(list_images, open(os.path.dirname(__file__)+constants.FILE_NAME_IMAGES_TEST, "wb"))
+        pickle.dump(list_images, open(path_name, "wb"))
+        self.logger.debug(" Saved {1} images for testing in {1}".format(len(list_images), path_name))
 
-    def load_test_images(self):
-        list_images = pickle.load(open(os.path.dirname(__file__) + constants.FILE_NAME_IMAGES_TEST, "rb"))
-        self.logger.debug("{0}  read  {1} images for testing ".format("[crawler]", len(list_images)))
+    def load_test_images(self, path_name_file):
+        #list_images = pickle.load(open(os.path.dirname(__file__) + constants.FILE_NAME_IMAGES_TEST, "rb"))
+        list_images = pickle.load(open(path_name_file, "rb"))
+        self.logger.debug("Read  {1} images for testing ".format(len(list_images)))
         return list_images
 
-    def run_test(self):
-        list_images = self.load_test_images()
+    def build_test(self, path_name_file="images.test", num_images_test=100):
+        list_images_test = self.get_test_image(num_images_test)
+        self.dump_test_images(list_images_test, path_name_file)
+        # for image in list_image:
+        #    self.send_to_rabbit(image)
+
+    def run_test(self, path_name_file="images.test"):
+        list_images = self.load_test_images(path_name_file)
 
         for image in list_images:
             self.send_to_rabbit(image)
