@@ -89,19 +89,27 @@ class ClientImages:
         :param repo_name:
         :return:
         """
-        # info from server api
+        # last update and last scan from images service
         res_list_json = self.get_scan_updated(repo_name)
         if res_list_json:   # if not empty list, the result is there
-            print(res_list_json)
+            #print(res_list_json)
             image_json = res_list_json[0]
+            self.logger.info("[" + repo_name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
+                'last_updated']))
             dofinder_last_scan = string_to_date(image_json['last_scan'])
-            dofinder_last_update = string_to_date(image_json['last_updated'])
+            if image_json['last_updated']:
+                dofinder_last_update = string_to_date(image_json['last_updated'])
+            else:
+                dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
 
             # latest_updated from docker hub
             url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/" + tag
             json_response = self.session.get(url_tag_latest).json()
             hub_last_update_string = json_response['last_updated']
-            hub_last_update = string_to_date(hub_last_update_string)
+            if(json_response['last_updated']):
+                hub_last_update = string_to_date(hub_last_update_string)
+            else:
+                hub_last_update = dofinder_last_scan
 
             # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
             if hub_last_update > dofinder_last_update:

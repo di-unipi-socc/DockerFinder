@@ -19,7 +19,9 @@ from .utils import get_logger
 
 class Scanner:
 
-    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images"):
+    def __init__(self, versions_cmd="/resources/versions.yml", port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="http://127.0.0.1:8000/api/images", rmi=True):
+
+        self.rmi = rmi  # remove an image ofter the scan
 
         self.logger = get_logger(__name__, logging.DEBUG)
 
@@ -45,7 +47,7 @@ class Scanner:
             self.logger.info("Connecting to " + self.parameters.host + ":" + str(self.parameters.port))
             connection = pika.BlockingConnection(self.parameters)
             channel = connection.channel()
-        except pika.exceptions.ConnectionClosed as e:
+        except pika.exceptions.ConnectionClosed :
             self.logger.exception("Connection Closed from rabbitMQ")
             return
 
@@ -84,7 +86,7 @@ class Scanner:
         else:
             self.logger.info("[" + repo_name + "] already up to date.")
 
-    def scan(self, repo_name, tag="latest", rmi=False):
+    def scan(self, repo_name, tag="latest"):
 
         try:
             self.client_daemon.pull_image(repo_name, tag)
@@ -103,7 +105,7 @@ class Scanner:
 
         self.logger.info('Finish scanning [{0}]'.format(repo_name))
         dict_image['last_scan'] = str(datetime.datetime.now())
-        if rmi:
+        if self.rmi:
             self.client_daemon.remove_image(repo_name, force=True)
         return dict_image
 
@@ -179,16 +181,7 @@ class Scanner:
                 dict_image['bins'] = bins
         except docker.errors.APIError as e:
             self.logger.exception("Api Error")
-    #
-    # def _get_sys(self, yml_cmd):
-    #     apps = yml_cmd['system']
-    #     for app in apps:
-    #         yield app["cmd"], app["re"]
-    #
-    # def _get_bins(self, yml_cmd):
-    #     apps = yml_cmd['applications']
-    #     for app in apps:
-    #         yield app["name"], app["ver"], app["re"]
+
 
     def pull_officials(self):
         # TODO excpetion raise for the connection to docker hub
