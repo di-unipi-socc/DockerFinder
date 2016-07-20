@@ -4,11 +4,11 @@ from docopt import docopt
 __doc__= """Crawler
 
 Usage:
-  entryScanner.py crawl  [--rmq=<127.0.0.1>] [--queue=<dofinder>] [--fp=<1>] [--ps=<10>]  [--mi=<100>]
-  entryScanner.py build test  [--rmq=<127.0.0.1>]  [--queue=<test>] [--pf=<images.test>] [--ni=<10>]
-  entryScanner.py run test   [--rmq=<127.0.0.1>]  [--queue=<test>]  [--pf=<images.test>]
-  entryScanner.py (-h | --help)
-  entryScanner.py --version
+  Crawler.py crawl  [--rmq=<127.0.0.1>] [--queue=<dofinder>] [--fp=<1>] [--ps=<10>]  [--mi=<100>]
+  Crawler.py build test  [--pf=<images.test>] [--ni=<10>]
+  Crawler.py run test   [--rmq=<127.0.0.1>]  [--queue=<test>]  [--pf=<images.test>]
+  Crawler.py (-h | --help)
+  Crawler.py --version
 
 Options:
   -h --help     Show this screen.
