@@ -81,7 +81,7 @@ class ClientImages:
             self.logger.exception("ConnectionError: " )
 
     def is_new(self, repo_name):
-        self.logger.debug("["+repo_name+"] verify if is new ")
+        self.logger.debug("["+repo_name+"] verifing if is new ")
         return False if self.get_image(repo_name) else True
 
     def must_scanned(self, repo_name, tag="latest"):

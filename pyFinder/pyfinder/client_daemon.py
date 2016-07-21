@@ -8,6 +8,7 @@ import logging
 class ClientDaemon(docker.Client):
 
     def __init__(self, base_url=None, version=None, timeout=60, tls=False):
+        #base_url = 'unix://var/run/docker.sock'
         super(ClientDaemon, self).__init__(base_url=base_url, version=version, timeout=timeout, tls=tls)
 
         self.logger = get_logger(__name__, logging.INFO)
@@ -30,7 +31,7 @@ class ClientDaemon(docker.Client):
                 json_image = json.loads(line.decode())
                 # print(json_image)
                 if 'progress' in json_image.keys():
-                    print('\r' + json_image['id'] + ":" + json_image['progress'], end="")
+                    self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
                 if 'status' in json_image.keys() and "Downloaded" in json_image['status']:
                     self.logger.info("\n" + repo_name + ":" + json_image['status'])
         else:
@@ -42,4 +43,3 @@ class ClientDaemon(docker.Client):
             self.remove_image(image, force)
         except :
             e = sys.exc_info()[0]
-        self.logger.info('[{0}] removed image'.format(image))

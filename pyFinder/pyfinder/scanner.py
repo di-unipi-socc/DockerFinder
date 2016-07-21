@@ -38,7 +38,7 @@ class Scanner:
         self.parameters = pika.ConnectionParameters(
             host=host_rabbit,
             port=port_rabbit,
-            heartbeat_interval=30,  # how often send heartbit (default is None)
+            heartbeat_interval=120,  # how often (in seconds) server sends heartbit to scanner(default is 60)
             connection_attempts=3,
             retry_delay=3,  # time in seconds
         )
@@ -89,10 +89,12 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
         if self.client_images.is_new(repo_name):       # the image is totally new
+            self.logger.debug("[" + repo_name + "] is totally new into the images server")
             dict_image = self.scan(repo_name)
             self.client_images.post_image(dict_image)  # POST the description of the image
             self.logger.info("[" + repo_name + "]  uploaded the image description")
         elif self.client_images.must_scanned(repo_name):  # the image must be scan again
+            self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
             dict_image = self.scan(repo_name)
             self.client_images.put_image(dict_image)  # PUT the new image description of the image
             self.logger.info("[" + repo_name + "] updated the image description")
@@ -100,7 +102,6 @@ class Scanner:
             self.logger.info("[" + repo_name + "] already up to date.")
 
     def scan(self, repo_name, tag="latest"):
-
         try:
             self.client_daemon.pull_image(repo_name, tag)
         except:
@@ -118,8 +119,10 @@ class Scanner:
 
         self.logger.info('Finish scanning [{0}]'.format(repo_name))
         dict_image['last_scan'] = str(datetime.datetime.now())
+
         if self.rmi:
             self.client_daemon.remove_image(repo_name, force=True)
+            self.logger.info('[{0}] removed image'.format(repo_name))
         return dict_image
 
     # def info_inspect(self, repo_name, dict_image):
@@ -189,7 +192,7 @@ class Scanner:
                     match = p.search(output)
                     if match:
                         version = match.group(0)
-                        self.logger.info("[{0}] found {1}: {2}".format(repo_name, bin, version))
+                        self.logger.debug("[{0}] found {1}: {2}".format(repo_name, bin, version))
                         bins.append({'bin': bin, 'ver': version})
                 dict_image['bins'] = bins
         except docker.errors.APIError as e:
