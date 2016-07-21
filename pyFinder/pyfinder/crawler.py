@@ -24,7 +24,7 @@ class Crawler:
             port=port_rabbit,
             heartbeat_interval=30,   # how often send heartbit (default is None)
             connection_attempts=3,
-            retry_delay=5,           # time in seconds
+            retry_delay=3,           # time in seconds
         )
         self.logger.debug("Connection  parameters rabbit:"+ \
                           " Heartbeat: "+str(self.parameters.heartbeat) + \

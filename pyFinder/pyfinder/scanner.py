@@ -35,9 +35,18 @@ class Scanner:
         self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
 
         # RabbitQm connection
-        self.parameters = pika.ConnectionParameters(host=host_rabbit, port=port_rabbit)
-        # self.host_rabbit = host_rabbit
-        # self.port_rabbit = port_rabbit
+        self.parameters = pika.ConnectionParameters(
+            host=host_rabbit,
+            port=port_rabbit,
+            heartbeat_interval=30,  # how often send heartbit (default is None)
+            connection_attempts=3,
+            retry_delay=3,  # time in seconds
+        )
+        self.logger.debug("Connection  parameters rabbit:" +
+                          " Heartbeat: " + str(self.parameters.heartbeat) +
+                          " Connection attempts: " + str(self.parameters.connection_attempts) +
+                          " Retry delay: " + str(self.parameters.retry_delay))
+
 
 
         # the clientApi talks with the server api in order to post the image description
