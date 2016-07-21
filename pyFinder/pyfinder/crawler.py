@@ -84,6 +84,7 @@ class Crawler:
         self.logger.info("[" + msg + "] sent to queue: " + self.queue_rabbit)
 
     def load_test_images(self, path_name_file):
+        list_images=[]
         try:
             with open(path_name_file, "rb") as f:
                 list_images = pickle.load(f)
