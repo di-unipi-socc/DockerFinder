@@ -90,8 +90,10 @@ class Crawler:
                 list_images = pickle.load(f)
         except FileNotFoundError:
             self.logger.exception(" Error open file "+path_name_file+". Try [ build test ] command")
+            raise
         except Exception:
             self.logger.exception("unexpected Exception")
+            raise
 
         self.logger.info("Read  {1} images for testing in file".format(len(list_images),path_name_file))
         return list_images

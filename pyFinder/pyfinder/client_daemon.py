@@ -31,7 +31,8 @@ class ClientDaemon(docker.Client):
                 json_image = json.loads(line.decode())
                 # print(json_image)
                 if 'progress' in json_image.keys():
-                    self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
+                    pass
+                    # self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
                 if 'status' in json_image.keys() and "Downloaded" in json_image['status']:
                     self.logger.info("\n" + repo_name + ":" + json_image['status'])
         else:
