@@ -24,17 +24,11 @@ app.use(methodOverride());
 
 var env = process.env.NODE_ENV || 'development';
 //table name of the mongo database
-var table ="/software";
-//###################################################################################
-//                                 ROUTES
-// ################################################################################
+//var table ="/software";
 
-//
-// app.get('/', function (req, res) {
-//     res.json({message: 'use /api/software'});
-// });
 
 app.use('/api', require('./routes/software'));   //api/software
+app.use('/api', require('./routes/system'));   //api/software
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -72,6 +66,18 @@ app.use(function(err, req, res, next) {
 //                                 CONNECTION DATABASE
 // #################################################################################
 
+// var conn      = mongoose.createConnection('mongodb://localhost/testA');
+// var conn2     = mongoose.createConnection('mongodb://localhost/testB');
+//
+// // stored in 'testA' database
+// var ModelA    = conn.model('Model', new mongoose.Schema({
+//   title : { type : String, default : 'model in testA database' }
+// }));
+//
+// // stored in 'testB' database
+// var ModelB    = conn2.model('Model', new mongoose.Schema({
+//   title : { type : String, default : 'model in testB database' }
+// }));
 
 // Connect to the database before starting the application server.
 var mongo_path = 'mongodb://'+app.get('db_path') + table;
@@ -95,5 +101,5 @@ mongoose.connect(mongo_path, function (err, database) {
 var server = app.listen(app.get('port'), function () {
     var host = server.address().address;
     var port = server.address().port;
-    console.log('Software manger is listening port'+ port +"\n");
+    console.log('\nSoftware manger is listening port'+ port +"\n");
 });

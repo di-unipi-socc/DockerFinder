@@ -10,7 +10,7 @@ class ClientImages:
     def __init__(self, host_service="127.0.0.1", port_service=3000, url_path="/api/images/"):
         self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
-        self.url_api = "http://" +host_service+":"+str(port_service)+url_path
+        self.url_api = "http://" + host_service + ":" + str(port_service)+url_path
         self.logger.info("Connected to the images service"+self.url_api)
 
     def post_image(self, dict_image):

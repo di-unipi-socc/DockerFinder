@@ -1,4 +1,5 @@
 import unittest
+#from ..pyfinder.scanner import Scanner
 from pyfinder import Scanner
 
 

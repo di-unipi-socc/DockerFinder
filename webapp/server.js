@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 // Environment configurations
-app.set('port', process.env.PORT || 80);
+app.set('port', process.env.PORT || 8080);
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -39,30 +39,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 //                                 ROUTES
 // ################################################################################
 
-app.use(function (req, res, next) {
-    console.log(req.method + " " + req.originalUrl);
-    next();
-});
+// app.use(function (req, res, next) {
+//     console.log(req.method + " " + req.originalUrl);
+//     next();
+// });
 
 var http = require('http');
 
-app.get('/api/search', function (req, res) {
-    console.log("\n Redirect " +req._parsedUrl.search);
+app.get('/search', function (req, res) { //  /api
+    var path = '/search' + req._parsedUrl.search;
+    console.log("\n Redirect to images service: " +path);
 
     var reqApi = http.request({
             //host: '127.0.0.1',
             host: 'images_server',
-            path: '/search' + req._parsedUrl.search,
+            path: path,
             //since we are listening on a custom port, we need to specify it by hand
-            port: '8000',
+            port: '3000',
             //This is what changes the request to a POST request
             method: 'GET'
         },
         function (resApi) {
-            console.log("Called Callback ServerApi");
+
             // res.writeHead(resApi.statusCode, resApi.headers);
             res.writeHead(resApi.statusCode);
             resApi.pipe(res);
+            console.log("Pipe the response from iamges service");
         }
 
         // function (resApi) {

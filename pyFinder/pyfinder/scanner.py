@@ -29,7 +29,7 @@ class Scanner:
         self.logger = get_logger(__name__, logging.DEBUG)
 
         # client of software service
-        self.client_software = ClientSoftware()
+        self.client_software = ClientSoftware(host_service="http://127.0.0.1")
 
         # client for interacting with the docker daemon on the host
         self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
@@ -185,10 +185,14 @@ class Scanner:
             with Container(repo_name) as c:
                 # search binary versions
                 bins = []
-                for bin, cmd, regex in self.client_software.get_software():#elf._get_bins(self.versionCommands):
+                for software in self.client_software.get_software():# self._get_bins(self.versionCommands):
+                    bin = software['name']
+                    cmd = software['cmd']
+                    regex = software['regex']
+                    # bin, cmd, regex
                     self.logger.debug("[{}] searching {} ".format(repo_name, bin))
                     output = c.run(bin+" "+cmd)
-                    p = re.compile(regex)     # can be saved the compilatiion of the regex to savee time (if is equal to all the version)
+                    p = re.compile(regex)     # can be saved the compilatiion of the regex to save time (if is equal to all the version)
                     match = p.search(output)
                     if match:
                         version = match.group(0)

@@ -3,7 +3,8 @@
 #google-chrome --disable-web-security &
 
 #npm start
-docker run --net=core-net --name=webapp  --rm -v /home/dido/github/DockerFinder/webapp:/code  -p 80 dofinder/webapp:latest
+ #-p 8080
+docker run --net=core-net --name=webapp  -p 8080:8080 --rm -v /home/dido/github/DockerFinder/webapp:/code dofinder/webapp:latest
 
 
 
