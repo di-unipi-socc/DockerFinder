@@ -14,7 +14,7 @@ class Crawler:
 
     def __init__(self, port_rabbit=5672, host_rabbit='localhost', queue_rabbit="dofinder"):
 
-        self.logger = get_logger(__name__, logging.INFO)
+        self.logger = get_logger(__name__, logging.DEBUG)
         self.host_rabbit = host_rabbit
         self.port_rabbit = port_rabbit
         self.queue_rabbit = queue_rabbit
@@ -65,8 +65,9 @@ class Crawler:
                     saved_images += 1
 
                     # send into rabbitMQ server
-                    self.send_to_rabbit(image['repo_name'])
-                    self.logger.info("[" + image['repo_name'] + "] sent to the queue "+self.queue_rabbit)
+                    msg = image['repo_name']
+                    self.send_to_rabbit(msg)
+                    self.logger.info("[" + msg + "] sent to the queue "+self.queue_rabbit)
 
             self.logger.info("Numbers of images crawled : {0}".format(str(crawled_image)))
             self.logger.info("Number of images sent to queue: {0}\n".format(str(saved_images)))
@@ -81,7 +82,6 @@ class Crawler:
                                    properties=pika.BasicProperties(
                                             delivery_mode=2,       #make message persistent save the message to disk
                                     ))
-        self.logger.info("[" + msg + "] sent to queue: " + self.queue_rabbit)
 
     def load_test_images(self, path_name_file):
         list_images=[]

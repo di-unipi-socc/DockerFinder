@@ -17,7 +17,7 @@ class TestClientHub(unittest.TestCase):
         print(list_tags)
         self.assertEquals(len(list_tags), count_tags)
 
-    @unittest.skip("Skipping test_crawl_images")
+    #@unittest.skip("Skipping test_crawl_images")
     def test_crawl_images(self):
         max_images = 50
         num_images = 0

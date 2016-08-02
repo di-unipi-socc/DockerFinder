@@ -6,6 +6,7 @@ LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
 
+import time
 
 class ConsumerRabbit(object):
     """This is an example consumer that will handle unexpected interactions
@@ -20,10 +21,16 @@ class ConsumerRabbit(object):
     commands that were issued and that should surface in the output as well.
 
     """
-    EXCHANGE = 'message'
-    EXCHANGE_TYPE = 'topic'
-    QUEUE = 'dofinder'#'text'
-    ROUTING_KEY = 'example.text'
+    EXCHANGE = 'dofinder'
+    EXCHANGE_TYPE = 'direct'
+    QUEUE = 'images'#'text'
+    ROUTING_KEY = 'images.scan'
+    #
+    # EXCHANGE = 'dofinder'
+    # EXCHANGE_TYPE = 'direct'
+    # PUBLISH_INTERVAL = 1
+    # QUEUE = 'images'
+    # ROUTING_KEY = 'images.scan'
 
 
     def __init__(self, amqp_url, host_rabbit="rabbitmq", port_rabbit=5672, queue_rabbit="dofinder"):
@@ -39,14 +46,7 @@ class ConsumerRabbit(object):
         self._closing = False
         self._consumer_tag = None
         self._url = amqp_url
-        #self._url = host_rabbit+":"+port_rabbit
-        self.parameters = pika.ConnectionParameters(
-            host=host_rabbit,
-            port=port_rabbit,
-            #heartbeat_interval=120,  # how often (in seconds) server sends heartbit to scanner(default is 60)
-            #connection_attempts=3,
-            #retry_delay=3,  # time in seconds
-        )
+
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -56,11 +56,8 @@ class ConsumerRabbit(object):
         :rtype: pika.SelectConnection
 
         """
-        #LOGGER.info('Connecting to %s', self.parameters.host+":"+self.parameters.port)
         LOGGER.info('Connecting to %s', self._url)
-        # return pika.SelectConnection(self.parameters,
-        #                              self.on_connection_open,
-        #                              stop_ioloop_on_close=False)
+
         return pika.SelectConnection(pika.URLParameters(self._url),
                                      self.on_connection_open,
                                      stop_ioloop_on_close=False)
@@ -139,6 +136,7 @@ class ConsumerRabbit(object):
         """
         LOGGER.info('Channel opened')
         self._channel = channel
+        self._channel.basic_qos(prefetch_count=1)
         self.add_on_channel_close_callback()
         self.setup_exchange(self.EXCHANGE)
 
@@ -177,7 +175,8 @@ class ConsumerRabbit(object):
         LOGGER.info('Declaring exchange %s', exchange_name)
         self._channel.exchange_declare(self.on_exchange_declareok,
                                        exchange_name,
-                                       self.EXCHANGE_TYPE)
+                                       self.EXCHANGE_TYPE,
+                                       durable=True)
 
     def on_exchange_declareok(self, unused_frame):
         """Invoked by pika when RabbitMQ has finished the Exchange.Declare RPC
@@ -194,11 +193,12 @@ class ConsumerRabbit(object):
         command. When it is complete, the on_queue_declareok method will
         be invoked by pika.
 
+
         :param str|unicode queue_name: The name of the queue to declare.
 
         """
         LOGGER.info('Declaring queue %s', queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name)
+        self._channel.queue_declare(self.on_queue_declareok, queue_name, durable=True)
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
@@ -278,6 +278,7 @@ class ConsumerRabbit(object):
         """
         LOGGER.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
+        time.sleep(5)
         self.acknowledge_message(basic_deliver.delivery_tag)
 
     def acknowledge_message(self, delivery_tag):
@@ -351,7 +352,7 @@ class ConsumerRabbit(object):
 
 def main():
     logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-    example = ConsumerRabbit('amqp://guest:guest@localhost:5672/%2F')
+    example = ConsumerRabbit('amqp://guest:guest@180.0.0.4:5672')
     #example = ConsumerRabbit('amqp://guest:guest@rabbitmq:5672/%2F')
     try:
         example.run()

@@ -9,11 +9,12 @@ def string_to_date(string_date):
     return datetime.datetime(*time.strptime(string_date, "%Y-%m-%dT%H:%M:%S.%fZ")[:7])
 
 
-def get_logger(name_class, level):
+def get_logger(name_class, level=logging.DEBUG):
 
     logger = logging.getLogger(name_class)
-    #logging.basicConfig(level=logging.DEBUG)
-    logger.setLevel(logging.DEBUG)
+    # logging.basicConfig(level=logging.DEBUG)
+    logger.setLevel(level)
+    #print(name_class + ": " + level + " logging level setted")
 
     # create file handler which logs even debug messages
     #fh = logging.FileHandler(name_file)
@@ -24,7 +25,9 @@ def get_logger(name_class, level):
     ch.setLevel(level)
 
     # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
+              '-35s %(lineno) -5d: %(message)s')
+    formatter = logging.Formatter(LOG_FORMAT)
     #fh.setFormatter(formatter)
     ch.setFormatter(formatter)
 

@@ -21,11 +21,11 @@ class ExamplePublisher(object):
     messages that have been sent and if they've been confirmed by RabbitMQ.
 
     """
-    EXCHANGE = 'message'
-    EXCHANGE_TYPE = 'topic'
+    EXCHANGE = 'dofinder'
+    EXCHANGE_TYPE = 'direct'
     PUBLISH_INTERVAL = 1
-    QUEUE = 'dofinder'
-    ROUTING_KEY = 'example.text'
+    QUEUE = 'images'
+    ROUTING_KEY = 'images.scan'
 
     def __init__(self, amqp_url):
         """Setup the example publisher object, passing in the URL we will use
@@ -175,7 +175,9 @@ class ExamplePublisher(object):
         LOGGER.info('Declaring exchange %s', exchange_name)
         self._channel.exchange_declare(self.on_exchange_declareok,
                                        exchange_name,
-                                       self.EXCHANGE_TYPE)
+                                       self.EXCHANGE_TYPE,
+                                       durable=True
+                                       )
 
     def on_exchange_declareok(self, unused_frame):
         """Invoked by pika when RabbitMQ has finished the Exchange.Declare RPC
@@ -196,7 +198,7 @@ class ExamplePublisher(object):
 
         """
         LOGGER.info('Declaring queue %s', queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name)
+        self._channel.queue_declare(self.on_queue_declareok, queue_name, durable=True)
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
@@ -301,10 +303,12 @@ class ExamplePublisher(object):
         message = {"ciao":"Hello from publisher"}
         properties = pika.BasicProperties(app_id='example-publisher',
                                           content_type='application/json',
-                                          headers=message)
+                                          headers=message,
+                                          delivery_mode=2) # DIDO make store to the disk
 
         self._channel.basic_publish(self.EXCHANGE, self.ROUTING_KEY,
                                     json.dumps(message, ensure_ascii=False),
+
                                     properties)
         self._message_number += 1
         self._deliveries.append(self._message_number)
@@ -354,7 +358,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
     # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
-    example = ExamplePublisher('amqp://guest:guest@localhost:5672/%2F?connection_attempts=3&heartbeat_interval=3600')
+    example = ExamplePublisher('amqp://guest:guest@180.0.0.4:5672/%2F?connection_attempts=3&heartbeat_interval=3600')
     try:
         example.run()
     except KeyboardInterrupt:

@@ -11,6 +11,7 @@ from .client_images_service import ClientImages
 from .client_daemon import ClientDaemon
 from .client_dockerhub import ClientHub
 from .client_sw_service import ClientSoftware
+from .consumer import Consumer
 import pika
 import pika.exceptions
 import logging
@@ -34,6 +35,10 @@ class Scanner:
         # client for interacting with the docker daemon on the host
         self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
 
+        #rabbit comsumer
+        #self.c = Consumer(host_rabbit, queue_rabbit, self.print_message)
+        #self.c.run()
+
         # RabbitQm connection
         self.parameters = pika.ConnectionParameters(
             host=host_rabbit,
@@ -55,37 +60,45 @@ class Scanner:
         # the client hub interacts with the docker Hub registry
         self.client_hub = ClientHub()
 
+
+    def print_message(msg):
+        """
+        Print the message.
+        """
+        print(msg)
+
     def run(self):
         try:
-            self.logger.info("Connecting to " + self.parameters.host + ":" + str(self.parameters.port)+" queue: "+self.queue_rabbit)
-            connection = pika.BlockingConnection(self.parameters)
-            channel = connection.channel()
+            self.c.run()
+            # self.logger.info("Connecting to " + self.parameters.host + ":" + str(self.parameters.port)+" queue: "+self.queue_rabbit)
+            # connection = pika.BlockingConnection(self.parameters)
+            # channel = connection.channel()
         except pika.exceptions.ConnectionClosed :
             self.logger.exception("Connection Closed from rabbitMQ")
             return
-
-        channel.queue_declare(queue=self.queue_rabbit, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
-        self.logger.info(" Waiting for messages. To exit press CTRL+C")
-
-        def on_message(ch, method, properties, body):
-            repo_name = body.decode()
-            self.logger.info("Received " + repo_name)
-
-            self.process_repo_name(repo_name)
-
-            ch.basic_ack(delivery_tag=method.delivery_tag)   # ack to the server that the scanning is finished
-            self.logger.debug("Sent ack to server for"+repo_name)
-
-        # tell to rabbitMQ not to give moe than one message to a worker at a time
-        # OR BETTER don't dispatch a new message to a worker until it has processed and acknowledged the previous one
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(on_message, queue=self.queue_rabbit)
-
-        try:
-            channel.start_consuming()
-        except KeyboardInterrupt:
-            channel.stop_consuming()
-        channel.close()
+        #
+        # channel.queue_declare(queue=self.queue_rabbit, durable=True)  # make sure that the channel is created (e.g. if crawler start later)
+        # self.logger.info(" Waiting for messages. To exit press CTRL+C")
+        #
+        # def on_message(ch, method, properties, body):
+        #     repo_name = body.decode()
+        #     self.logger.info("Received " + repo_name)
+        #
+        #     self.process_repo_name(repo_name)
+        #
+        #     ch.basic_ack(delivery_tag=method.delivery_tag)   # ack to the server that the scanning is finished
+        #     self.logger.debug("Sent ack to server for"+repo_name)
+        #
+        # # tell to rabbitMQ not to give moe than one message to a worker at a time
+        # # OR BETTER don't dispatch a new message to a worker until it has processed and acknowledged the previous one
+        # channel.basic_qos(prefetch_count=1)
+        # channel.basic_consume(on_message, queue=self.queue_rabbit)
+        #
+        # try:
+        #     channel.start_consuming()
+        # except KeyboardInterrupt:
+        #     channel.stop_consuming()
+        # channel.close()
 
     def process_repo_name(self, repo_name):
         if self.client_images.is_new(repo_name):       # the image is totally new

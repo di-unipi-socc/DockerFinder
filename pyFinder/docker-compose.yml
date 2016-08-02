@@ -10,25 +10,25 @@ services:
       - 8081:15672
     networks:
       - core-net
-    #volumes:
-    # # - /opt/Data/Rabbitmq:/var/lib/rabbitmq
+    volumes:
+      - /var/lib/rabbitmq
     #  #- pyfinder_back-tier
 
 
-  crawler:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_crawler
-    image: dofinder/crawler:latest
-    container_name: crawler
-    volumes:
-      - .:/code
-    depends_on:
-     - rabbitmq
-    #links:
-    # - rabbitmq
-    networks:
-      - core-net
+#  crawler:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile_crawler
+#    image: dofinder/crawler:latest
+#    container_name: crawler
+#    volumes:
+#      - .:/code
+#    depends_on:
+#     - rabbitmq
+#    #links:
+#    # - rabbitmq
+#    networks:
+#      - core-net
       #- pyfinder_back-tier
 #
 #  scanner:

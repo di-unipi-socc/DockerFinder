@@ -61,7 +61,8 @@ class ClientHub:
         crawled_images = 0
         self.logger.info("Total images to crawl: " + str(max_images))
         try:
-            while url_next_page and max_images > 0 :
+            while url_next_page and max_images > 0:
+                self.logger.debug("GET to "+url_next_page)
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
@@ -71,8 +72,8 @@ class ClientHub:
                     max_images -= len(list_json_image)
                     yield list_json_image
                 else:
-                    self.logger.error(str(res.status_code) + " Error response: " + res.text)
-                    return []
+                    self.logger.error("Crawl_images method:" +str(res.status_code) + " Error response: " + res.text)
+                    #return []
 
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
