@@ -6,13 +6,14 @@ from  pyfinder import ClientSoftware
 class TestSoftware(unittest.TestCase):
 
     def setUp(self):
-        self.client = ClientSoftware(host_service="http://127.0.0.1", port_service="3001", path_api="/api/software")#versions_cmd="../../resource/versions.yml")
+        self.client = ClientSoftware(api_url="http://180.0.0.5:3001/api/software")
 
     def test_scan(self):
          dict = self.client.get_software()
          print(dict)
 
 
+    @unittest.skip("ooeo")
     def test_post(self):
         d = {
             "name": "python3",

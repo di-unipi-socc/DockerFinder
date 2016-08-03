@@ -4,7 +4,7 @@ import time
 __doc__= """Scanner.
 
 Usage:
-  entryScanner.py run [--rmi] [--hr=<127.0.0.1>] [--qr=<dofinder>] [--hi=<images_server>] [--pi=<3000>] [--bi=</api/images>]
+  entryScanner.py run [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--key=<images.scan>] [--images-url=<http://images_server:3000/api/images>] [--software-url=<http://sw_server:3001/api/software>] [--hub-url=<https://hub.docker.com/>] [--rmi]
   entryScanner.py scan <name> [--tag=<latest>]
   entryScanner.py pull officials
   entryScanner.py (-h | --help)
@@ -12,12 +12,14 @@ Usage:
 
 Options:
   -h --help             Show this screen.
-  --hr=HOST_RABBIT      Host of the rabbitMQ  running server [default: 127.0.0.1]
-  --qr=QUEUE_RABBIT     Name of the queue where to get info from the rabbitMQ [default: dofinder]
-  --hi=HOST_IMAGES      Host of the images service [default: images_server]
-  --pi=PORT_IMAGES      Port of the images service [default: 3000]
-  --bi=BASE_IMAGES      Base path of the images service. [default: /api/images]
-  -rmi                  Remove the images after the scan.
+  --amqp-url=AMQP-URL   url of the rabbitMQ  server             [default: amqp://guest:guest@rabbitmq:5672]
+  --ex=EXCHANGE         The exchange name of the rabbitMQ       [default: dofinder]
+  --queue==QUEUE        Queue name of the rabbitMQ server       [default: images]
+  --key=KEY             Routing key used by the rabbitMQ server [default: images.scan]
+  --images-url=IMAGES-URL     The url of the images service     [default: http://127.0.0.1:3000/api/images]
+  --software-url=SOFTWARE-URL  THe url of the software service   [default: http://127.0.0.1:3001/api/software]
+  --hub-url=HUB-URL           The url of the DockerHub          [default: https://hub.docker.com/]
+  --rmi                 If True remove the images after the scan.
   --tag=TAG             TAG  of the image to scan [default: latest]
   --version             Show version.
 """
@@ -27,11 +29,11 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
-    # print(args)
-    scanner = Scanner(host_rabbit=args['--hr'], queue_rabbit=args['--qr'],
-                      host_images=args['--hi'],
-                      port_images=args['--pi'],
-                      path_images=args['--bi'],
+    #print(args)
+    scanner = Scanner(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'], route_key=args['--key'],
+                      images_url=args['--images-url'],
+                      software_url=args['--software-url'],
+                      hub_url=args['--hub-url'],
                       rmi=int(args['--rmi']))
 
     if args['scan']:
@@ -44,6 +46,3 @@ if __name__ == '__main__':
 
     if args['pull'] and args['officials']:
         scanner.pull_officials()
-
-    #port_rabbit = 5672, host_rabbit = '172.17.0.2', url_api = "127.0.0.1:8000/api/images"
-    #port_rabbit=5672, host_rabbit='172.17.0.2', url_imagesservice="127.0.0.1:8000/api/images"

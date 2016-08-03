@@ -7,11 +7,12 @@ import logging
 
 class ClientImages:
 
-    def __init__(self, host_service="127.0.0.1", port_service=3000, url_path="/api/images/"):
+    def __init__(self, images_url="http://127.0.0.1:3000/api/images", host_service="127.0.0.1", port_service=3000, url_path="/api/images/"):
         self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
-        self.url_api = "http://" + host_service + ":" + str(port_service)+url_path
-        self.logger.info("Connected to the images service"+self.url_api)
+        #self.url_api = "http://" + host_service + ":" + str(port_service)+url_path
+        self.url_api = images_url
+        self.logger.info("URL images service: "+self.url_api)
 
     def post_image(self, dict_image):
         try:
@@ -70,7 +71,7 @@ class ClientImages:
             res = self.session.get(url)
             return res.json()
         except requests.exceptions.ConnectionError as e:
-            self.logger.exception("ConnectionError: " )
+            self.logger.exception("ConnectionError: ")
 
     def get_scan_updated(self, repo_name):
         payload = {'repo_name': repo_name, 'select': 'last_scan last_updated'}
@@ -81,20 +82,27 @@ class ClientImages:
             self.logger.exception("ConnectionError: " )
 
     def is_new(self, repo_name):
-        self.logger.debug("["+repo_name+"] verifing if is new ")
-        return False if self.get_image(repo_name) else True
+        res_json= self.get_image(repo_name)
+        if res_json['count'] is 0:
+            self.logger.info("["+repo_name+"] is new")
+            return True
+        else:
+            self.logger.info("[" + repo_name + "] is present")
+            return False
+        # self.logger.debug("["+repo_name+"] verifing if is new ")
+        # return False if self.get_image(repo_name) else True
 
     def must_scanned(self, repo_name, tag="latest"):
         """
-        Check if the repo_name has been scanned recently and don't require another scannerization.
-         if(local.last_updated > remote.last_scan )
+        Check if the repo_name has been scanned recently and it is not require the scan.
+         if(local.last_updated > remote.last_scan ) then {scan}
         :param repo_name:
         :return:
         """
         # last update and last scan from images service
         res_list_json = self.get_scan_updated(repo_name)
         if res_list_json:   # if not empty list, the result is there
-            #print(res_list_json)
+            print(res_list_json)
             image_json = res_list_json[0]
             self.logger.info("[" + repo_name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
                 'last_updated']))

@@ -47,7 +47,7 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, page=1, page_size=10, max_images=None):
+    def crawl_images(self, page=1, page_size=10, max_images=None, only_tag_latest=True):
         """
         :param page:
         :param page_size:

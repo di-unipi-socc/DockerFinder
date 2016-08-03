@@ -5,9 +5,10 @@ from .utils import get_logger
 
 class ClientSoftware(requests.Session):
 
-    def __init__(self, host_service="sw_server", port_service="3001", path_api="/api/software"):
+    def __init__(self, api_url="http://127.0.0.1:3001/api/software" ): #,host_service="sw_server", port_service="3001", path_api="/api/software"):
         super(ClientSoftware, self).__init__()
-        self._url = host_service+":"+port_service+path_api
+        #self._url = host_service+":"+port_service+path_api
+        self._url = api_url
         self.logger = get_logger(__name__, logging.INFO)
 
     def get_software(self):
@@ -44,7 +45,7 @@ class ClientSoftware(requests.Session):
         for l in d:
             yield l[0], l[1]
 
-    def post_softwaare(self, dict_software):
+    def post_software(self, dict_software):
         try:
             res = self.post(self._url, headers={'Content-type': 'application/json'}, json=dict_software)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
