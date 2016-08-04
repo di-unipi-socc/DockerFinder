@@ -26,4 +26,4 @@ def build_test(path_name_file="images.test", num_images_test=100):
 def dump_test_images(list_images, path_name):
     with open(path_name, "wb") as f:
         pickle.dump(list_images, f)
-    logger.info(" Saved {1} images for testing in {1}".format(len(list_images), path_name))
+    logger.info(" Saved {0} images for testing in {1}".format(len(list_images), path_name))
