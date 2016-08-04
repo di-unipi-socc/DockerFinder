@@ -19,36 +19,11 @@ app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-//##################################################################################
-//                                 CONNECTION DATABASE
-// #################################################################################
-// Connect to the database before starting the application server.
-
-// mongoose.connect(db_path, function (err, database) {
-//     console.log("Try to connect " + db_path);
-//     if (err) {
-//         console.log(err);
-//         //return next(err);
-//         process.exit(1);
-//     }
-//     // Save database object from the callback for reuse.
-//     console.log("Database connection ready");
-// });
-
-//###################################################################################
-//                                 ROUTES
-// ################################################################################
-
-// app.use(function (req, res, next) {
-//     console.log(req.method + " " + req.originalUrl);
-//     next();
-// });
-
 var http = require('http');
 
 app.get('/search', function (req, res) { //  /api
     var path = '/search' + req._parsedUrl.search;
-    console.log("\n Redirect to images service: " +path);
+    console.log("\nRedirect to images_server: " +path);
 
     var reqApi = http.request({
             //host: '127.0.0.1',
@@ -64,7 +39,7 @@ app.get('/search', function (req, res) { //  /api
             // res.writeHead(resApi.statusCode, resApi.headers);
             res.writeHead(resApi.statusCode);
             resApi.pipe(res);
-            console.log("Pipe the response from iamges service");
+            console.log("Pipe the response from images_server");
         }
 
         // function (resApi) {

@@ -116,12 +116,13 @@ class Scanner:
 
         json_response = self.client_hub.get_json_repo(repo_name)
 
-        if 'description' in json_response:
-            dict_image['description'] = json_response['description']
-        if 'star_count' in json_response:
-            dict_image['star_count'] = json_response['star_count']
-        if 'pull_count' in json_response:
-            dict_image['pull_count'] = json_response['pull_count']
+        if json_response:
+            if 'description' in json_response:
+                dict_image['description'] = json_response['description']
+            if 'star_count' in json_response:
+                dict_image['star_count'] = json_response['star_count']
+            if 'pull_count' in json_response:
+                dict_image['pull_count'] = json_response['pull_count']
 
         # TODO : here must be included the tags lists of the image
         # josn_reposnse = slef.clientHub.get_all_tags(repo_name)

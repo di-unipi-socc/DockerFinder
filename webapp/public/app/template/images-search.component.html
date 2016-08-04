@@ -15,20 +15,25 @@
               <!--<label for="version">Version</label>-->
               <!--<input type="text" class="form-control" id="version" placeholder="2.7" required [(ngModel)]="version" name="alterEgo" name="version">-->
           <!--</div>-->
-          <div class="row">
-              <div class="col-md-4">
+          <div *ngFor="let sw of softwares" class="row">
+              <div  class="col-md-4">
                   <label for="name">Name</label>
-                  <input type="text" class="form-control" placeholder="Python" name="name" required  [(ngModel)]="bin" #name="ngModel" id="name" >
+                  <input type="text" class="form-control" value={{sw.name}} name="name" required  [(ngModel)]=sw.name #name="ngModel" id="name" >
                   <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
                       Name is required
                   </div>
               </div>
               <div class="col-md-4">
                       <label for="version">Version</label>
-                  <input type="text" class="form-control" id="version" placeholder="2.7" required [(ngModel)]="version" name="version" name="version">
+                  <input type="text" class="form-control" id="version" value={{sw.version}} required [(ngModel)]=sw.version name="version" name="version">
 
               </div>
           </div>
+
+            <button (click)="addSoftware()">add Software</button>
+          <div *ngFor="let sw of softwares" class="row">
+              {{sw.name}} {{sw.version}}
+              </div>
 
           <div class="row">
                 <div class="col-md-4">

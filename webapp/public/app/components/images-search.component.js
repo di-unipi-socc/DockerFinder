@@ -13,6 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var image_service_1 = require('../services/image.service');
+var software_1 = require('../models/software');
 var images_component_1 = require('../components/images.component');
 var router_1 = require("@angular/router");
 var ImagesSearchComponent = (function () {
@@ -22,10 +23,16 @@ var ImagesSearchComponent = (function () {
         this.submitted = false;
         this.sorting = ['stars', 'pulls',];
         this.ordering = ['ascending order', 'descending order'];
+        this.softwares = [
+            new software_1.Software("python", "3.4"),
+            new software_1.Software("java", "1.9")
+        ]; // = ['java', 'python', 'ruby', 'curl'];
         this.count = 0;
+        // this.softwares.push(new Software("java", "1.9"));
     }
     ImagesSearchComponent.prototype.onSubmit = function () {
         var _this = this;
+        this.constructSearchUrl();
         this.imageService.searchImages(this.diagnostic)
             .then(function (images) {
             if (images.length > 0) {
@@ -37,6 +44,14 @@ var ImagesSearchComponent = (function () {
         this.submitted = true;
         //this.router.navigate(['/images']);
     };
+    ImagesSearchComponent.prototype.constructSearchUrl = function () {
+        var url_search = "";
+        for (var _i = 0, _a = this.softwares; _i < _a.length; _i++) {
+            sw = _a[_i];
+            url_search += sw.name + "=" + sw.version;
+        }
+        console.log(url_search);
+    };
     Object.defineProperty(ImagesSearchComponent.prototype, "diagnostic", {
         // TODO: Remove this when we're done
         get: function () { return this.bin + "=" + this.version; },
@@ -46,6 +61,9 @@ var ImagesSearchComponent = (function () {
     ImagesSearchComponent.prototype.edit = function () {
         this.submitted = false;
         this.resultImages = [];
+    };
+    ImagesSearchComponent.prototype.addSoftware = function () {
+        this.softwares.push(new software_1.Software("", ""));
     };
     ImagesSearchComponent = __decorate([
         core_1.Component({
