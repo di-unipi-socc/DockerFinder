@@ -27,7 +27,7 @@ class ClientHub:
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
         try:
             res = self.session.get(url_tags)
-            self.logger.info("["+repo_name+"] Getting all the tags")
+            self.logger.debug("["+repo_name+"] Getting all the tags")
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
                 count = json_response['count']

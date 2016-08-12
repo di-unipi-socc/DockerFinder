@@ -8,7 +8,12 @@ from .utils import get_logger
 
 class Crawler:
 
-    def __init__(self, exchange="dofinder", queue="images", route_key="images.scan", amqp_url='amqp://guest:guest@180.0.0.4:5672'):
+    def __init__(self, exchange="dofinder",
+                 queue="images",
+                 route_key="images.scan",
+                 amqp_url='amqp://guest:guest@127.0.0.1:5672',
+                 hub_url="https://hub.docker.com/"
+    ):
                  #port_rabbit=5672, host_rabbit='localhost', queue_rabbit="dofinder"):
 
         self.logger = get_logger(__name__, logging.DEBUG)
@@ -18,21 +23,37 @@ class Crawler:
         self.logger.info("Publisher rabbit initialized: exchange=" +exchange+", queue="+queue+" route key="+route_key)
 
         # Client hub in order to get the images
-        self.client_hub = ClientHub()
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
 
     def run(self, from_page=1, page_size=10, max_images=100):
+        """
+        Starts the publisher of the RabbitMQ server, and send to the images crawled with the crawl() method.
+        :param from_page:  the starting page into the Docker Hub.
+        :param page_size:  is the number of images per image that Docker Hub return.
+        :param max_images:  the number of images  name to downloads.
+        :return:
+        """
         try:
             self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
         except KeyboardInterrupt:
             self.publisher.stop()
 
     def crawl(self, from_page=1, page_size=10, max_images=100):
+        """
+        The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
+        IT return a JSON of the image .
+        :param from_page:  the starting page into the Docker Hub.
+        :param page_size:  is the number of images per image that Docker Hub return.
+        :param max_images:  the number of images  name to downloads.
+        :return:  generator of JSON images description
+        """
 
         self.logger.info("Crawling the images from the docker Hub...")
         crawled_image, saved_images = 0, 0
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images):
             for image in list_images:
                 crawled_image += 1
+                self.filter_image()
                 list_tags = self.client_hub.get_all_tags(image['repo_name'])
                 self.logger.debug(" [ " + image['repo_name'] + " ] found tags " + str(len(list_tags)))
                 #print(list_tags)

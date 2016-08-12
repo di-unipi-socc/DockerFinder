@@ -4,6 +4,8 @@
 
 #npm start
  #-p 8080
+
+docker rm webapp
 docker run --net=core-net --name=webapp  -p 8080:8080 --rm -v /home/dido/github/DockerFinder/webapp:/code dofinder/webapp:latest
 
 

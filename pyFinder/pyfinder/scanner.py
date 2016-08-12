@@ -45,12 +45,17 @@ class Scanner:
 
     def on_message(self, json_message):
         """
-        This is the callback function that is called when the consumer Rabbit receives a message.
+        This is the CALLBACK function that is called when the consumer Rabbit receives a message.
         """
         self.logger.info("Received message:" + str(json_message))
+        # first method called when an image name is received
         self.process_repo_name(json_message['name'])
 
     def run(self):
+        """
+        Run the scanner starting the consumer client of the RabbitMQ server.
+        :return:
+        """
         try:
             self.consumer.run()
         except KeyboardInterrupt:

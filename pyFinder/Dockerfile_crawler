@@ -13,6 +13,10 @@ RUN pip install -r requirements.txt
 #install pyfinder module in the container
 RUN python setup.py install
 
+# volume where images for testing are stored
+RUN mkdir -p /data/crawler
+VOLUME /data/crawler
+
 COPY ./entryCrawler.py /code
 ENTRYPOINT ["python","/code/entryCrawler.py" ]
 CMD ["--help"]
