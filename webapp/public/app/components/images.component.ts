@@ -17,7 +17,7 @@ import {ImageService} from "../services/image.service";
        <p> Found images : {{images.length}} </p>
         <ul class="images">
             <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
-               <span class="badge"> {{image.star_count}}</span> {{image.repo_name}}
+               <span class="badge"> {{image.stars}}</span> {{image.repo_name}}
             </li>
         </ul>
         <div *ngIf="selectedImage">

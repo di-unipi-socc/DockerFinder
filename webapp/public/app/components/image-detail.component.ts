@@ -19,8 +19,8 @@ import { Image } from '../image';
       </div>
       <div><label>distro: </label>{{image.distro}} </div>
       <div><label>description: </label>{{image.description}} </div>
-      <div><label>stars: </label>{{image.star_count}} </div>
-      <div><label>pulls: </label>{{image.pull_count}} </div>
+      <div><label>stars: </label>{{image.stars}} </div>
+      <div><label>pulls: </label>{{image.pulls}} </div>
       <label>Binary:</label>
       <ul >
         <li *ngFor="let bins of image.bins"> 

@@ -9,11 +9,11 @@ export class Image {
     distro: string;
     last_scan: string;
     description: string;
-    full_size: number;
+    size: number;
     repo_name: string;
-    star_count: number;
+    stars: number;
     last_updated: string;
-    pull_count: number;
+    pulls: number;
     __v : number;
     bins: [ {bin:string, ver: string} ];
 }

@@ -39,40 +39,40 @@ router.get('/', function (req, res, next) {
     //     query = Image.find()
 
     if(req.query['size']) {
-        queryBuild.where('full_size', req.query['size']);
+        queryBuild.where('size', req.query['size']);
         console.log("Size equal " + req.query['size_lt']);
     }
     else if(req.query['size_lt']) {
-        queryBuild.where('full_size').lt(req.query['size_lt']);
+        queryBuild.where('size').lt(req.query['size_lt']);
         console.log("Size less than" + req.query['size']);
     }
     else if(req.query['size_gt']) {
-        queryBuild.where('full_size').gt(req.query['size_gt']);
+        queryBuild.where('size').gt(req.query['size_gt']);
         console.log("Size greater than " + req.query['size_gt']);
     }
 
     if(req.query['pulls']) {
-        queryBuild.where('pull_count', req.query['pulls']);
+        queryBuild.where('pulls', req.query['pulls']);
         console.log("Pulls equal" + req.query['pulls']);
     }
     else if(req.query['pulls_lt']) {
-        queryBuild.where('pull_count').lt(req.query['pulls_lt']);
+        queryBuild.where('pulls').lt(req.query['pulls_lt']);
         console.log("Pulls less than " + req.query['pulls_lt']);
     }
     else if(req.query['pulls_gt']) {
-        queryBuild.where('pull_count').gt(req.query['pulls_gt']);
+        queryBuild.where('pulls').gt(req.query['pulls_gt']);
         console.log("Pulls greater than" + req.query['pulls_gt']);
     }
     if(req.query['stars']) {
-        queryBuild.where('star_count', req.query['stars']);
+        queryBuild.where('stars', req.query['stars']);
         console.log("Stars equal" + req.query['stars']);
     }
     else if(req.query['stars_lt']) {
-        queryBuild.where('star_count').lt(req.query['stars_lt']);
+        queryBuild.where('stars').lt(req.query['stars_lt']);
         console.log("Stars less than " + req.query['stars_lt']);
     }
     else if(req.query['stars_gt']) {
-        queryBuild.where('star_count').gt(req.query['stars_gt']);
+        queryBuild.where('stars').gt(req.query['stars_gt']);
         console.log("Stars greater than " + req.query['stars_gt']);
     }
       if(req.query.limit) {
@@ -83,22 +83,22 @@ router.get('/', function (req, res, next) {
     switch(req.query.sort){
         case 'star':
             console.log("Sorting  by ascending stars");
-            queryBuild.sort({'star_count': -1});
+            queryBuild.sort({'stars': -1});
             break;
         case '-star':
             console.log("Sorting  by descending stars");
-            queryBuild.sort({'star_count': 1});
+            queryBuild.sort({'stars': 1});
             break;
         case 'pull':
             console.log("Sorting  by ascending pull");
-            queryBuild.sort({ 'pull_count': -1});
+            queryBuild.sort({ 'pulls': -1});
             break;
          case '-pull':
             console.log("Sorting  by descending pull");
-            queryBuild.sort({ 'pull_count': 1});
+            queryBuild.sort({ 'pulls': 1});
             break;
         default:
-            var ordering = '-star_count -pull_count';  //-pull_count
+            var ordering = '-stars -pulls';  //-pull_count
             console.log("DEFAULT ordering "+ordering);
             queryBuild.sort(ordering);
             break;

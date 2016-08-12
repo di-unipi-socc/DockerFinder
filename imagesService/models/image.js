@@ -10,14 +10,14 @@ var imageSchema =  new mongoose.Schema({
         unique:     true,
         required    :[true, 'The name of the image cannot be empty']
     },
-    last_scan:       Date,
+    last_scan:      Date,
     last_updated:   Date,  // time of the last updated of the repo in the docker hub
-    full_size:      Number,
-    star_count:     {
+    size:      Number,
+    stars:     {
         type:       Number,
         min:        [0, 'star-count must be positive number']
     },
-    pull_count:     Number,
+    pulls:     Number,
     description:    String,
     distro:     String,
     bins:       [{
