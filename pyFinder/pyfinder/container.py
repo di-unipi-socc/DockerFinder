@@ -37,7 +37,7 @@ class Container:
             stdin_open=True
         )['Id']
 
-        client.start(self.container_id)
+        #client.start(self.container_id)
 
         return self
 
@@ -49,24 +49,28 @@ class Container:
             client.remove_container(self.container_id)
 
 
-    def run(self, command):
+    def run(self, repo_name, command):
         """Just like 'docker run CMD'.
         This is a generator that yields lines of container output.
         """
 
-        list_of_dict_status = client.containers(filters={'id': self.container_id})
-        if not list_of_dict_status or list_of_dict_status[0]['State'] is not 'running':
-            client.start(self.container_id)
+        #list_of_dict_status = client.containers(filters={'id': self.container_id})
+        #if not list_of_dict_status or list_of_dict_status[0]['State'] is not 'running':
+        #    client.start(self.container_id)
 
-        exec_id = client.exec_create(
-                    container=self.container_id,
-                    cmd=command,
-                    stdout=self.stdout,
-                    stderr=self.stderr,
-            )['Id']
+        # exec_id = client.exec_create(
+        #             container=self.container_id,
+        #             cmd=command,
+        #             stdout=self.stdout,
+        #             stderr=self.stderr,
+        #     )['Id']
+        #
+        # ret = client.exec_start(exec_id, stream=False).decode()
 
-        ret = client.exec_start(exec_id, stream=False).decode()
-        return ret
+        c = client.create_container(image=repo_name, command=command)
+        client.start(container=c.get('Id'))
+        client.logs(container=c.get('Id')).decode()
+        return client.logs(container=c.get('Id')).decode()
 
         #for line in client.exec_start(exec_id, stream=True):
         #    yield line

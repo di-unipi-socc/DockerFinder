@@ -19,8 +19,6 @@ Image.after('get', function(req, res, next) {
     next(); // Don't forget to call next!
 });
 
-//Resource.after('recommend', do_something); // Runs after all HTTP verbs
-
 Image.register(router,'/images');
 
 // Return router

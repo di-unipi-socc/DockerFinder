@@ -13,9 +13,9 @@ import logging
 
 
 class Scanner:
-    def __init__(self, amqp_url='amqp://guest:guest@180.0.0.4:5672', exchange=None, queue=None, route_key=None,
+    def __init__(self, amqp_url='amqp://guest:guest@127.0.0.1:5672', exchange=None, queue=None, route_key=None,
                  software_url="http://127.0.0.1:3001/api/software",
-                 images_url="http://127.0.0.1:3000/api/iames",
+                 images_url="http://127.0.0.1:3000/api/images",
                  hub_url="https://hub.docker.com/",
                  rmi=True):
 
@@ -147,41 +147,47 @@ class Scanner:
 
         self.logger.info('[{}] searching software ... '.format(repo_name))
 
-        try:
-            with Container(repo_name) as c:
-                # search distribution
-                for cmd, reg in self.client_software.get_system():  # self._get_sys(self.versionCommands):
-                    output = c.run(cmd)
-                    p = re.compile(reg)
-                    match = p.search(output)
-                    if match:
-                        # take the non-capturing group: only the matches, group[0] return all the match
-                        dist = match.group(0)
-                        dict_image['distro'] = dist
-                    else:
-                        self.logger.debug("[{0}] not found {1}".format(repo_name, cmd))
+        # with Container(repo_name) as c:
 
-            with Container(repo_name) as c:
-                # search binary versions
-                bins = []
-                for software in self.client_software.get_software():  # self._get_bins(self.versionCommands):
-                    bin = software['name']
-                    cmd = software['cmd']
-                    regex = software['regex']
-                    # bin, cmd, regex
-                    self.logger.debug("[{}] searching {} ".format(repo_name, bin))
-                    output = c.run(bin + " " + cmd)
-                    p = re.compile(
-                        regex)  # can be saved the compilatiion of the regex to save time (if is equal to all the version)
-                    match = p.search(output)
-                    if match:
-                        version = match.group(0)
-                        self.logger.debug("[{0}] found {1}: {2}".format(repo_name, bin, version))
-                        bins.append({'bin': bin, 'ver': version})
-                dict_image['bins'] = bins
-        except docker.errors.APIError as e:
-            self.logger.exception("Api Error")
-            raise
+        # search distribution Operating system,
+        for cmd, reg in self.client_software.get_system():  # self._get_sys(self.versionCommands):
+            try:
+                output = self.run_command(repo_name, cmd)
+                p = re.compile(reg)
+                match = p.search(output)
+                if match:
+                    # take the non-capturing group: only the matches, group[0] return all the match
+                    dist = match.group(0)
+                    dict_image['distro'] = dist
+                else:
+                    self.logger.debug("[{0}] not found {1}".format(repo_name, cmd))
+            except  docker.errors.NotFound as e:
+                self.logger.error(e)
+                #   with Container(repo_name) as c:
+
+        # search binary versions
+        softwares = []
+        for sw in self.client_software.get_software():  # self._get_bins(self.versionCommands):
+            try:
+                software = sw['name']
+                cmd = sw['cmd']
+                regex = sw['regex']
+                # bin, cmd, regex
+                self.logger.debug("[{}] searching {} ".format(repo_name, software))
+                output = self.run_command(repo_name, software + " " + cmd)
+                p = re.compile(
+                    regex)  # can be saved the compilatiion of the regex to save time (if is equal to all the version)
+                match = p.search(output)
+                if match:
+                    version = match.group(0)
+                    self.logger.debug("[{0}] found {1}: {2}".format(repo_name, software, version))
+                    softwares.append({'software': software, 'ver': version})
+            except  docker.errors.NotFound as e:
+                self.logger.error(e)
+        dict_image['softwares'] = softwares
+
+        #    self.logger.exception("Api Error")
+        #    raise
 
     def pull_officials(self):
         # TODO excpetion raise for the connection to docker hub
@@ -195,3 +201,13 @@ class Scanner:
             except docker.errors.APIError:
                 self.logger.exception("Docker api error")
                 pass
+
+    def run_command(self, repo_name, command):
+        """Just like 'docker run CMD'.
+        Return the output of the command.
+        """
+
+        c = self.client_daemon.create_container(image=repo_name, command=command)
+        self.client_daemon.start(container=c.get('Id'))
+        self.client_daemon.logs(container=c.get('Id')).decode()
+        return self.client_daemon.logs(container=c.get('Id')).decode()

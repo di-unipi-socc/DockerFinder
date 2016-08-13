@@ -20,13 +20,13 @@ router.get('/', function (req, res, next) {
     console.log("GET " + req.originalUrl);
 
     // query for retrieve the images with binary name and versions
-    var findMatch = {'bins': {$all: []}};
+    var findMatch = {'softwares': {$all: []}};
     var numberBins = 0;
 
     for (var key in req.query) {
         if(! key.inList(listParameters)) {  // get all the name and version parameters
             //elementMatch = {$elemMatch: {bin: key, ver: {$regex: '^' + req.query[key]}}};
-            findMatch.bins.$all.push({$elemMatch: {bin: key, ver: {$regex: '^' + req.query[key]}}});
+            findMatch.softwares.$all.push({$elemMatch: {software: key, ver: {$regex: '^' + req.query[key]}}});
             numberBins +=1;
             delete req.query.key;
         }

@@ -53,7 +53,7 @@ class Crawler:
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images):
             for image in list_images:
                 crawled_image += 1
-                self.filter_image()
+                #self.filter_image()
                 list_tags = self.client_hub.get_all_tags(image['repo_name'])
                 self.logger.debug(" [ " + image['repo_name'] + " ] found tags " + str(len(list_tags)))
                 #print(list_tags)

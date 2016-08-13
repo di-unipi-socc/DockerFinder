@@ -21,7 +21,7 @@ services:
     image: mongo:3
     container_name: images_mongo
     volumes:
-      - /data/pyfinder:/data/db
+      - /data/dofinder/images:/data/db
     networks:
       - core-net
       #- back-tier

@@ -20,9 +20,9 @@ var imageSchema =  new mongoose.Schema({
     pulls:     Number,
     description:    String,
     distro:     String,
-    bins:       [{
+    softwares:       [{
         _id: false,
-        bin: String,
+        software: String,
         ver: String
     }]
 

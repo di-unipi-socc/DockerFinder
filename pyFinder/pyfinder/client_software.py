@@ -5,11 +5,11 @@ from .utils import get_logger
 
 class ClientSoftware(requests.Session):
 
-    def __init__(self, api_url="http://127.0.0.1:3001/api/software" ): #,host_service="sw_server", port_service="3001", path_api="/api/software"):
+    def __init__(self, api_url="http://127.0.0.1:3001/api/software"): #,host_service="sw_server", port_service="3001", path_api="/api/software"):
         super(ClientSoftware, self).__init__()
-        #self._url = host_service+":"+port_service+path_api
         self._url = api_url
         self.logger = get_logger(__name__, logging.INFO)
+        self.logger.info("URL SOFTWARE service: " + self._url)
 
     def get_software(self):
         try:
