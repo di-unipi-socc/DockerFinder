@@ -8,7 +8,7 @@ applications:
   - {name: python, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: python3, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: python2, ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
-  - {name: java  , ver: -version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' }
+  - {name: java  , ver: -version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' } # [0-9]*[.][0-9]*[a-zA-Z0-9_.-]*
   - {name: curl  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: nano  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
   - {name: node  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}

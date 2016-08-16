@@ -19,7 +19,7 @@ services:
     image: mongo:3
     container_name: sw_mongo
     volumes:
-     - /data/dofinder/sw:/data/db
+     - /data/dofinder/software:/data/db
     networks:
      - core-net
 

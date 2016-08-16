@@ -12,8 +12,11 @@ Software.after('get', function(req, res, next) {
   //res.locals.bundle.title = res.locals.bundle.year;
   //res.locals.bundle.year = tmp;
     var count = res.locals.bundle.length;
+      // res.writeHead(resApi.statusCode, resApi.headers);
+    //res.writeHead(res.statusCode, res.headers);
     res.json({"count": count, "software": res.locals.bundle});
         console.log("Results " + count);
+   // res.writeHead(res.statusCode, res.headers);
 
   next(); // Don't forget to call next!
 });

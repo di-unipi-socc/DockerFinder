@@ -28,7 +28,7 @@ var env = process.env.NODE_ENV || 'development';
 
 
 app.use('/api', require('./routes/software'));   //api/software
-app.use('/api', require('./routes/system'));   //api/software
+app.use('/api', require('./routes/system'));   //api/system
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

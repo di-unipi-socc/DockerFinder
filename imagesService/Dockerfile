@@ -14,6 +14,7 @@ RUN npm install -g
 
 # replace this with your application's default port
 EXPOSE 3000
+ENTRYPOINT  ["npm","start"]
 
 #commnand to run the app
-CMD [ "npm", "start" ]
+#CMD [ "npm", "start" ]
