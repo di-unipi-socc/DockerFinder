@@ -15,26 +15,31 @@
 		"cmd": "--version",
 		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
 	},
-
-	{
-		"name": "python3",
+	 {
+		"name": "curl",
 		"cmd": "--version",
 		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
 	}, {
-		"name": "python2",
+		"name": "nano",
 		"cmd": "--version",
 		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
 	}, {
-		"name": "java   ",
+		"name": "node",
+		"cmd": "--version",
+		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
+	}, {
+		"name": "ruby",
+		"cmd": "--version",
+		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
+	}, {
+		"name": "perl",
 		"cmd": "-version",
-		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
-	}, {
-		"name": "curl   ",
-		"cmd": "--version",
-		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
-	}, {
-		"name": "nano   ",
-		"cmd": "--version",
-		"regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
+		"regex": "[[0-9][.][0-9]([.][0-9])*"
 	}
-]s
+]
+
+- {name: curl  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+  - {name: nano  , ver: --version, re: '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'}
+  - {name: node  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+  - {name: ruby  , ver: --version, re: '[0-9]\.[0-9](\.[0-9])*[^\s]*'}
+  - {name: perl  , ver: -version , re: '[0-9]\.[0-9](\.[0-9])'}

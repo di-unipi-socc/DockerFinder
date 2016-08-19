@@ -1,20 +1,17 @@
 version: '2'
 services:
-  images:
-    build: .
-    image: dofinder/imageserver:latest
+  images_server:
+    build: imagesService/images_server/
+    image: dofinder/imagesserver:latest
     container_name: images_server
-    restart: always 
+    #restart: always
     ports:
       - "3000:3000"
-    volumes:
-      - .:/code
     depends_on:
      - images_db
     links:
      - images_db
     networks:
-      #- back-tier
       - core-net
 
   images_db:
@@ -24,10 +21,7 @@ services:
       - /data/dofinder/images:/data/db
     networks:
       - core-net
-      #- back-tier
 
 networks:
-#  back-tier:
-#    driver: bridge
   core-net:
     external: true

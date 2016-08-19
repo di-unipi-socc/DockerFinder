@@ -1,0 +1,27 @@
+version: '2'
+services:
+  software_server:
+    build: softwareService/software_server/
+    container_name: software_server
+    image: dofinder/softwareserver:latest
+    #restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+     - software_db
+    links:
+     - software_db        # it is resolved by internal DNS, must be set in the app.js express config
+    networks:
+     - core-net
+
+  software_db:
+    image: mongo:3
+    container_name: software_mongo
+    volumes:
+     - /data/dofinder/software:/data/db
+    networks:
+     - core-net
+
+networks:
+  core-net:
+    external: true

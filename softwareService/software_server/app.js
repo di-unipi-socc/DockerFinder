@@ -13,7 +13,7 @@ var app = express();
 
 app.set('port', process.env.PORT || 3001);
 //app.set('db_path', 'mongo');sw_mongo
-app.set('db_path', 'sw_mongo')
+app.set('db_path', 'software_db');
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -24,7 +24,7 @@ app.use(methodOverride());
 
 var env = process.env.NODE_ENV || 'development';
 //table name of the mongo database
-//var table ="/software";
+var table ="/software";
 
 
 app.use('/api', require('./routes/software'));   //api/software
@@ -101,5 +101,5 @@ mongoose.connect(mongo_path, function (err, database) {
 var server = app.listen(app.get('port'), function () {
     var host = server.address().address;
     var port = server.address().port;
-    console.log('\nSoftware manger is listening port'+ port +"\n");
+    console.log('\nSoftware manger is listening port '+ port +"\n");
 });
