@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if args['test']:
         tester = Tester(path_file_images=args['--pf'])
         if args['build']:
-            tester.build_test(num_images_test=args['--ni'], from_page= args['--fp'])
+            tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))
 
         if args['send']:
             tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],

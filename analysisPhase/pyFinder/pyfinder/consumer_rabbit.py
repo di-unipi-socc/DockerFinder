@@ -18,8 +18,7 @@ class ConsumerRabbit(object):
 
     """
 
-    def __init__(self, amqp_url, on_msg_callback=lambda x: print(x),
-                 exchange="dofinder", queue="images", route_key="images.scan"):
+    def __init__(self, amqp_url, exchange="dofinder", queue="images", route_key="images.scan", on_msg_callback=lambda x: print(x)):
         """Create a new instance of the consumer class, passing in the AMQP
         URL used to connect to RabbitMQ.
 
@@ -271,7 +270,8 @@ class ConsumerRabbit(object):
         self.logger.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
 
-        self.on_message_callback(json.loads(body.decode("utf-8")))
+
+        self.on_message_callback(json.loads(body.decode()))  #.decode("utf-8")))
 
         self.acknowledge_message(basic_deliver.delivery_tag)
 

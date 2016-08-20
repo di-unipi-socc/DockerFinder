@@ -46,7 +46,7 @@ class Tester:
                 list_images = pickle.load(f)
                 self.logger.info("Read  {1} images for testing in file".format(len(list_images), self._path))
                 for image in list_images:
-                    yield str(json.loads(image))
+                    yield json.dumps(json.loads(image))
         except FileNotFoundError:
             logger.exception(" Error open file " + path_name_file + ". Try [ build test ] command before")
             raise
