@@ -36,7 +36,7 @@ class Tester:
             pickle.dump(list_images, f)
             self.logger.info("Saved {0} images for testing in {1}".format(len(list_images), self._path))
 
-    def push_test(self,amqp_url="amqp://guest:guest@180.0.0.3:5672",exchange="dofinder",queue="test",route_key="images.test"):
+    def push_test(self, amqp_url="amqp://guest:guest@180.0.0.3:5672", exchange="dofinder", queue="test", route_key="images.test"):
         publisher = PublisherRabbit(amqp_url, exchange=exchange, queue=queue, route_key=route_key)
         publisher.run(images_generator_function=self.generator_images_test())
 

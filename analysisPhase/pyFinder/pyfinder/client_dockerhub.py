@@ -48,7 +48,7 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, page=1, page_size=10, max_images=None):
+    def crawl_images(self, page=1, page_size=10, max_images=None, filter_images=lambda repo_name: True):
         """
         :param page:
         :param page_size:
@@ -62,24 +62,38 @@ class ClientHub:
         crawled_images = 0
         self.logger.info("Total images to crawl: " + str(max_images))
         try:
-            while url_next_page and max_images > 0:
+            while url_next_page and crawled_images < max_images: # max_images > 0
                 self.logger.debug("GET to "+url_next_page)
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
-                    list_json_image = json_response['results']
+                    list_json_image = self._apply_filter(json_response['results'], filter_function=filter_images)
                     url_next_page = json_response['next']
+                    temp_images = len(list_json_image)
                     page += 1
-                    max_images -= len(list_json_image)
+                    if temp_images + crawled_images > max_images:
+                        list_json_image = list_json_image[:max_images-crawled_images]
+                    crawled_images += len(list_json_image)
                     yield list_json_image
                 else:
                     self.logger.error("Crawl_images method:" +str(res.status_code) + " Error response: " + res.text)
-                    #return []
+            else:
+                return
 
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
         except:
             self.logger.exception("Unexpected error:")
+
+    def _apply_filter(self, list_of_json_images, filter_function):
+        filtered_images = []
+        for image in list_of_json_images:
+            repo_name = image['repo_name']
+            if filter_function(repo_name):
+                filtered_images.append(image)
+            else:
+                self.logger.info("["+repo_name+"] negative filtered, not taken")
+        return filtered_images
 
     def build_search_url(self, page, page_size=10):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1

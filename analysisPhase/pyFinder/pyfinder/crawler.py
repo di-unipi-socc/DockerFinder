@@ -38,6 +38,19 @@ class Crawler:
         except KeyboardInterrupt:
             self.publisher.stop()
 
+    def filter_tag_latest(self, repo_name):
+        """
+
+        :param repo_name: the name of a repository
+        :return: True if the image must be downloaded, Flase if must be discarded
+        """
+        list_tags = self.client_hub.get_all_tags(repo_name)
+        self.logger.debug("[ " + repo_name + " ] found tags " + str(len(list_tags)))
+        if list_tags and 'latest' in list_tags:  # only the images that  contains "latest" tag
+            return True
+        else:
+            return False
+
     def crawl(self, from_page=1, page_size=10, max_images=100):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
@@ -48,48 +61,15 @@ class Crawler:
         :return:  generator of JSON images description
         """
 
-        self.logger.info("Crawling the images from the docker Hub...")
-        crawled_image, saved_images = 0, 0
-        for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images):
-            for image in list_images:
-                crawled_image += 1
-                #self.filter_image()
-                list_tags = self.client_hub.get_all_tags(image['repo_name'])
-                self.logger.debug(" [ " + image['repo_name'] + " ] found tags " + str(len(list_tags)))
-                #print(list_tags)
-                if list_tags and 'latest' in list_tags:   # only the images that  contains "latest" tag
-                    self.logger.debug(" [" + image['repo_name'] + "] crawled from docker Hub")
-                    saved_images += 1
-                    info_image = dict()
-                    info_image['name'] = image['repo_name']
-                    yield json.dumps(info_image)
 
-            self.logger.info("Numbers of images crawled : {0}".format(str(crawled_image)))
-            self.logger.info("Number of images sent to queue: {0}\n".format(str(saved_images)))
-    #
-    # def generator_test_images(self, path_name_file):
-    #     list_images=[]
-    #     try:
-    #         with open(path_name_file, "rb") as f:
-    #             self.logger.info("Read  {1} images for testing in file".format(len(list_images), path_name_file))
-    #             list_images = pickle.load(f)
-    #             for image in list_images:
-    #                 yield json.dumps({"name":image})
-    #
-    #     except FileNotFoundError:
-    #         self.logger.exception(" Error open file "+path_name_file+". Try [ build test ] command")
-    #         raise
-    #     except Exception:
-    #         self.logger.exception("unexpected Exception")
-    #         raise
-    #     #return list_images
-    #
-    # def run_test(self, path_name_file="images.test"):
-    #     self.generator_test_images(path_name_file)
-    #
-    #     try:
-    #         self.publisher.run(
-    #             images_generator_function=self.generator_test_images(path_name_file))
-    #     except KeyboardInterrupt:
-    #         self.publisher.stop()
+        self.logger.info("Crawling the images from the docker Hub...")
+        sent_images = 0
+        for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images,
+                                                        filter_images=self.filter_tag_latest):
+            for image in list_images:
+                repo_name = image['repo_name']
+                sent_images +=1
+                yield json.dumps({'name': repo_name})  # this is the JSON message sent to the rabbitMQ
+        self.logger.info("Number of images sent to RabbtiMQ: {0}\n".format(str(sent_images)))
+        return
 
