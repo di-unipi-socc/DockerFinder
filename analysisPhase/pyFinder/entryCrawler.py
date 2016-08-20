@@ -1,13 +1,13 @@
 from pyfinder import Crawler
-from pyfinder import build_test
+from pyfinder import Tester
 from docopt import docopt
 
 __doc__= """Crawler
 
 Usage:
   Crawler.py crawl  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
-  Crawler.py pull testImages [--ni=<100>] [--pf=<images.test>]
-  Crawler.py push testImages   [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--key=<images.scan>]  [--queue=<test>]  [--pf=<images.test>]
+  Crawler.py test build [--ni=<100>] [--fp=<1>] [--pf=<images.test>]
+  Crawler.py test send  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--key=<images.scan>] [--queue=<test>]  [--pf=<images.test>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -27,16 +27,22 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Crawler 0.0.1')
-    # print(args)
+
     if args['crawl']:
-        crawler = Crawler(amqp_url=args['--amqp-url'], queue=args['--queue'], exchange=args['--ex'], route_key=args['--key'])
-        crawler.run(max_images=int(args['--mi']), page_size=int(args['--ps']), from_page=int(args['--fp']))
-        #crawler.crawl(max_images=int(args['--mi']), page_size=int(args['--ps']), from_page=int(args['--fp']))
+        crawler = Crawler(amqp_url=args['--amqp-url'],
+                          queue=args['--queue'],
+                          exchange=args['--ex'],
+                          route_key=args['--key'])
+        crawler.run(max_images=int(args['--mi']),
+                    page_size=int(args['--ps']),
+                    from_page=int(args['--fp']))
 
-    if args['pull'] and args['testImages']:
-        build_test(path_name_file=args['--pf'], num_images_test=int(args['--ni']))
+    if args['test']:
+        tester = Tester(path_file_images=args['--pf'])
+        if args['build']:
+            tester.build_test(num_images_test=args['--ni'], from_page= args['--fp'])
 
-    if args['push'] and args['testImages']:
-        crawler = Crawler(amqp_url=args['--amqp-url'], queue=args['--queue'], exchange=args['--ex'], route_key=args['--key'])
-        crawler.run_test(path_name_file=args['--pf'])
+        if args['send']:
+            tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
+                             route_key=args['--key'])
 

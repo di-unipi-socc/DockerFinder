@@ -66,30 +66,30 @@ class Crawler:
 
             self.logger.info("Numbers of images crawled : {0}".format(str(crawled_image)))
             self.logger.info("Number of images sent to queue: {0}\n".format(str(saved_images)))
-
-    def generator_test_images(self, path_name_file):
-        list_images=[]
-        try:
-            with open(path_name_file, "rb") as f:
-                self.logger.info("Read  {1} images for testing in file".format(len(list_images), path_name_file))
-                list_images = pickle.load(f)
-                for image in list_images:
-                    yield json.dumps({"name":image})
-
-        except FileNotFoundError:
-            self.logger.exception(" Error open file "+path_name_file+". Try [ build test ] command")
-            raise
-        except Exception:
-            self.logger.exception("unexpected Exception")
-            raise
-        #return list_images
-
-    def run_test(self, path_name_file="images.test"):
-        self.generator_test_images(path_name_file)
-
-        try:
-            self.publisher.run(
-                images_generator_function=self.generator_test_images(path_name_file))
-        except KeyboardInterrupt:
-            self.publisher.stop()
+    #
+    # def generator_test_images(self, path_name_file):
+    #     list_images=[]
+    #     try:
+    #         with open(path_name_file, "rb") as f:
+    #             self.logger.info("Read  {1} images for testing in file".format(len(list_images), path_name_file))
+    #             list_images = pickle.load(f)
+    #             for image in list_images:
+    #                 yield json.dumps({"name":image})
+    #
+    #     except FileNotFoundError:
+    #         self.logger.exception(" Error open file "+path_name_file+". Try [ build test ] command")
+    #         raise
+    #     except Exception:
+    #         self.logger.exception("unexpected Exception")
+    #         raise
+    #     #return list_images
+    #
+    # def run_test(self, path_name_file="images.test"):
+    #     self.generator_test_images(path_name_file)
+    #
+    #     try:
+    #         self.publisher.run(
+    #             images_generator_function=self.generator_test_images(path_name_file))
+    #     except KeyboardInterrupt:
+    #         self.publisher.stop()
 
