@@ -179,18 +179,6 @@ class Scanner:
                 version = self.version_from_regex(repo_name, software, cmd, regex)
                 if version:
                     softwares.append({'software': software, 'ver': version})
-                # bin, cmd, regex
-                #self.logger.debug("[{}] searching {} ".format(repo_name, software))
-                # output = self.run_command(repo_name, software + " " + cmd)
-                # p = re.compile(regex)  # can be saved the compilatiion of the regex to save time (if is equal to all the version)
-                # match = p.search(output)
-                # self.logger.debug("Search <" + software +" "+cmd+ "> in: "+ output )
-                # if match:
-                #     version = match.group(0)
-                #     self.logger.debug("[{0} {1} ] found {2}".format(software, version, repo_name))
-                #     softwares.append({'software': software, 'ver': version})
-                # else:
-                #     self.logger.debug("[{0}] Not found {1}".format(software, repo_name))
             except docker.errors.NotFound as e:
                 self.logger.error(e)
         dict_image['softwares'] = softwares
@@ -204,7 +192,6 @@ class Scanner:
         if match:
             version = match.group(0)
             self.logger.debug("[{0}] found in {1}".format(program, repo_name))
-            #softwares.append({'software': software, 'ver': version})
             return version
         else:
             self.logger.debug("[{0}] NOT found in {1}".format(program, repo_name))
@@ -228,18 +215,28 @@ class Scanner:
         Return the output of the command.
         """
         #self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
-        p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
-        out = p.stdout.read().decode()
-        return out
-        # container_id = self.client_daemon.create_container(image=repo_name,
-        #                                         command=ver_command,
-        #                                         tty=True
-        #                                         )['Id']
-        # self.client_daemon.start(container=container_id)
-        # output = self.client_daemon.logs(container=container_id,
-        #                                  stdout=True,
-        #                                  stderr=True,
-        #                                  stream=False).decode()
-        #self.logger.debug("Logs <" + ver_command + "> = " + output)
-        #self.client_daemon.logs(container=c.get('Id')).decode()
-        #return output
+        #p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
+        #out = p.stdout.read().decode()
+        #return out
+        ver_command = program +" "+option
+        container_id = self.client_daemon.create_container(image=repo_name,
+                                                command=ver_command,
+                                                tty=True,
+                                                stdin_open=True,
+                                                )['Id']
+        #exec_id = self.client_daemon.exec_create(container=container_id,
+        #                                command=ver_command
+        #                                )
+        # self.client_daemon.
+        self.client_daemon.start(container=container_id)
+        # "State": {
+        #     "Status": "running",
+
+        self.client_daemon.inspect_container(container_id)
+        self.client_daemon.wait(container_id)
+        output = self.client_daemon.logs(container=container_id)
+                                         #stdout=True,
+                                         #stderr=False,
+                                         #stream=False)
+        self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
+        return output.decode()

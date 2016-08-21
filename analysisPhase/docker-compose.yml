@@ -12,46 +12,40 @@ services:
       - core-net
     volumes:
       - /var/lib/rabbitmq
-    #  #- pyfinder_back-tier
 
-
-#  crawler:
-#    build:
-#      context: .
-#      dockerfile: ./Dockerfile_crawler
-#    image: dofinder/crawler:latest
-#    container_name: crawler
+  crawler:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_crawler
+    image: dofinder/crawler:latest
+    container_name: crawler
+    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
 #    volumes:
 #      - .:/code
-#    depends_on:
-#     - rabbitmq
-#    #links:
-#    # - rabbitmq
-#    networks:
-#      - core-net
-      #- pyfinder_back-tier
-#
-#  scanner:
-#    build:
-#      context: .
-#      dockerfile: ./Dockerfile_scanner
-#    image: dofinder/scanner:latest
-#    container_name: scanner
-#    volumes:
-#      - .:/code
-#    depends_on:
-#     - rabbitmq
-#     - crawler
-#    #links:
-#    # - rabbitmq
-#    networks:
-#      - pyfinder_back-tier
-#      - core-net
+    depends_on:
+     - rabbitmq
+    links:
+     - rabbitmq
+    networks:
+      - core-net
+
+  scanner:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_scanner
+    image: dofinder/scanner:latest
+    container_name: scanner
+    command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images --key=images.scan', '--software-url=http://software_server:3001/api/software']
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+     - rabbitmq
+     - crawler
+    links:
+     - rabbitmq
+    networks:
+     - core-net
 
 networks:
-#  pyfinder_back-tier:
-#    driver: bridge
   core-net:
     external: true
-    #driver: bridge
-    #external: true
