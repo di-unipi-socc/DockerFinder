@@ -69,9 +69,6 @@ class Crawler:
             for image in list_images:
                 repo_name = image['repo_name']
                 sent_images += 1
-                image = dict({"name": repo_name})
-                print("SHONSAF ON F: "+json.dumps(image))
-                yield json.dumps(image)  # this is the JSON message sent to the rabbitMQ
+                yield json.dumps({"name": repo_name})
         self.logger.info("Number of images sent to RabbtiMQ: {0}\n".format(str(sent_images)))
-        return
 

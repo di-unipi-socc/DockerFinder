@@ -16,7 +16,7 @@ class ClientSoftware(requests.Session):
             res = self.get(self._url)
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-                self.logger.info("Received software "+str(json_response['count']))
+                self.logger.info(str(json_response['count'])+ " softwares received")
                 software_list = json_response['software'] # list of object
                 return software_list
         except requests.exceptions.ConnectionError:
@@ -38,7 +38,7 @@ class ClientSoftware(requests.Session):
     def get_system(self):
         # - {cmd: 'bash -c "cat /etc/*release"', re: '(?<=PRETTY_NAME=")[^"]*'}  # PRETTY_NAME=.*'
         # - {cmd: 'bash -c "lsb_release -a"', re: 'Description:.*'}
-        self.logger.info("get  system  commands received")
+        self.logger.info("System commands requested")
         d = (('bash -c "cat /etc/*release"', '(?<=PRETTY_NAME=")[^"]*'),
              ('bash -c "lsb_release -a"', 'Description:.*'))
 

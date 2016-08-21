@@ -6,8 +6,6 @@ __doc__= """Crawler
 
 Usage:
   Crawler.py crawl  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
-  Crawler.py test build [--ni=<100>] [--fp=<1>] [--pf=<images.test>]
-  Crawler.py test send  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--key=<images.scan>] [--queue=<test>]  [--pf=<images.test>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -19,9 +17,7 @@ Options:
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
   --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
   --ps=PAGE_SIZE      number of images in a single page [default: 10].
-  --mi=MAX_PAGE       Max number of images to be craw from the docker hub [default: 100].
-  --ni=NUMBER_IMAGES  Number of images to crawl in order to run the test [default: 100].
-  --pf=PATH_FILE      Path of the file containing the set of images to test [default: images.test]
+  --mi=MAX_PAGE       Max number of images to be crawled from the docker hub [default: 100].
   --version     Show version.
 """
 

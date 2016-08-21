@@ -1,4 +1,5 @@
 from pyfinder import Tester
+from pyfinder import ClientSoftware
 from docopt import docopt
 
 __doc__= """Crawler
@@ -23,6 +24,7 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Crawler 0.0.1')
+    sw = ClientSoftware(api_url="http://127.0.0.1:3001/api/software")
     tester = Tester(path_file_images=args['--pf'])
     if args['build']:
         tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))
@@ -30,3 +32,4 @@ if __name__ == '__main__':
     if args['send']:
         tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
                          route_key=args['--key'])
+

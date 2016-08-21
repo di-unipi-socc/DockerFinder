@@ -25,8 +25,8 @@ def get_logger(name_class, level=logging.DEBUG):
     ch.setLevel(level)
 
     # create formatter and add it to the handlers
-    LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
-              '-35s %(lineno) -5d: %(message)s')
+    LOG_FORMAT = ('%(levelname) -3s %(asctime)s %(name) -15s %(funcName) '
+              '-15s %(lineno) -5d: %(message)s')
     formatter = logging.Formatter(LOG_FORMAT)
     #fh.setFormatter(formatter)
     ch.setFormatter(formatter)

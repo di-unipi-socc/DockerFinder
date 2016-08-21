@@ -18,7 +18,7 @@ class ConsumerRabbit(object):
 
     """
 
-    def __init__(self, amqp_url, exchange="dofinder", queue="images", route_key="images.scan", on_msg_callback=lambda x: print(x)):
+    def __init__(self, amqp_url, exchange="dofinder", queue="images", on_msg_callback=lambda x: x, route_key="images.scan", ):
         """Create a new instance of the consumer class, passing in the AMQP
         URL used to connect to RabbitMQ.
 
