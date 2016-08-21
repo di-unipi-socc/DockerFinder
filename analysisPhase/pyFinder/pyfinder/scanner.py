@@ -1,6 +1,6 @@
 import docker
 import docker.errors
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
 import re
 from .container import Container
 from .utils import *
@@ -195,13 +195,10 @@ class Scanner:
                 self.logger.error(e)
         dict_image['softwares'] = softwares
 
-        #    self.logger.exception("Api Error")
-        #    raise
+
 
     def version_from_regex(self, repo_name,  program, option, regex):
         output = self.run_command(repo_name, program, option)
-        print(output)
-        print("REGEX:"+regex)
         p = re.compile(regex)
         match = p.search(output)
         if match:
@@ -212,7 +209,6 @@ class Scanner:
         else:
             self.logger.debug("[{0}] NOT found in {1}".format(program, repo_name))
             return None
-
 
     def pull_officials(self):
         # TODO excpetion raise for the connection to docker hub
@@ -231,11 +227,9 @@ class Scanner:
         """Just like 'docker run CMD'.
         Return the output of the command.
         """
-        self.logger.debug("Executing in " + repo_name+ ": "+program +" "+option)
-
-        cmd = ['docker', 'run', '--rm', repo_name, program, option]
-        p = Popen(cmd, stdout=PIPE)
-        out = p.stdout.read().decode("utf-8")
+        #self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
+        p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
+        out = p.stdout.read().decode()
         return out
         # container_id = self.client_daemon.create_container(image=repo_name,
         #                                         command=ver_command,
