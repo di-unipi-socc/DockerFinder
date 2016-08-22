@@ -18,6 +18,7 @@ services:
       context: .
       dockerfile: ./Dockerfile_crawler
     image: dofinder/crawler:latest
+    restart: on-failure:3
     #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
 #    volumes:
@@ -35,6 +36,7 @@ services:
       dockerfile: ./Dockerfile_scanner
     image: dofinder/scanner:latest
     container_name: scanner
+    restart: on-failure:3
     command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images --key=images.scan', '--software-url=http://software_server:3001/api/software']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
