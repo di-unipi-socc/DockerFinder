@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: ./Dockerfile_crawler
     image: dofinder/crawler:latest
-    container_name: crawler
+    #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
 #    volumes:
 #      - .:/code

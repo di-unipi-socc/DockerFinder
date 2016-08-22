@@ -63,7 +63,7 @@ class Scanner:
             self.consumer.stop()
 
     def process_repo_name(self, repo_name):
-        self.logger.info("["+repo_name+"] Processing image")
+        self.logger.info("[" + repo_name + "] Processing image")
         if self.client_images.is_new(repo_name):  # the image is totally new
             self.logger.debug("[" + repo_name + "] is totally new into the images server")
             dict_image = self.scan(repo_name)
@@ -126,10 +126,10 @@ class Scanner:
             if 'description' in json_response:
                 dict_image['description'] = json_response['description']
             if 'star_count' in json_response:
-                #dict_image['star_count'] = json_response['star_count']
+                # dict_image['star_count'] = json_response['star_count']
                 dict_image['stars'] = json_response['star_count']
             if 'pull_count' in json_response:
-                #dict_image['pull_count'] = json_response['pull_count']
+                # dict_image['pull_count'] = json_response['pull_count']
                 dict_image['pulls'] = json_response['pull_count']
 
         # TODO : here must be included the tags lists of the image
@@ -141,8 +141,8 @@ class Scanner:
         if 'last_updated' in json_response:
             dict_image['last_updated'] = json_response['last_updated']
         if 'full_size' in json_response:
-             #dict_image['full_size'] = json_response['full_size']
-             dict_image['size'] = json_response['full_size']
+            # dict_image['full_size'] = json_response['full_size']
+            dict_image['size'] = json_response['full_size']
 
     def info_dofinder(self, repo_name, dict_image):
 
@@ -183,9 +183,7 @@ class Scanner:
                 self.logger.error(e)
         dict_image['softwares'] = softwares
 
-
-
-    def version_from_regex(self, repo_name,  program, option, regex):
+    def version_from_regex(self, repo_name, program, option, regex):
         output = self.run_command(repo_name, program, option)
         p = re.compile(regex)
         match = p.search(output)
@@ -214,29 +212,20 @@ class Scanner:
         """Just like 'docker run CMD'.
         Return the output of the command.
         """
-        #self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
-        #p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
-        #out = p.stdout.read().decode()
-        #return out
-        ver_command = program +" "+option
-        container_id = self.client_daemon.create_container(image=repo_name,
-                                                command=ver_command,
-                                                tty=True,
-                                                stdin_open=True,
-                                                )['Id']
-        #exec_id = self.client_daemon.exec_create(container=container_id,
-        #                                command=ver_command
-        #                                )
-        # self.client_daemon.
-        self.client_daemon.start(container=container_id)
-        # "State": {
-        #     "Status": "running",
+        # self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
+        # p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
+        # out = p.stdout.read().decode()
+        # return out
 
-        self.client_daemon.inspect_container(container_id)
+        ver_command = program + " " + option
+        container_id = self.client_daemon.create_container(image=repo_name,
+                                                           command=ver_command,
+                                                           tty=True,
+                                                           stdin_open=True,
+                                                           )['Id']
+
+        self.client_daemon.start(container=container_id)
         self.client_daemon.wait(container_id)
         output = self.client_daemon.logs(container=container_id)
-                                         #stdout=True,
-                                         #stderr=False,
-                                         #stream=False)
-        self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
+        #self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
         return output.decode()
