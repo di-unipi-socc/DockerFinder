@@ -213,7 +213,7 @@ class Scanner:
                                                            stdin_open=True,
                                                            )['Id']
         self.client_daemon.start(container=container_id)
-        self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
+        #self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
         self.client_daemon.wait(container_id)
         output = self.client_daemon.logs(container=container_id)
         #self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
