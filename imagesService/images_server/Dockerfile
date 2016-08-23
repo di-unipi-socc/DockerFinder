@@ -11,7 +11,4 @@ RUN npm install -save
 
 COPY . /code
 
-
-# replace this with your application's default port
-EXPOSE 3000
 ENTRYPOINT  ["npm","start"]

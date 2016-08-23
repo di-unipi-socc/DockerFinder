@@ -18,7 +18,7 @@ class ConsumerRabbit(object):
 
     """
 
-    def __init__(self, amqp_url, exchange="dofinder", queue="images", on_msg_callback=lambda x: x, route_key="images.scan", ):
+    def __init__(self, amqp_url, exchange=None, queue=None,  route_key=None, on_msg_callback=lambda x: x ):
         """Create a new instance of the consumer class, passing in the AMQP
         URL used to connect to RabbitMQ.
 
@@ -201,8 +201,7 @@ class ConsumerRabbit(object):
         :param pika.frame.Method method_frame: The Queue.DeclareOk frame
 
         """
-        self.logger.info('Binding %s to %s with %s',
-                    self.exchange, self.queue, self.routing_key)
+        self.logger.info('Binding %s to %s with %s', self.exchange, self.queue, self.routing_key)
         self._channel.queue_bind(self.on_bindok, self.queue,
                                  self.exchange, self.routing_key)
 

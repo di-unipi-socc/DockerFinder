@@ -1,10 +1,10 @@
 version: '2'
 services:
   images_server:
-    build: imagesService/images_server/
+    build: images_server
     image: dofinder/imagesserver:latest
     container_name: images_server
-    #restart: always
+    restart: always
     ports:
       - "3000:3000"
     depends_on:
@@ -18,7 +18,7 @@ services:
     image: mongo:3
     container_name: images_mongo
     volumes:
-      - /data/dofinder/images:/data/db
+      - /data/db
     networks:
       - core-net
 
