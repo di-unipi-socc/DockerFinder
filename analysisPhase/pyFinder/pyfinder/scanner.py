@@ -110,7 +110,6 @@ class Scanner:
     #     dict_inspect = self.client_daemon.inspect_image(repo_name)
     #     #dict_image['size'] = dict_inspect['Size']
 
-
     def info_docker_hub(self, repo_name, dict_image):
         """
         Download the image information among Docker API v2.
@@ -151,49 +150,74 @@ class Scanner:
         # with Container(repo_name) as c:
 
         # search distribution Operating system,
-        # for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
-        #     try:
-        #         distro = self.version_from_regex(repo_name, cmd, regex)
-        #         if distro:
-        #             dict_image['distro'] = distro
-        #         # output = self.run_command(repo_name, cmd)
-        #         # p = re.compile(reg)
-        #         # match = p.search(output)
-        #         # if match:
-        #         #     # take the non-capturing group: only the matches, group[0] return all the match
-        #         #     dist = match.group(0)
-        #         #     dict_image['distro'] = dist
-        #         # else:
-        #         #     self.logger.debug("[{0}] not found {1}".format(repo_name, cmd))
-        #     except docker.errors.NotFound as e:
-        #         self.logger.error(e)
-        #         #   with Container(repo_name) as c:
+        for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
+            try:
+                distro = self.version_from_regex(repo_name, cmd, regex)
+                if distro:
+                    dict_image['distro'] = distro
+                # output = self.run_command(repo_name, cmd)
+                # p = re.compile(reg)
+                # match = p.search(output)
+                # if match:
+                #     # take the non-capturing group: only the matches, group[0] return all the match
+                #     dist = match.group(0)
+                #     dict_image['distro'] = dist
+                # else:
+                #     self.logger.debug("[{0}] not found {1}".format(repo_name, cmd))
+            except docker.errors.NotFound as e:
+                self.logger.error(e)
+                #   with Container(repo_name) as c:
 
         # search binary versions
         softwares = []
         for sw in self.client_software.get_software():  # self._get_bins(self.versionCommands):
             try:
                 software = sw['name']
-                cmd = sw['cmd']
+                command = software+" " + sw['cmd']
+                #cmd = sw['cmd']
                 regex = sw['regex']
-                version = self.version_from_regex(repo_name, software, cmd, regex)
+                version = self.version_from_regex(repo_name, command, regex)
                 if version:
                     softwares.append({'software': software, 'ver': version})
             except docker.errors.NotFound as e:
                 self.logger.error(e)
         dict_image['softwares'] = softwares
 
-    def version_from_regex(self, repo_name, program, option, regex):
-        output = self.run_command(repo_name, program, option)
+    def version_from_regex(self, repo_name, command, regex):
+        output = self.run_command(repo_name, command)
         p = re.compile(regex)
         match = p.search(output)
         if match:
             version = match.group(0)
-            self.logger.debug("[{0}] found in {1}".format(program, repo_name))
+            self.logger.debug("[{0}] found in {1}".format(command, repo_name))
             return version
         else:
-            self.logger.debug("[{0}] NOT found in {1}".format(program, repo_name))
+            self.logger.debug("[{0}] NOT found in {1}".format(command, repo_name))
             return None
+
+
+    def run_command(self, repo_name, command):
+        """Just like 'docker run CMD'.
+        Return the output of the command.
+        """
+        # Popen version: PROBLEM; the scanner is executed in a container and docker in not installed inside.
+        # self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
+        # p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
+        # out = p.stdout.read().decode()
+        # return out
+
+        #ver_command = program + " " + option
+        container_id = self.client_daemon.create_container(image=repo_name,
+                                                           entrypoint=command,
+                                                           tty=True,
+                                                           stdin_open=True,
+                                                           )['Id']
+        self.client_daemon.start(container=container_id)
+        self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
+        self.client_daemon.wait(container_id)
+        output = self.client_daemon.logs(container=container_id)
+        #self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
+        return output.decode()
 
     def pull_officials(self):
         # TODO excpetion raise for the connection to docker hub
@@ -207,25 +231,3 @@ class Scanner:
             except docker.errors.APIError:
                 self.logger.exception("Docker api error")
                 pass
-
-    def run_command(self, repo_name, program, option):
-        """Just like 'docker run CMD'.
-        Return the output of the command.
-        """
-        # self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
-        # p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
-        # out = p.stdout.read().decode()
-        # return out
-
-        ver_command = program + " " + option
-        container_id = self.client_daemon.create_container(image=repo_name,
-                                                           command=ver_command,
-                                                           tty=True,
-                                                           stdin_open=True,
-                                                           )['Id']
-
-        self.client_daemon.start(container=container_id)
-        self.client_daemon.wait(container_id)
-        output = self.client_daemon.logs(container=container_id)
-        #self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
-        return output.decode()

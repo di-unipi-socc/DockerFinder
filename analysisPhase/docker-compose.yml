@@ -22,8 +22,8 @@ services:
     restart: always
     #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
-#    volumes:
-#      - .:/code
+    # volumes:
+    # - .:/code
     depends_on:
      - rabbitmq
     links:
@@ -39,12 +39,11 @@ services:
     container_name: scanner
     #restart: on-failure:3
     restart: always
-    command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images --key=images.scan', '--software-url=http://software_server:3001/api/software']
+    command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
      - rabbitmq
-     - crawler
     links:
      - rabbitmq
     networks:
