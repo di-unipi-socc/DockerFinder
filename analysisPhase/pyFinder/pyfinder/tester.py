@@ -1,6 +1,8 @@
 import pickle
 from .crawler import Crawler
 from .utils import get_logger
+from pyfinder import ClientHub
+from pyfinder import ClientDaemon
 from .publisher_rabbit import PublisherRabbit
 import logging
 import json
@@ -22,10 +24,13 @@ import json
 
 
 class Tester:
-    def __init__(self, path_file_images="images.test"):
+    def __init__(self, path_file_images="images.test",  hub_url="https://hub.docker.com/"):
         self._path = path_file_images
         self.crawler = Crawler()
         self.logger = get_logger(__name__, logging.INFO)
+        # the client hub interacts with the docker Hub registry
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
+        self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
 
     def build_test(self, num_images_test=100, from_page=1, page_size=10,):
         list_json_images = [image_json for image_json in self.crawler.crawl(max_images=num_images_test, from_page=from_page, page_size=page_size)]
@@ -53,3 +58,26 @@ class Tester:
         except Exception:
             logger.exception("unexpected Exception")
             raise
+
+    def pull_officials(self):
+        # TODO excpetion raise for the connection to docker hub
+        # download all the official library
+        images_libraries = self.client_hub.crawl_official_images()
+        self.logger.info("[" + str(images_libraries) + "] number of official images to pull...")
+        for image in images_libraries:
+            try:
+                self.client_daemon.pull_image(image)
+            except docker.errors.APIError:
+                self.logger.exception("Docker api error")
+                pass
+
+    def remove_no_officials(self):
+        images_libraries = self.client_hub.crawl_official_images()
+        all_images = self.client_daemon.images()
+
+        for image in all_images:
+            image_tags = image['RepoTags']
+            for repo_tag in image_tags:
+                if repo_tag not in images_libraries:
+                    self.client_daemon.remove_image(image['Id'], force=True)
+                    self.logger.info("Removing ID"+image['Id'] + repo_tag)

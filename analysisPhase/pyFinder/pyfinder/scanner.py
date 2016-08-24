@@ -216,18 +216,19 @@ class Scanner:
         #self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
         self.client_daemon.wait(container_id)
         output = self.client_daemon.logs(container=container_id)
-        #self.logger.debug("Logs <" + ver_command + "> = " + output.decode())
+        self.client_daemon.remove_container(container_id)
+        self.logger.debug("Removed container "+container_id)
         return output.decode()
 
-    def pull_officials(self):
-        # TODO excpetion raise for the connection to docker hub
-        # download all the official library
-        images_libraries = self.client_hub.crawl_official_images()
-
-        for image in images_libraries:
-            try:
-                self.logger.info("Pull official images ...")
-                self.client_daemon.pull_image(image)
-            except docker.errors.APIError:
-                self.logger.exception("Docker api error")
-                pass
+    # def pull_officials(self):
+    #     # TODO excpetion raise for the connection to docker hub
+    #     # download all the official library
+    #     images_libraries = self.client_hub.crawl_official_images()
+    #     self.logger.info("[" + str(images_libraries)+ "] number of official images to pull...")
+    #     for image in images_libraries:
+    #         try:
+    #
+    #             self.client_daemon.pull_image(image)
+    #         except docker.errors.APIError:
+    #             self.logger.exception("Docker api error")
+    #             pass

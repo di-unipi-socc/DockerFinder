@@ -1,5 +1,6 @@
 from pyfinder import Tester
 from pyfinder import ClientSoftware
+
 from docopt import docopt
 
 __doc__= """Crawler
@@ -7,6 +8,8 @@ __doc__= """Crawler
 Usage:
   Tester.py build [--ni=<100>] [--fp=<1>] [--pf=<images.test>]
   Tester.py send  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--key=<images.test>] [--queue=<test>]  [--pf=<images.test>]
+  Tester.py pull officials
+  Tester.py rmi
   Tester.py (-h | --help)
   Tester.py --version
 
@@ -23,7 +26,7 @@ Options:
 """
 
 if __name__ == '__main__':
-    args = docopt(__doc__, version='Crawler 0.0.1')
+    args = docopt(__doc__, version='Tester 0.0.1')
     sw = ClientSoftware(api_url="http://127.0.0.1:3001/api/software")
     tester = Tester(path_file_images=args['--pf'])
     if args['build']:
@@ -33,3 +36,8 @@ if __name__ == '__main__':
         tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
                          route_key=args['--key'])
 
+    if args['pull'] and args['officials']:
+        scanner.pull_officials()
+
+    if args['rmi']:
+        tester.remove_no_officials()
