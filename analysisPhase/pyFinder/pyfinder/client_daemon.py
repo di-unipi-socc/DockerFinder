@@ -10,7 +10,6 @@ class ClientDaemon(docker.Client):
     def __init__(self, base_url=None, version=None, timeout=60, tls=False):
         #base_url = 'unix://var/run/docker.sock'
         super(ClientDaemon, self).__init__(base_url=base_url, version=version, timeout=timeout, tls=tls)
-
         self.logger = get_logger(__name__, logging.INFO)
 
     def pull_image(self, repo_name, tag="latest"):
