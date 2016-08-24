@@ -76,7 +76,7 @@ class ClientHub:
                     crawled_images += len(list_json_image)
                     yield list_json_image
                 else:
-                    self.logger.error("Crawl_images method:" +str(res.status_code) + " Error response: " + res.text)
+                    self.logger.error(str(res.status_code) + " Error response: " + res.text)
             else:
                 return
 

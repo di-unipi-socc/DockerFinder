@@ -45,9 +45,14 @@ class Crawler:
         :return: True if the image must be downloaded, Flase if must be discarded
         """
         list_tags = self.client_hub.get_all_tags(repo_name)
-        self.logger.debug("[ " + repo_name + " ] found tags " + str(len(list_tags)))
         if list_tags and 'latest' in list_tags:  # only the images that  contains "latest" tag
-            return True
+            json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
+            size  =  json_image_latest['full_size']
+            if size > 0:
+                self.logger.debug("[ " + repo_name + " ] is selected: tag=latest, size="+str(size))
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -62,7 +67,7 @@ class Crawler:
         """
 
 
-        self.logger.info("Crawling the images from the docker Hub...")
+        #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
