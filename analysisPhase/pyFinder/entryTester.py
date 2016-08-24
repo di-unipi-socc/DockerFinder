@@ -37,7 +37,7 @@ if __name__ == '__main__':
                          route_key=args['--key'])
 
     if args['pull'] and args['officials']:
-        scanner.pull_officials()
+        tester.pull_officials()
 
     if args['rmi']:
         tester.remove_no_officials()
