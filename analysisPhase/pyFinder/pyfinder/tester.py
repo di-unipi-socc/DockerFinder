@@ -63,7 +63,7 @@ class Tester:
         # TODO excpetion raise for the connection to docker hub
         # download all the official library
         images_libraries = self.client_hub.crawl_official_images()
-        self.logger.info("[" + str(images_libraries) + "] number of official images to pull...")
+        self.logger.info("[" + str(len(images_libraries)) + "] number of official images to pull...")
         for image in images_libraries:
             try:
                 self.client_daemon.pull_image(image)
