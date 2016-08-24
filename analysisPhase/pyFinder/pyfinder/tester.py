@@ -48,7 +48,7 @@ class Tester:
                 for image in list_images:
                     yield json.dumps(json.loads(image))
         except FileNotFoundError:
-            logger.exception(" Error open file " + path_name_file + ". Try [ build test ] command before")
+            logger.exception(" Error open file " + path_name_file + ". \n Try [ build test ] command before")
             raise
         except Exception:
             logger.exception("unexpected Exception")

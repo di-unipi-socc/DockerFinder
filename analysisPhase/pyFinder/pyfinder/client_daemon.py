@@ -20,7 +20,7 @@ class ClientDaemon(docker.Client):
             if len(ims) >= 1:
                 repo_name = [im['RepoTags'][0] for im in self.images()][0]
 
-        assert repo_name, 'No image given or found locally.'
+        #assert repo_name, 'No image given or found locally.'
 
         # get image if not available locally
         im_names = [im['RepoTags'][0] for im in self.images()]  # all the images in the host (first tag)
@@ -34,7 +34,7 @@ class ClientDaemon(docker.Client):
                     pass
                     # self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
                 if 'status' in json_image.keys() and "Downloaded" in json_image['status']:
-                    self.logger.info("\n" + repo_name + ":" + json_image['status'])
+                    self.logger.info("[" + repo_name + "] " + json_image['status'])
         else:
             self.logger.info("[" + repo_name + "] already exists or not found int the Docker Hub")
 

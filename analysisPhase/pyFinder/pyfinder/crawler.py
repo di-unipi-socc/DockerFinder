@@ -67,7 +67,7 @@ class Crawler:
         """
 
 
-        self.logger.info("Crawling the images from the docker Hub...")
+        #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
         for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
