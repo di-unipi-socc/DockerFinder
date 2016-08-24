@@ -99,7 +99,7 @@ class Scanner:
 
         if self.rmi:
             self.client_daemon.remove_image(repo_name, force=True)
-            self.logger.info('[{0}] removed image'.format(repo_name))
+            self.logger.info('[{0}] REMOVED image'.format(repo_name))
         return dict_image
 
     # def info_inspect(self, repo_name, dict_image):

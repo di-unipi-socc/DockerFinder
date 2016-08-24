@@ -151,13 +151,15 @@ class ClientHub:
             res = self.session.get(url_repositories+url_encode)
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-                list_images =[res['user']+"/"+res['name'] for res in json_response['results']]
+                #list_images =[res['user']+"/"+res['name'] for res in json_response['results']]
+                list_images = [res['name'] for res in json_response['results']]
                 count += json_response['count']
                 next_page = json_response['next']
                 while next_page:
                     res = self.session.get(next_page)
                     json_response = res.json()
-                    list_images += [res['user']+"/"+res['name'] for res in json_response['results']]
+                    #list_images += [res['user']+"/"+res['name'] for res in json_response['results']]
+                    list_images += [res['name'] for res in json_response['results']]
                     next_page = json_response['next']
                 return list_images
             else:

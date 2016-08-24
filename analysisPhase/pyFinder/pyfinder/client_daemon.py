@@ -37,9 +37,9 @@ class ClientDaemon(docker.Client):
         else:
             self.logger.info("[" + repo_name + "] already exists or not found int the Docker Hub")
 
-    def remove_image(self, image, force=False):
-
-        try:
-            self.remove_image(image, force)
-        except :
-            e = sys.exc_info()[0]
+    # def remove_image(self, image, force=False):
+    #
+    #     try:
+    #         self.remove_image(image, force)
+    #     except :
+    #         e = sys.exc_info()[0]

@@ -5,7 +5,9 @@ from pyfinder import ClientHub
 from pyfinder import ClientDaemon
 from .publisher_rabbit import PublisherRabbit
 import logging
+import docker
 import json
+import time
 
 
 
@@ -69,7 +71,7 @@ class Tester:
                 self.client_daemon.pull_image(image)
             except docker.errors.APIError:
                 self.logger.exception("Docker api error")
-                pass
+
 
     def remove_no_officials(self):
         images_libraries = self.client_hub.crawl_official_images()
@@ -77,7 +79,9 @@ class Tester:
 
         for image in all_images:
             image_tags = image['RepoTags']
-            for repo_tag in image_tags:
-                if repo_tag not in images_libraries:
-                    self.client_daemon.remove_image(image['Id'], force=True)
-                    self.logger.info("Removing ID"+image['Id'] + repo_tag)
+            for repo_tag in image_tags:   #repo_tag = "repo_name:latest"
+                name = repo_tag.split(":")[0]
+                if name not in images_libraries:
+                    self.logger.info("Removing  " + repo_tag)
+                    self.client_daemon.remove_image(repo_tag, force=True)
+
