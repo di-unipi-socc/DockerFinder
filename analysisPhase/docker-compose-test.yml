@@ -36,7 +36,7 @@ services:
       context: .
       dockerfile: ./Dockerfile_scanner
     image: dofinder/scanner:latest
-    container_name: scanner
+    #container_name: scanner
     #restart: on-failure:3
     restart: always
     command: [run, '--images-url=http://images_server:3000/api/images', '--queue=test', '--key=images.test', '--software-url=http://software_server:3001/api/software', '--rmi']
