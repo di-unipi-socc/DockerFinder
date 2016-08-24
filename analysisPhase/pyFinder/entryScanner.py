@@ -32,12 +32,12 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
-    #print(args)
+    print(args)
     scanner = Scanner(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'], route_key=args['--key'],
                       images_url=args['--images-url'],
                       software_url=args['--software-url'],
                       hub_url=args['--hub-url'],
-                      rmi=int(args['--rmi']))
+                      rmi=args['--rmi'])
 
     if args['scan']:
         image_name = args['<name>']
