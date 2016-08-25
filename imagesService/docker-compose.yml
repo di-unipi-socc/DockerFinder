@@ -4,7 +4,8 @@ services:
     build: images_server
     image: dofinder/imagesserver:latest
     container_name: images_server
-    restart: always
+    #restart: always
+    restart: on-failure:3
     ports:
       - "3000:3000"
     depends_on:

@@ -4,7 +4,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq
-    restart: always
+    restart: on-failure:3
+    #restart: always
     container_name: rabbitmq
     ports:
       - 8081:15672
@@ -18,8 +19,8 @@ services:
       context: .
       dockerfile: ./Dockerfile_crawler
     image: dofinder/crawler:latest
-    #restart: on-failure:3
-    restart: always
+    restart: on-failure:3
+    #restart: always
     #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
     # volumes:
@@ -37,8 +38,8 @@ services:
       dockerfile: ./Dockerfile_scanner
     image: dofinder/scanner:latest
     container_name: scanner
-    #restart: on-failure:3
-    restart: always
+    restart: on-failure:3
+    #restart: always
     command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
