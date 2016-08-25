@@ -4,7 +4,8 @@ services:
     build: software_server/
     container_name: software_server
     image: dofinder/softwareserver:latest
-    restart: always
+    # restart: always
+    restart: on-failure:3
     ports:
       - "3001:3001"
     depends_on:
