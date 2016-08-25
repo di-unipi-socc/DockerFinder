@@ -82,7 +82,7 @@ class ClientImages:
             self.logger.exception("ConnectionError: " )
 
     def is_new(self, repo_name):
-        res_json= self.get_image(repo_name)
+        res_json = self.get_image(repo_name)
         if res_json['count'] is 0:
             self.logger.info("["+repo_name+"] is new")
             return True

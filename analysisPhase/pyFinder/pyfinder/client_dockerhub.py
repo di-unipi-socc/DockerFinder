@@ -24,6 +24,11 @@ class ClientHub:
             self.logger.exception("ConnectionError: ")
 
     def get_all_tags(self, repo_name):
+        """
+        Return a lsit of all the tags associated with the repository name
+        :param repo_name:
+        :return:
+        """
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
         try:
             res = self.session.get(url_tags)

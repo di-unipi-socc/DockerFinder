@@ -32,7 +32,7 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
-    print(args)
+    #print(args)
     scanner = Scanner(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'], route_key=args['--key'],
                       images_url=args['--images-url'],
                       software_url=args['--software-url'],

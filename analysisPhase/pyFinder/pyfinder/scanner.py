@@ -64,42 +64,49 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
         self.logger.info("[" + repo_name + "] Processing image")
-        if self.client_images.is_new(repo_name):  # the image is totally new
-            self.logger.debug("[" + repo_name + "] is totally new into the images server")
-            dict_image = self.scan(repo_name)
-            self.client_images.post_image(dict_image)  # POST the description of the image
-            self.logger.info("[" + repo_name + "]  uploaded the new image description")
-        elif self.client_images.must_scanned(repo_name):  # the image must be scan again
-            self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
-            dict_image = self.scan(repo_name)
-            self.client_images.put_image(dict_image)  # PUT the new image description of the image
-            self.logger.info("[" + repo_name + "] updated the image description")
-        else:
-            self.logger.info("[" + repo_name + "] already up to date.")
+        list_tags = self.clientHub.get_all_tags(repo_name)
+        tag = "latest"
+        if tag in list_tags:
+            # TODO; is new must contains also the tag latest ...
+            if self.client_images.is_new(repo_name):  # the image is totally new
+                self.logger.debug("[" + repo_name + "] is totally new into the images server")
+                dict_image = self.scan(repo_name, tag)
+                self.client_images.post_image(dict_image)  # POST the description of the image
+                self.logger.info("[" + repo_name + "]  uploaded the new image description")
+            elif self.client_images.must_scanned(repo_name):  # the image must be scan again
+                self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
+                dict_image = self.scan(repo_name, tag)
+                self.client_images.put_image(dict_image)  # PUT the new image description of the image
+                self.logger.info("[" + repo_name + "] updated the image description")
+            else:
+                self.logger.info("[" + repo_name + "] already up to date.")
+
+
 
     def scan(self, repo_name, tag="latest"):
+
         try:
-            self.client_daemon.pull_image(repo_name, tag)
-        except:
-            self.logger.exception("Exception when pulling the image")
-            raise
+            # self.client_daemon.pull_image(repo_name, tag)
+            self.client_daemon.pull(repo_name, tag)
+        except docker.errors as e:
+            self.logger.exception(e)
 
         dict_image = {}
-        self.logger.info('Scanning [{0}]'.format(repo_name))
-
         dict_image["repo_name"] = repo_name
+        self.logger.info('[{0}] start scanning'.format(repo_name))
 
-        # self.info_inspect(repo_name, dict_image)
-        self.info_docker_hub(repo_name, dict_image)
+        self.info_docker_hub(repo_name, dict_image, tag)
+        self.info_dofinder(repo_name, dict_image, tag)
 
-        self.info_dofinder(repo_name, dict_image)
-
-        self.logger.info('Finish scanning [{0}]'.format(repo_name))
+        self.logger.info('[{0}] finish scanning'.format(repo_name))
         dict_image['last_scan'] = str(datetime.datetime.now())
 
         if self.rmi:
-            self.client_daemon.remove_image(repo_name, force=True)
-            self.logger.info('[{0}] REMOVED image'.format(repo_name))
+            try:
+                self.client_daemon.remove_image(repo_name, force=True)
+                self.logger.info('[{0}] removed image'.format(repo_name))
+            except docker.errors.NotFound as e:
+                self.logger.error(e)
         return dict_image
 
     # def info_inspect(self, repo_name, dict_image):
@@ -110,7 +117,7 @@ class Scanner:
     #     dict_inspect = self.client_daemon.inspect_image(repo_name)
     #     #dict_image['size'] = dict_inspect['Size']
 
-    def info_docker_hub(self, repo_name, dict_image):
+    def info_docker_hub(self, repo_name, dict_image, tag):
         """
         Download the image information among Docker API v2.
         :param repo_name:
@@ -119,6 +126,13 @@ class Scanner:
         """
         self.logger.info('[{}] adding Docker Hub info ... '.format(repo_name))
 
+        # take info from the repository
+        # {"user": "dido", "name": "webofficina", "namespace": "dido", "status": 1,
+        #  "description": "Automated repo for the webOfficina gitHub repository", "is_private": false,
+        #  "is_automated": true, "can_edit": false, "star_count": 0, "pull_count": 40,
+        #  "last_updated": "2016-06-12T15:46:21.454420Z", "has_starred": false,
+        #  "full_description": "# webOfficina\nWebOfficina is a web application"
+        #  "permissions": {"read": true, "write": false, "admin": false}}
         json_response = self.client_hub.get_json_repo(repo_name)
 
         if json_response:
@@ -131,20 +145,23 @@ class Scanner:
                 # dict_image['pull_count'] = json_response['pull_count']
                 dict_image['pulls'] = json_response['pull_count']
 
-        # TODO : here must be included the tags lists of the image
-        # josn_reposnse = slef.clientHub.get_all_tags(repo_name)
 
-        # info of only the image with the tag latest
-        json_response = self.client_hub.get_json_tag(repo_name, tag="latest")
+        # take info from a tag
+        # {"name": "latest", "full_size": 279654175, "id": 1720126, "repository": 479046, "creator": 534858,
+        #  "last_updater": 534858, "last_updated": "2016-06-12T15:46:18.292828Z", "image_id": null, "v2": true,
+        #  "platforms": [5]}
+        json_response = self.client_hub.get_json_tag(repo_name, tag)
 
+        if 'name' in json_response:
+            dict_image['tag'] = json_response['name']
         if 'last_updated' in json_response:
             dict_image['last_updated'] = json_response['last_updated']
         if 'full_size' in json_response:
-            # dict_image['full_size'] = json_response['full_size']
             dict_image['size'] = json_response['full_size']
 
-    def info_dofinder(self, repo_name, dict_image):
+    def info_dofinder(self, image_name, dict_image, tag):
 
+        repo_name = image_name + ":" + tag
         self.logger.info('[{}] searching software ... '.format(repo_name))
 
         # with Container(repo_name) as c:

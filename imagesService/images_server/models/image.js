@@ -10,6 +10,7 @@ var imageSchema =  new mongoose.Schema({
         unique:     true,
         required    :[true, 'The name of the image cannot be empty']
     },
+    tag : String,
     last_scan:      Date,
     last_updated:   Date,  // time of the last updated of the repo in the docker hub
     size:      Number,
