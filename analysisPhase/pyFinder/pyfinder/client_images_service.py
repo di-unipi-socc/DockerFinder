@@ -84,7 +84,7 @@ class ClientImages:
     def is_new(self, repo_name):
         res_json = self.get_image(repo_name)
         if res_json['count'] is 0:
-            self.logger.info("["+repo_name+"] is new")
+            self.logger.info("["+repo_name+"] is new into IMAGES SERVER")
             return True
         else:
             self.logger.info("[" + repo_name + "] is present")

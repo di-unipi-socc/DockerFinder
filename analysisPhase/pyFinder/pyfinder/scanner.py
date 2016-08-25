@@ -64,12 +64,11 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
         self.logger.info("[" + repo_name + "] Processing image")
-        list_tags = self.clientHub.get_all_tags(repo_name)
+        list_tags = self.client_hub.get_all_tags(repo_name)
         tag = "latest"
         if tag in list_tags:
             # TODO; is new must contains also the tag latest ...
             if self.client_images.is_new(repo_name):  # the image is totally new
-                self.logger.debug("[" + repo_name + "] is totally new into the images server")
                 dict_image = self.scan(repo_name, tag)
                 self.client_images.post_image(dict_image)  # POST the description of the image
                 self.logger.info("[" + repo_name + "]  uploaded the new image description")
@@ -81,15 +80,10 @@ class Scanner:
             else:
                 self.logger.info("[" + repo_name + "] already up to date.")
 
-
-
     def scan(self, repo_name, tag="latest"):
 
-        try:
-            # self.client_daemon.pull_image(repo_name, tag)
-            self.client_daemon.pull(repo_name, tag)
-        except docker.errors as e:
-            self.logger.exception(e)
+        self.client_daemon.pull_image(repo_name, tag)
+        #self.client_daemon.pull(repo_name, tag)
 
         dict_image = {}
         dict_image["repo_name"] = repo_name
@@ -161,15 +155,15 @@ class Scanner:
 
     def info_dofinder(self, image_name, dict_image, tag):
 
-        repo_name = image_name + ":" + tag
-        self.logger.info('[{}] searching software ... '.format(repo_name))
+        repo_name_tag = image_name + ":" + tag
+        self.logger.info('[{}] searching software ... '.format(repo_name_tag))
 
         # with Container(repo_name) as c:
 
         # search distribution Operating system,
         for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
             try:
-                distro = self.version_from_regex(repo_name, cmd, regex)
+                distro = self.version_from_regex(repo_name_tag, cmd, regex)
                 if distro:
                     dict_image['distro'] = distro
                 # output = self.run_command(repo_name, cmd)
@@ -193,7 +187,7 @@ class Scanner:
                 command = software+" " + sw['cmd']
                 #cmd = sw['cmd']
                 regex = sw['regex']
-                version = self.version_from_regex(repo_name, command, regex)
+                version = self.version_from_regex(repo_name_tag, command, regex)
                 if version:
                     softwares.append({'software': software, 'ver': version})
             except docker.errors.NotFound as e:
@@ -224,12 +218,18 @@ class Scanner:
         # return out
 
         #ver_command = program + " " + option
+        self.logger.info("[{0}] running command {1}".format(repo_name, command))
         container_id = self.client_daemon.create_container(image=repo_name,
                                                            entrypoint=command,
                                                            tty=True,
                                                            stdin_open=True,
-                                                           )['Id']
-        self.client_daemon.start(container=container_id)
+
+                                                         )['Id']
+        try:
+            self.client_daemon.start(container=container_id)
+        except docker.errors.APIError as e:
+            self.logger.error(e)
+            return " "
         #self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
         self.client_daemon.wait(container_id)
         output = self.client_daemon.logs(container=container_id)
