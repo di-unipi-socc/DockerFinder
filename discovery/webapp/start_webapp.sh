@@ -6,7 +6,7 @@
  #-p 8080
 
 docker rm webapp
-docker run --net=core-net --name=webapp  -p 8080:8080 --rm -v /home/dido/github/DockerFinder/webapp:/code dofinder/webapp:latest
+docker run --net=core-net --name=webapp  -p 8080:8080 --rm -v /home/dido/github/DockerFinder/discovery/webapp:/code dofinder/webapp:latest
 
 
 
