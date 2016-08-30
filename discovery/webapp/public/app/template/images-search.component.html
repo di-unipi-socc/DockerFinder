@@ -1,7 +1,43 @@
 <div class="container">
     <div [hidden]="submitted">
+
+
     <h1>Search Images form</h1>
-      <form (ngSubmit)="onSubmit()" #imageForm="ngForm" class="form-inline">
+
+            <div *ngFor="let sw of softwares; let id = index">
+                <!--div class="form-horizontal">
+                    <div class="form-group"-->
+                        <input class="col-xs-3"  type="text" [(ngModel)]="sw.name" placeholder="software name">
+                        <input class="col-xs-3" [ngClass]="{errorversion: sw.error}" [(ngModel)]="sw.version" (keyup)="change_version(sw)" placeholder="version">
+
+                        <button (click)="remove(id)">Remove</button>
+                    <!--/div>
+                </div-->
+        </div>
+        <button (click)="add()">Add</button>
+
+        <div>{{msg}}</div>
+
+         <div>{{diagnostic()}}</div>
+
+         <div class="row">
+                <div class="col-md-4">
+                  <label for="sort">Sort by:</label>
+                  <select class="form-control" [(ngModel)]="sort"  name="sort" id="sort">
+                      <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
+                   </select>
+               </div>
+
+               <div class="col-md-4">
+                  <label for="order">Order by: </label>
+                  <select class="form-control" [(ngModel)]="order" name="order" id="order">
+                      <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
+                  </select>
+              </div>
+         </div>
+   <!--<button type="submit" class="btn btn-primary" (ngSubmit)="onSubmit()"> Search</button>-->
+    <button type="submit" class="btn btn-primary" (click)="onSubmit()"> Search</button>
+
           <!--<div class="form-group">-->
               <!--<label for="name">Name</label>-->
               <!--<input type="text" class="form-control" placeholder="Python" name="name" required  [(ngModel)]="bin" #name="ngModel" id="name" >-->
@@ -15,7 +51,7 @@
               <!--<label for="version">Version</label>-->
               <!--<input type="text" class="form-control" id="version" placeholder="2.7" required [(ngModel)]="version" name="alterEgo" name="version">-->
           <!--</div>-->
-          <div *ngFor="let sw of softwares" class="row">
+          <!--div *ngFor="let sw of softwares" class="row">
               <div  class="col-md-4">
                   <label for="name">Name</label>
                   <input type="text" class="form-control" value={{sw.name}} name="name" required  [(ngModel)]=sw.name #name="ngModel" id="name" >
@@ -36,7 +72,7 @@
               </div>
 
           <div class="row">
-                <div class="col-md-4">
+                <div-- class="col-md-4">
                   <label for="sort">Sort by:</label>
                   <select class="form-control" [(ngModel)]="sort"  name="sort" id="sort">
                       <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
@@ -58,7 +94,7 @@
 
           <button type="submit" class="btn btn-primary" [disabled]="!imageForm.form.valid" (ngSubmit)="onSubmit()"> Search</button>
 
-      </form>
+      </form-->
 
 
     </div>

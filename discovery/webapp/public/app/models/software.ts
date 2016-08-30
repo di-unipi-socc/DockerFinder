@@ -7,6 +7,7 @@ export class Software{
 
     constructor(
         public name:  string,
-        public version: string
+        public version: string,
+        public error : boolean
     ){}
 }

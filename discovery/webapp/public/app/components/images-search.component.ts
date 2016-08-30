@@ -17,15 +17,9 @@ export class ImagesSearchComponent {
     submitted = false;
     sorting   = ['stars', 'pulls',];
     ordering  = ['ascending order','descending order'];
+    softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
+    msg: string = '';
     
-    softwares:Software[] = [
-        new Software("python", "3.4"),
-        new Software("java", "1.9")
-
-    ]; // = ['java', 'python', 'ruby', 'curl'];
-
-
-    //sw = new Software("java", "1.9");
 
     bin :string ;
     version: string;
@@ -36,12 +30,39 @@ export class ImagesSearchComponent {
     count = 0;
 
     constructor( private router: Router, private imageService: ImageService){
-       // this.softwares.push(new Software("java", "1.9"));
+        //this.softwares.push(new Software("", ""));
+    }
+
+    remove(id: number) {
+        this.softwares.splice(id, 1);
+    }
+
+    add(id){
+        this.softwares.push(new Software(" ", " ", false));
+    }
+
+      change_version(item) {
+        var regex = /^[1-9].([1-9].)*[1-9]$/g;
+        if (!regex.test(item.version)){
+          this.msg="The version syntax it is not correct!";
+          item.error=true;
+        }else{
+          this.msg='';
+          item.error=false;
+        }
+      }
+
+    diagnostic() {
+        var result  = "";
+        for (var sw of this.softwares) {
+            result += sw.name + "=" + sw.version;
+        }
+        return result;
     }
 
     onSubmit() {
-        this.constructSearchUrl();
-        this.imageService.searchImages(this.diagnostic)
+        //this.constructSearchUrl();
+        this.imageService.searchImages(this.constructSearchUrl())
             .then(images=>{
                 if(images.length > 0 ) {
                     this.resultImages = images;
@@ -55,14 +76,12 @@ export class ImagesSearchComponent {
 
     constructSearchUrl(){
         var url_search ="";
-        for(sw of this.softwares){
-            url_search+=sw.name+"="+sw.version;
+        for(var sw of this.softwares){
+            url_search+=sw.name+"="+sw.version+"&";
         }
-        console.log(url_search)
+        return url_search;
     }
 
-     // TODO: Remove this when we're done
-    get diagnostic() { return this.bin+"="+this.version }
 
     edit(){
         this.submitted=false;
