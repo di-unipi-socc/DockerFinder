@@ -3,6 +3,7 @@
  */
 import { Component} from '@angular/core';
 import {ImageService} from '../services/image.service'
+import {SoftwareService} from '../services/software.service'
 import {Image }  from '../models/image'
 import {Software }  from '../models/software'
 import {ImagesComponent}  from '../components/images.component'
@@ -20,6 +21,8 @@ export class ImagesSearchComponent {
     softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
     msg: string = '';
     
+    availableSoftware : string [] =["java", "python", "wget"];
+    
 
     bin :string ;
     version: string;
@@ -29,7 +32,7 @@ export class ImagesSearchComponent {
     resultImages : Image[];
     count = 0;
 
-    constructor( private router: Router, private imageService: ImageService){
+    constructor( private router: Router, private imageService: ImageService){//}, private softwareService: SoftwareService){
         //this.softwares.push(new Software("", ""));
     }
 
@@ -77,7 +80,7 @@ export class ImagesSearchComponent {
     constructSearchUrl(){
         var url_search ="";
         for(var sw of this.softwares){
-            url_search+=sw.name+"="+sw.version+"&";
+            url_search += sw.name+"="+sw.version+"&";
         }
         return url_search;
     }
