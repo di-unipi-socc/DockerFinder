@@ -22,6 +22,10 @@ and defines a model that describe that informations.
 3. Develops a intelligent **search system** that is able to identify the images that
 offer determined features and not only based on the name and the tag.
 
+
+<div style="text-align:center">
+<img src="./docs/architecture_docker.png" width="500">
+</div>
   
 ### Description
 The description of the images can be decomposed in:
