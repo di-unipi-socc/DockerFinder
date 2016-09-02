@@ -1,133 +1,250 @@
-<div class="container">
-    <div [hidden]="submitted">
+<div class="container" [hidden]="submitted">
 
-
-    <h2>Search Images:</h2>
-        <div class="container">
-
-                <div class="form-group">
-                    <div  *ngFor="let sw of softwares; let id = index">
-                        <!--<input class="col-md-4"   type="text" [(ngModel)]="sw.name" placeholder="software name">-->
-                         <select class="col-md-4"   type="text" [(ngModel)]="sw.name" placeholder="software name">
-                             <option *ngFor="let sw of availableSoftware" [value]="sw">{{sw}}</option>
-                             </select>
-                        <input class="col-md-4"    [ngClass]="{errorversion: sw.error}" [(ngModel)]="sw.version" (keyup)="change_version(sw)" placeholder="version">
-                        <button class="btn btn-danger  btn-xs"   (click)="remove(id)">Remove</button>
-                    </div>
-                </div>
-                   <button class="btn btn-success btn-md" (click)="add()">Add</button>
-
-            </div>
-
-
-        <div>{{msg}}</div>
-         <!--<div>{{diagnostic()}}</div>-->
-
-    <div class="container">
-         <div class="row">
-                <div class="col-md-4">
-                  <label for="sort">Sort by:</label>
-                  <select class="form-control selectpicker" [(ngModel)]="sort"  name="sort" id="sort">
-                      <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
-                   </select>
-               </div>
-
-               <div class="col-md-4">
-                  <label for="order">Order by: </label>
-                  <select class="form-control" [(ngModel)]="order" name="order" id="order">
-                      <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
-                  </select>
-              </div>
-         </div>
-   <!--<button type="submit" class="btn btn-primary" (ngSubmit)="onSubmit()"> Search</button>-->
-
-    <button type="submit" class="btn btn-primary" (click)="onSubmit()"> Search</button>
-
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-12">
+            <h2>Search Images:</h2>
+        </div>
     </div>
-          <!--<div class="form-group">-->
-              <!--<label for="name">Name</label>-->
-              <!--<input type="text" class="form-control" placeholder="Python" name="name" required  [(ngModel)]="bin" #name="ngModel" id="name" >-->
-              <!--<div [hidden]="name.valid || name.pristine" class="alert alert-danger">-->
-                  <!--Name is required-->
-              <!--</div>-->
-          <!--</div>-->
-          <!---->
 
-          <!--<div class="form-group">-->
-              <!--<label for="version">Version</label>-->
-              <!--<input type="text" class="form-control" id="version" placeholder="2.7" required [(ngModel)]="version" name="alterEgo" name="version">-->
-          <!--</div>-->
-          <!--div *ngFor="let sw of softwares" class="row">
-              <div  class="col-md-4">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control" value={{sw.name}} name="name" required  [(ngModel)]=sw.name #name="ngModel" id="name" >
-                  <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-                      Name is required
-                  </div>
-              </div>
-              <div class="col-md-4">
-                      <label for="version">Version</label>
-                  <input type="text" class="form-control" id="version" value={{sw.version}} required [(ngModel)]=sw.version name="version" name="version">
-
-              </div>
-          </div>
-
-            <button (click)="addSoftware()">add Software</button>
-          <div *ngFor="let sw of softwares" class="row">
-              {{sw.name}} {{sw.version}}
-              </div>
-
-          <div class="row">
-                <div-- class="col-md-4">
-                  <label for="sort">Sort by:</label>
-                  <select class="form-control" [(ngModel)]="sort"  name="sort" id="sort">
-                      <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
-                   </select>
-               </div>
-
-               <div class="col-md-4">
-                  <label for="order">Order by: </label>
-                  <select class="form-control" [(ngModel)]="order" name="order" id="order">
-                      <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
-                  </select>
-              </div>
-
-              <div class="col-md-4">
-                <label for="some">Something: </label>
-                <input type="text" class="form-control" placeholder="some other" id="some">
-              </div>
-            </div>
-
-          <button type="submit" class="btn btn-primary" [disabled]="!imageForm.form.valid" (ngSubmit)="onSubmit()"> Search</button>
-
-      </form-->
-
-
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-3">
+            <label>Software</label>
+        </div>
+        <div class="col-sm-3">
+            <label>Version</label>
+        </div>
     </div>
-        <!--< component to show when the query is submitted>-->
 
-        <div [hidden]="!submitted">
-            <my-images [images]="resultImages" ></my-images>
-            <button class="btn btn-default" (click)="edit()">Edit</button>
+    <div class="row my-form-row" *ngFor="let sw of softwares; let id = index">
+        <!--<input class="col-sm-4"   type="text" [(ngModel)]="sw.name" placeholder="software name">-->
+        <div class="col-sm-offset-2 col-sm-3">
+            <select class="form-control" type="text" [(ngModel)]="sw.name" placeholder="software name">
+                <option *ngFor="let asw of availableSoftware" [value]="asw">{{asw}}</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input class="form-control" [ngClass]="{errorversion: sw.error}" [(ngModel)]="sw.version"
+                   (keyup)="change_version(sw)" placeholder="version">
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-danger" (click)="remove(id)">Remove</button>
+        </div>
+    </div>
 
-            <!--<h2>You submitted the following query :</h2>-->
-          <!--<div class="row">-->
-            <!--<div class="col-xs-3">Name</div>-->
-            <!--<div class="col-xs-9  pull-left">{{ bin}}</div>-->
-          <!--</div>-->
-          <!--<div class="row">-->
-            <!--<div class="col-xs-3">Version</div>-->
-            <!--<div class="col-xs-9 pull-left">{{ version }}</div>-->
-          <!--</div>-->
-          <!--<div class="row">-->
-            <!--<div class="col-xs-3">Order</div>-->
-            <!--<div class="col-xs-9 pull-left">{{ order }}</div>-->
-          <!--</div>-->
-            <!--<div class="row">-->
-            <!--<div class="col-xs-3">Sort</div>-->
-            <!--<div class="col-xs-9 pull-left">{{ sort }}</div>-->
-          <!--</div>-->
-          <!--<br>-->
+    <div class="row my-form-row">
+        <div class="col-sm-offset-2 col-sm-2">
+            <button class="btn btn-success btn-md" (click)="add()">Add</button>
+        </div>
+    </div>
+
+      <div class="row my-form-row" >
+        <div class="col-sm-offset-2 col-sm-2">
+             <label for="sort">{{sizeCmpValue.name}}</label>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" type="text" [(ngModel)]="sizeCmpValue.cmp" placeholder="software name">
+                <option *ngFor="let cmp of comparisons" [value]="cmp.val">{{cmp.name}}</option>
+            </select>
+
+        </div>
+        <div class="col-sm-3">
+           <input class="form-control" [(ngModel)]="sizeCmpValue.val" placeholder="bytes">
+        </div>
+      </div>
+
+         <div class="row my-form-row" >
+        <div class="col-sm-offset-2 col-sm-2">
+             <label for="sort">{{pullsCmpValue.name}}</label>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" type="text" [(ngModel)]="pullsCmpValue.cmp" >
+                <option *ngFor="let cmp of comparisons" [value]="cmp.val">{{cmp.name}}</option>
+            </select>
+
+        </div>
+        <div class="col-sm-3">
+           <input class="form-control" [(ngModel)]="pullsCmpValue.val" placeholder="pulls">
+        </div>
+      </div>
+
+     <div class="row my-form-row" >
+        <div class="col-sm-offset-2 col-sm-2">
+             <label for="sort">{{starsCmpValue.name}}</label>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" type="text" [(ngModel)]="starsCmpValue.cmp" >
+                <option *ngFor="let cmp of comparisons" [value]="cmp.val">{{cmp.name}}</option>
+            </select>
+
+        </div>
+        <div class="col-sm-3">
+           <input class="form-control" [(ngModel)]="starsCmpValue.val" placeholder="stars">
+        </div>
+      </div>
+
+
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-3">
+            <label for="sort">Sort by:</label>
+        </div>
+      <!--  <div class="col-sm-3">
+            <label for="order">Order by:</label>
+        </div>-->
+    </div>
+
+    <div class="row my-form-row">
+        <div class="col-sm-offset-2 col-sm-3">
+            <select class="form-control" [(ngModel)]="selectedSort.val" id="sort">
+                <option *ngFor="let sort of sorting" [value]="sort.val">{{sort.name}}</option>
+            </select>
+        </div>
+    <!--    <div class="col-sm-3">
+            <select class="form-control" [(ngModel)]="order"  id="order">
+                <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
+            </select>
+        </div>-->
+    </div>
+
+    <div class="row my-form-row">
+        <div class="col-sm-offset-8 col-sm-2">
+            <!--<button type="submit" class="btn btn-primary" (click)="callSearchApi()"> Search</button>-->
+            <button type="submit" class="btn btn-primary" (click)="onSubmit()"> Search</button>
+        </div>
+    </div>
+    <div>{{diagnostic()}}</div>
+</div>
+<div [hidden]="!submitted">
+    <my-images [images]="resultImages"></my-images>
+    <button class="btn btn-default" (click)="edit()">Edit</button>
+</div>
+
+<!--<h2>Search Images:</h2>-->
+<!--<div class="container">-->
+
+<!--<div class="row">-->
+<!--<div class="form-group">-->
+<!--<div  *ngFor="let sw of softwares; let id = index">-->
+<!--&lt;!&ndash;<input class="col-sm-4"   type="text" [(ngModel)]="sw.name" placeholder="software name">&ndash;&gt;-->
+<!--<select class="col-sm-4"   type="text" [(ngModel)]="sw.name" placeholder="software name">-->
+<!--<option *ngFor="let sw of availableSoftware" [value]="sw">{{sw}}</option>-->
+<!--</select>-->
+<!--<input class="col-sm-4" [ngClass]="{errorversion: sw.error}" [(ngModel)]="sw.version" (keyup)="change_version(sw)" placeholder="version">-->
+<!--<button class="btn btn-danger  btn-xs"   (click)="remove(id)">Remove</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--<button class="btn btn-success btn-md" (click)="add()">Add</button>-->
+
+<!--</div>-->
+<!--</div>-->
+
+
+<!--<div>{{msg}}</div>-->
+<!--&lt;!&ndash;<div>{{diagnostic()}}</div>&ndash;&gt;-->
+
+<!--<div class="container">-->
+<!--<div class="row">-->
+<!--<div class="col-sm-4">-->
+<!--<label for="sort">Sort by:</label>-->
+<!--<select class="form-control selectpicker" [(ngModel)]="sort"  name="sort" id="sort">-->
+<!--<option *ngFor="let s of sorting" [value]="s">{{s}}</option>-->
+<!--</select>-->
+<!--</div>-->
+
+<!--<div class="col-sm-4">-->
+<!--<label for="order">Order by: </label>-->
+<!--<select class="form-control" [(ngModel)]="order" name="order" id="order">-->
+<!--<option *ngFor="let o of ordering" [value]="o">{{o}}</option>-->
+<!--</select>-->
+<!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash;<button type="submit" class="btn btn-primary" (ngSubmit)="onSubmit()"> Search</button>&ndash;&gt;-->
+
+<!--<button type="submit" class="btn btn-primary" (click)="onSubmit()"> Search</button>-->
+
+<!--</div>-->
+<!--<div class="form-group">-->
+<!--<label for="name">Name</label>-->
+<!--<input type="text" class="form-control" placeholder="Python" name="name" required  [(ngModel)]="bin" #name="ngModel" id="name" >-->
+<!--<div [hidden]="name.valid || name.pristine" class="alert alert-danger">-->
+<!--Name is required-->
+<!--</div>-->
+<!--</div>-->
+<!---->
+
+<!--<div class="form-group">-->
+<!--<label for="version">Version</label>-->
+<!--<input type="text" class="form-control" id="version" placeholder="2.7" required [(ngModel)]="version" name="alterEgo" name="version">-->
+<!--</div>-->
+<!--div *ngFor="let sw of softwares" class="row">
+    <div  class="col-sm-4">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" value={{sw.name}} name="name" required  [(ngModel)]=sw.name #name="ngModel" id="name" >
+        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+            Name is required
+        </div>
+    </div>
+    <div class="col-sm-4">
+            <label for="version">Version</label>
+        <input type="text" class="form-control" id="version" value={{sw.version}} required [(ngModel)]=sw.version name="version" name="version">
 
     </div>
 </div>
+
+  <button (click)="addSoftware()">add Software</button>
+<div *ngFor="let sw of softwares" class="row">
+    {{sw.name}} {{sw.version}}
+    </div>
+
+<div class="row">
+      <div-- class="col-sm-4">
+        <label for="sort">Sort by:</label>
+        <select class="form-control" [(ngModel)]="sort"  name="sort" id="sort">
+            <option *ngFor="let s of sorting" [value]="s">{{s}}</option>
+         </select>
+     </div>
+
+     <div class="col-sm-4">
+        <label for="order">Order by: </label>
+        <select class="form-control" [(ngModel)]="order" name="order" id="order">
+            <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
+        </select>
+    </div>
+
+    <div class="col-sm-4">
+      <label for="some">Something: </label>
+      <input type="text" class="form-control" placeholder="some other" id="some">
+    </div>
+  </div>
+
+<button type="submit" class="btn btn-primary" [disabled]="!imageForm.form.valid" (ngSubmit)="onSubmit()"> Search</button>
+
+</form-->
+
+
+<!--</div>-->
+<!--< component to show when the query is submitted>-->
+
+<!--<div [hidden]="!submitted">-->
+<!--<my-images [images]="resultImages" ></my-images>-->
+<!--<button class="btn btn-default" (click)="edit()">Edit</button>-->
+
+<!--<h2>You submitted the following query :</h2>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-3">Name</div>-->
+<!--<div class="col-xs-9  pull-left">{{ bin}}</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-3">Version</div>-->
+<!--<div class="col-xs-9 pull-left">{{ version }}</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-3">Order</div>-->
+<!--<div class="col-xs-9 pull-left">{{ order }}</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-3">Sort</div>-->
+<!--<div class="col-xs-9 pull-left">{{ sort }}</div>-->
+<!--</div>-->
+<!--<br>-->
+
+<!--</div>-->

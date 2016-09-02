@@ -16,25 +16,40 @@ import {Router} from "@angular/router";
 })
 export class ImagesSearchComponent {
     submitted = false;
-    sorting   = ['stars', 'pulls',];
-    ordering  = ['ascending order','descending order'];
+    sorting  = [{name:'Ascending stars', val:"stars"},{name:'Descending stars',val:"-stars"}, 
+        {name:'Ascending pulls', val:"pulls"},{name:'Descending pulls',val:"-pulls"},
+        {name:'Ascending stars  Ascending pulls', val:"-stars -pulls"}
+    ];
+
+    comparisons = [{name:"Greater than", val:"_gt"},{name:"Less than",val:"_lt"},{name:"Equal",val:""}];
+
+
     softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
     msg: string = '';
+
+    selectedSort = {name:"sort", val:""};
+
+    sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};  //size_gt=x, size_lt=y, size=z
+    pullsCmpValue = {name:"pulls", cmp: this.comparisons[0].val, val:"0"};
+    starsCmpValue = {name:"stars", cmp: this.comparisons[0].val, val:"0"};
+
     
     availableSoftware : string [] =["java", "python", "wget"];
-    
-
-    bin :string ;
-    version: string;
-    sort: string;
-    order : string;
 
     resultImages : Image[];
     count = 0;
 
     constructor( private router: Router, private imageService: ImageService){//}, private softwareService: SoftwareService){
-        //this.softwares.push(new Software("", ""));
+         //this.softwares.push(new Software("", ""));
+          this.selectedSort.val = this.sorting[0].val;
     }
+
+
+    callSearchApi(){
+        let searchUrl = this.constructSearchUrl();
+        //let link = ['/images', { this.selectedSort.name : this.selectedSort.val}];
+        this.router.navigate(['/images'],{ queryParams: { sort: this.selectedSort.val}});
+      }
 
     remove(id: number) {
         this.softwares.splice(id, 1);
@@ -56,11 +71,8 @@ export class ImagesSearchComponent {
       }
 
     diagnostic() {
-        var result  = "";
-        for (var sw of this.softwares) {
-            result += sw.name + "=" + sw.version;
-        }
-        return result;
+
+        return this.constructSearchUrl()
     }
 
     onSubmit() {
@@ -82,6 +94,11 @@ export class ImagesSearchComponent {
         for(var sw of this.softwares){
             url_search += sw.name+"="+sw.version+"&";
         }
+        url_search += "sort="+this.selectedSort.val;
+        url_search += "&"+this.sizeCmpValue.name+this.sizeCmpValue.cmp+"="+this.sizeCmpValue.val;
+        url_search += "&"+this.pullsCmpValue.name+this.pullsCmpValue.cmp+"="+this.pullsCmpValue.val;
+        url_search += "&"+this.starsCmpValue.name+this.starsCmpValue.cmp+"="+this.starsCmpValue.val;
+
         return url_search;
     }
 

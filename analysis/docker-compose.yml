@@ -13,6 +13,7 @@ services:
       - core-net
     volumes:
       - /var/lib/rabbitmq
+    # LOOK FOR NAMED VOLUME
 
   crawler:
     build:

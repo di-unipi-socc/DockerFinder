@@ -44,7 +44,7 @@ router.get('/', function (req, res, next) {
     }
     else if(req.query['size_lt']) {
         queryBuild.where('size').lt(req.query['size_lt']);
-        console.log("Size less than" + req.query['size']);
+        console.log("Size less than " + req.query['size_lt']);
     }
     else if(req.query['size_gt']) {
         queryBuild.where('size').gt(req.query['size_gt']);
@@ -81,19 +81,19 @@ router.get('/', function (req, res, next) {
     }
 
     switch(req.query.sort){
-        case 'star':
+        case 'stars':
             console.log("Sorting  by ascending stars");
             queryBuild.sort({'stars': -1});
             break;
-        case '-star':
+        case '-stars':
             console.log("Sorting  by descending stars");
             queryBuild.sort({'stars': 1});
             break;
-        case 'pull':
+        case 'pulls':
             console.log("Sorting  by ascending pull");
             queryBuild.sort({ 'pulls': -1});
             break;
-         case '-pull':
+         case '-pulls':
             console.log("Sorting  by descending pull");
             queryBuild.sort({ 'pulls': 1});
             break;

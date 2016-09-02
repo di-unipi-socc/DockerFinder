@@ -39,7 +39,7 @@ app.get('/search', function (req, res) { //  /api
             // res.writeHead(resApi.statusCode, resApi.headers);
             res.writeHead(resApi.statusCode);
             resApi.pipe(res);
-            console.log("Pipe the response from images_server");
+            console.log("Response received from images_server");
         }
 
         // function (resApi) {
@@ -65,7 +65,9 @@ app.get('/search', function (req, res) { //  /api
 
 // TODO: return all the routes in GET, -> return only a blacklist of route , and configure angular to redirect to "/"
 app.get('*', function (req, res) {
+    console.log(__dirname + '/public'+req.originalUrl);
     res.sendFile(__dirname + '/public/index.html');
+    //res.sendFile(__dirname + '/public'+req.originalUrl);
 });
 
 app.use(function (err, req, res, next) {

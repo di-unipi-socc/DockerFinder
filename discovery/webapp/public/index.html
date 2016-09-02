@@ -5,26 +5,18 @@
     <base href="/">
     <title>Docker finder</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="app/styles/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">    <link rel="stylesheet" href="app/styles/style.css" type="text/css">
     <link rel="stylesheet" href="app/styles/forms.css" type="text/css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-     <!-- selectpicker class bootstrap -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/css/bootstrap-select.min.css">
 
     <!-- 1. Load libraries -->
-<script src="jquery-1.12.4.min.js"></script>
+    <!--<script src="jquery-1.12.4.min.js"></script>-->
 
      <!-- Polyfill(s) for older browsers -->
-    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <!--<script src="node_modules/core-js/client/shim.min.js"></script>-->
     <script src="node_modules/zone.js/dist/zone.js"></script>
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/bootstrap-select.min.js"></script>
-    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/i18n/defaults-*.min.js"></script>
 
 
       <!-- 1. Load libraries -->
@@ -39,6 +31,7 @@
     <!--<script src="https://npmcdn.com/zone.js@0.6.12?main=browser"></script>-->
     <!--<script src="https://npmcdn.com/reflect-metadata@0.1.3"></script>-->
     <!--<script src="https://npmcdn.com/systemjs@0.19.27/dist/system.src.js"></script>-->
+
      <!--2. Configure SystemJS -->
     <script src="systemjs.config.js"></script>
     <script>
@@ -48,7 +41,9 @@
 
   <!-- 3. Display the application -->
   <body>
-    <my-app>Loading...</my-app>
+      <div class="container">
+        <my-app>Loading...</my-app>
+      </div>
   </body>
 
 </html>

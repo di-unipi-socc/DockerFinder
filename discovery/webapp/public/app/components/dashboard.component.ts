@@ -26,9 +26,11 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit() {
-      this.imageService.getImages()
-          .then(images =>  this.images = images.slice(1, 5));
+      // this.imageService.getImages()
+      //     .then(images =>  this.images = images.slice(1, 5));
   }
+
+ 
 
   gotoDetail(image:Image) {
       let link = ['/detail', image._id];

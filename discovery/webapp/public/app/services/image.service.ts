@@ -48,7 +48,7 @@ export class ImageService {
 
     private extractData(res: Response) {
         let body = res.json();
-        console.log(body)
+        console.log(body);
         return body || { };
       }
 

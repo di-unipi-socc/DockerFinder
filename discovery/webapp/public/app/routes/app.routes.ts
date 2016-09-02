@@ -14,15 +14,15 @@ export const routes: RouterConfig = [
       pathMatch: 'full'
     },
     {
-    path: 'dashboard',
-    component: DashboardComponent
+        path: 'dashboard',
+        component: DashboardComponent
     },
     {
-    path: 'detail/:id',
-    component: ImageDetailComponent
+        path: 'detail/:id',
+        component: ImageDetailComponent
     },
     {
-        path: 'images',
+        path: 'images/:parm',  //addres bar url /images
         component: ImagesComponent
     }
 ];
