@@ -57,6 +57,7 @@ class Scanner:
         Run the scanner starting the consumer client of the RabbitMQ server.
         :return:
         """
+
         try:
             self.consumer.run()
         except KeyboardInterrupt:

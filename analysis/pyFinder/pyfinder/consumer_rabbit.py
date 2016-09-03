@@ -318,7 +318,12 @@ class ConsumerRabbit(object):
         starting the IOLoop to block and allow the SelectConnection to operate.
 
         """
-        self._connection = self.connect()
+        while True:
+            try:
+                self._connection = self.connect()
+                break
+            except:
+                pass
         self._connection.ioloop.start()
 
     def stop(self):

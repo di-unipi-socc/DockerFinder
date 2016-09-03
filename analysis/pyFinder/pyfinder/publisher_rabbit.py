@@ -327,7 +327,12 @@ class PublisherRabbit(object):
 
         """
         self.images_generator = images_generator_function
-        self._connection = self.connect()
+        while True:
+            try:
+                self._connection = self.connect()
+                break
+            except:
+                pass
         self._connection.ioloop.start()
 
     def stop(self):

@@ -5,7 +5,7 @@ services:
     image: rabbitmq:3-management
     hostname: rabbitmq
     restart: on-failure:3
-    #restart: always
+    restart: always
     container_name: rabbitmq
     ports:
       - 8081:15672
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: ./Dockerfile_crawler
     image: dofinder/crawler:latest
-    restart: on-failure:3
+    #restart: on-failure:3
     #restart: always
     #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
