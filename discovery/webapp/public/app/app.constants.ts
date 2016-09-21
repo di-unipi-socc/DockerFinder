@@ -10,5 +10,6 @@ export class Configuration {
     public ServerWithApiUrl = this.ApiUrl;
 
     constructor(){
+        
     }
 }

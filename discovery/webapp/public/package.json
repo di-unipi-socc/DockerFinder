@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "webapp2",
   "version": "1.0.0",
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
@@ -26,7 +26,8 @@
     "rxjs": "5.0.0-beta.11",
     "systemjs": "0.19.27",
     "zone.js": "^0.6.17",
-    "angular2-in-memory-web-api": "0.0.18"
+    "angular2-in-memory-web-api": "0.0.18",
+    "bootstrap": "^3.3.6"
   },
   "devDependencies": {
     "concurrently": "^2.2.0",

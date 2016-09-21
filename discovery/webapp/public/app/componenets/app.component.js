@@ -9,20 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
- * Created by dido on 7/11/16.
+ * Created by dido on 9/3/16.
  */
 var core_1 = require('@angular/core');
-var Configuration = (function () {
-    function Configuration() {
-        this.Server = "http://127.0.0.1:8000/";
-        this.ApiUrl = "api/images";
-        this.ServerWithApiUrl = this.Server + this.ApiUrl;
+var AppComponent = (function () {
+    function AppComponent() {
+        this.title = 'Docker Finder';
     }
-    Configuration = __decorate([
-        core_1.Injectable(), 
+    AppComponent = __decorate([
+        core_1.Component({
+            selector: 'my-app',
+            template: "\n        <h1>{{title}} </h1>\n        <nav>\n            <a [routerLink]=\"['/dashboard']\" routerLinkActive=\"active\">Dashboard</a>\n            <a [routerLink]=\"['/images']\" routerLinkActive=\"active\">Images</a>\n         </nav>\n\n         <router-outlet></router-outlet>\n",
+        }), 
         __metadata('design:paramtypes', [])
-    ], Configuration);
-    return Configuration;
+    ], AppComponent);
+    return AppComponent;
 }());
-exports.Configuration = Configuration;
-//# sourceMappingURL=app.constants.js.map
+exports.AppComponent = AppComponent;
+//# sourceMappingURL=app.component.js.map

@@ -3,10 +3,10 @@
 # DockerFinder
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE 
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Thesis](#thesis)
+- [Thesis](#What is Docker Finder ?)
   - [regex](#regex)
 - [PyFinder](#pyfinder)
 - [ServerApi](#serverapi)
@@ -15,13 +15,18 @@
 
 
 
-# Thesis
-1.  Identify th useful informations and describe the features od the images,
-and defines a model that describe that informations.
-2. Defines how to extract the information starting from a **Docker image** or a **Docker file**.
-3. Develops a intelligent **search system** that is able to identify the images that
-offer determined features and not only based on the name and the tag.
+# What is Docker Finder ?
+Docker Finder is a tool enabling a more powerful search of Docker images with
+respect to the tools currently provided by the Docker platform (**docker search**, **Docker Hub**).
 
+The main steps performed by Docker Finder are the following
+1. Download Docker images from the Docker Hub,
+2. generate and store a new description of the images into a local storage,
+and
+3. search the images by looking into the Docker Finder description storage.
+
+
+# Docker Finder high-level overview architecture
 
 <div style="text-align:center">
 <img src="./docs/architecture_docker.png" width="500">

@@ -1,5 +1,5 @@
 FROM node:argon
-#node.js and npm already installed
+# node.js and npm already installed
 
 # Create app directory
 RUN mkdir -p /code
@@ -10,7 +10,7 @@ COPY package.json /code
 RUN npm install
 
 # Bundle app source
-#COPY . /code
+# COPY . /code
 
 # replace this with your application's default port
 EXPOSE 8080

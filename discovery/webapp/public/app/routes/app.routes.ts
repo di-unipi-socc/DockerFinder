@@ -1,13 +1,20 @@
+
 /**
  * Created by dido on 7/6/16.
  */
-import { provideRouter, RouterConfig }  from '@angular/router';
-import { ImagesComponent }              from '../components/images.component';
-import { DashboardComponent }           from '../components/dashboard.component'
-import { ImageDetailComponent }         from "../components/image-detail.component";
+//import { provideRouter, RouterConfig }  from '@angular/router';
+import { ModuleWithProviders }  from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 
-export const routes: RouterConfig = [
+import {DashboardComponent}     from "../componenets/dashboard.component";
+import {ImagesComponent}        from "../componenets/images.component";
+//import { DashboardComponent }           from '../components/dashboard.component'
+//import { ImageDetailComponent }         from "../components/image-detail.component";
+
+
+
+export const appRoutes: Routes = [
       {
       path: '',
       redirectTo: '/dashboard',
@@ -17,16 +24,18 @@ export const routes: RouterConfig = [
         path: 'dashboard',
         component: DashboardComponent
     },
-    {
-        path: 'detail/:id',
-        component: ImageDetailComponent
-    },
+    // {
+    //     path: 'detail/:id',
+    //     component: ImageDetailComponent
+    // },
     {
         path: 'images/:parm',  //addres bar url /images
         component: ImagesComponent
     }
 ];
 
-export const APP_ROUTER_PROVIDERS = [
-  provideRouter(routes)
-];
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+
+// export const APP_ROUTER_PROVIDERS = [
+//   provideRouter(routes)
+// ];

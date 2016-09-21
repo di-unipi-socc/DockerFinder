@@ -6,8 +6,8 @@ import 'rxjs/add/operator/toPromise';  //for toPromise()
 
 import { Image } from '../models/image';
 import { Configuration } from '../app.constants';
-// import { Image } from '../image';
-// //import { IMAGES } from '../mock-images';
+
+
 import {Http,Response, Headers} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 
@@ -28,7 +28,8 @@ export class ImageService {
   getImages(): Promise<Image[]>{
     return this.http.get(this.imagesUrl)
                     . toPromise()
-                     .then(response => response.json())//.data)
+                    .then(response => response.json())// as Image[])
+                     //.then(response => response.json())//.data) as Image[])
                      .catch(this.handleError);
   }
 

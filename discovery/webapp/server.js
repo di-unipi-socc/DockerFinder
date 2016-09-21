@@ -54,20 +54,14 @@ app.get('/search', function (req, res) { //  /api
         // }
     );
     reqApi.end();
-
-    //  var resApi = http.get('http://127.0.0.1:8000/search'+req._parsedUrl.search, function (resApi) {
-    //         res.writeHead(resApi.statusCode, resApi.headers);
-    //         resApi.pipe(res);
-    //  });
-    //
-    // resApi.end();
+    
 });
 
 // TODO: return all the routes in GET, -> return only a blacklist of route , and configure angular to redirect to "/"
 app.get('*', function (req, res) {
     console.log(__dirname + '/public'+req.originalUrl);
-    res.sendFile(__dirname + '/public/index.html');
-    //res.sendFile(__dirname + '/public'+req.originalUrl);
+    //res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public'+req.originalUrl);
 });
 
 app.use(function (err, req, res, next) {

@@ -2,7 +2,7 @@
  * Created by dido on 7/5/16.
  */
 import { Component }            from '@angular/core';
-import { ROUTER_DIRECTIVES }    from '@angular/router';
+//import { ROUTER_DIRECTIVES }    from '@angular/router';
 import { ImageService }         from '../services/image.service'
 import { Configuration }        from '../app.constants'
 
@@ -17,10 +17,11 @@ import { Configuration }        from '../app.constants'
             <a [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a>
             <a [routerLink]="['/images']" routerLinkActive="active">Images</a>
          </nav>
+         
          <router-outlet></router-outlet>
 `,
     styleUrls: ['app/styles/app.component.css'],
-    directives:[ROUTER_DIRECTIVES],
+  //  directives:[ROUTER_DIRECTIVES],
     providers: [
         ImageService,
         Configuration

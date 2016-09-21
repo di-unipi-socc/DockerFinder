@@ -19,13 +19,13 @@ export class SoftwareService {
 
 
   constructor (private http: Http, private configuration:Configuration) {
-      this.imagesUrl = configuration.ServerWithApiUrl;
+        this.imagesUrl = configuration.ServerWithApiUrl;
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'application/json');
   }
 
-  getImages(): Promise<Image[]>{
+  getSoftware(): Promise<Image[]>{
     return this.http.get(this.imagesUrl)
                     . toPromise()
                      .then(response => response.json())//.data)
