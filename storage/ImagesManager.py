@@ -3,38 +3,43 @@ import requests
 from docopt import docopt
 
 
-def upload_softwares(file_json, url="http://127.0.0.1:3001/api/images", ):
+def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
     with open(file_json) as json_data:
-        softwares = json.load(json_data)
-        print(str(len(softwares)) + " softwares read from "+file_json )
+        images = json.load(json_data)
+        print(str(len(images)) + " Images read from "+file_json )
         tot_upload = 0
-        for sw in softwares:
-            res = requests.post(url, headers={'Content-type': 'application/json'}, json=sw)
+        for image in images:
+            res = requests.post(url, headers={'Content-type': 'application/json'}, json=image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                print("[" + sw['name'] + "] added into " + res.url)
-                tot_upload+=1
+                print("[" + image['repo_name'] + "] added into " + res.url)
+                tot_upload += 1
             else:
                 print(str(res.status_code) + " response: " + res.text)
-        print(str(tot_upload) + " softwares uploaded")
+        print(str(tot_upload) + " images  uploaded")
 
 
 def delete_all_images(url="http://127.0.0.1:3001/api/images"):
-    list_images = get_all_softwares(url)
+    list_images = get_all_images(url)
     _delete_images(url, list_images)
 
 
-def get_all_softwares(url="http://127.0.0.1:3000/api/images"):
+def get_all_images(url="http://127.0.0.1:3000/api/images"):
     try:
         res = requests.get(url)
         if res.status_code == requests.codes.ok:
             json_response = res.json()
-            print(str(json_response['count']) + " images to delete")
+            print(str(json_response['count']) + " totoal images downloaded")
             software_list = json_response['images']  # list of object
             return software_list
     except requests.exceptions.ConnectionError:
         raise
 
+def pull_images( path_file_json, url="http://127.0.0.1:3000/api/images",):
+    list_json_images = get_all_images(url)
+    with open(path_file_json, 'w') as f:
+        json.dump(list_json_images, f, ensure_ascii=False)
+        print(str(len(list_json_images)) + " Saved into "+ path_file_json)
 
 def _delete_images(url, list_images):
     deleted_im=0
@@ -48,22 +53,26 @@ def _delete_images(url, list_images):
 __doc__= """Crawler
 
 Usage:
-  Tester.py upload [--file=<softwares.json>] [--software-url=<http://127.0.0.1:3000/api/images>]
+  Tester.py pull  [--file=<images.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
+  Tester.py upload [--file=<images.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
   Tester.py rm    [--images-url=<http://127.0.0.1:3000/api/images>]
   Tester.py (-h | --help)
   Tester.py --version
 
 Options:
   -h --help     Show this screen.
-  --file=FILE        File JSON with all the softwares   [default: softwares.json]
-  --images-url=IMAGESSERVICE  Url iamges service [default: http://127.0.0.1:3000/api/images].
+  --file=FILE        File JSON with all the images   [default: images.json]
+  --images-url=IMAGESSERVICE  Url images service [default: http://127.0.0.1:3000/api/images].
   --version     Show version.
 """
 
 if __name__=="__main__":
     args = docopt(__doc__, version='SoftwareManger 0.0.1')
     if args['upload']:
-        upload_softwares(args['--file'], args['--images-url'])
+        upload_images(args['--file'], args['--images-url'])
+
+    if args['pull']:
+        pull_images(path_file_json=args['--file'], url=args['--images-url'])
 
     if args['rm']:
         delete_all_images(args['--images-url'])
