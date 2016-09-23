@@ -56,7 +56,7 @@ class Crawler:
         else:
             return False
 
-    def crawl(self, from_page=1, page_size=10, max_images=100):
+    def crawl(self, from_page=1, page_size=10, max_images=None):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
         IT return a JSON of the image .
