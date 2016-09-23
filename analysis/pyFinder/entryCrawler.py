@@ -17,7 +17,7 @@ Options:
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
   --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
   --ps=PAGE_SIZE      number of images in a single page [default: 10].
-  --mi=MAX_PAGE       Max number of images to be crawled from the docker hub [default: 100].
+  --mi=MAX_PAGE       Max number of images to be crawled from the docker hub [default: None].
   --version     Show version.
 """
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                           queue=args['--queue'],
                           exchange=args['--ex'],
                           route_key=args['--key'])
-        crawler.run(max_images=int(args['--mi']),
+        crawler.run(max_images=None if args['--mi'] == "None" else int(args['--mi']),
                     page_size=int(args['--ps']),
                     from_page=int(args['--fp']))
 
