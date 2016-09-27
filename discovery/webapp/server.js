@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var http = require('http');
 
 app.get('/search', function (req, res) { //  /api
-    var path = '/search' + req._parsedUrl.search;
+    var path = '/search' + (req._parsedUrl.search || '');
     console.log("\nRedirect to images_server: " +path);
 
     var reqApi = http.request({
