@@ -10,20 +10,7 @@ import json
 import time
 
 
-
-#c = Crawler()
-# def get_test_image(num_images_test=100):
-#     images_for_test = []
-#     client_hub = ClientHub()
-#     for list_images in client_hub.crawl_images():
-#         for image in list_images:
-#             list_tags = client_hub.get_all_tags(image['repo_name'])
-#             if list_tags and 'latest' in list_tags and len(images_for_test) < num_images_test:  # only the images that  contains "latest" tag
-#                 images_for_test.append(image['repo_name'])
-#                 logger.info("[" + image['repo_name'] + "] crawled from docker Hub")
-#         if len(images_for_test) == num_images_test:
-#             return images_for_test
-
+"""This module contains the methods for executing the tests of the architecture. """
 
 class Tester:
     def __init__(self, path_file_images="images.test",  hub_url="https://hub.docker.com/"):

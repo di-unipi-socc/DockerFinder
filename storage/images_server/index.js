@@ -21,7 +21,7 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 //var env = process.env.NODE_ENV || 'production';
 //table name of the mongo database
 var table ="/images";
-var linkname_docker_compose = 'images_db'   //link to database, resolved IP by DNS of bridge network
+var linkname_docker_compose = 'images_db' ; //link to database, resolved IP by DNS of bridge network
 
 
 //###################################################################################
@@ -31,7 +31,7 @@ var linkname_docker_compose = 'images_db'   //link to database, resolved IP by D
 app.use(function (req, res, next) {
     console.log(req.method +" "+req.originalUrl);
     next();
-})
+});
 
 app.all('*', function(req, res,next) {
     /**
@@ -126,11 +126,12 @@ if (app.get('env') === 'development') {
 }
 
 // production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-    res.json({"message": err.message,
-      "error": err
+
+    // no stacktraces leaked to user
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+        res.json({"message": err.message,
+          "error": err
     });
 });
 

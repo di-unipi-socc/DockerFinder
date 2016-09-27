@@ -8,17 +8,12 @@ var Software = require('../models/software')
 Software.methods(['get','put','post','delete']);//.updateOptions({ new: true });
 
 Software.after('get', function(req, res, next) {
-  //var tmp = res.locals.bundle.title; // Lets swap the title and year fields because we're funny!
-  //res.locals.bundle.title = res.locals.bundle.year;
-  //res.locals.bundle.year = tmp;
-    var count = res.locals.bundle.length;
-      // res.writeHead(resApi.statusCode, resApi.headers);
-    //res.writeHead(res.statusCode, res.headers);
-    res.json({"count": count, "software": res.locals.bundle});
-        console.log("Results " + count);
-   // res.writeHead(res.statusCode, res.headers);
 
-  next(); // Don't forget to call next!
+    var count = res.locals.bundle.length;
+    var data = res.locals.bundle;
+    res.locals.bundle = {"count": count, "software": data};
+    console.log("Number of software returned: "+ count);
+    next(); // Don't forget to call next!
 });
 
 // GET /api/software

@@ -2,6 +2,7 @@ import requests
 import logging
 from .utils import get_logger
 
+""" This module interacts with the *Software service* running in the *discovery* part."""
 
 class ClientSoftware(requests.Session):
 
@@ -12,6 +13,9 @@ class ClientSoftware(requests.Session):
         self.logger.info("URL SOFTWARE service: " + self._url)
 
     def get_software(self):
+        """Get the list of software. \n
+        A software is described by: the name, the version command, and the regex. \n
+        E.g. "python", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' """
         try:
             res = self.get(self._url)
             if res.status_code == requests.codes.ok:
@@ -23,21 +27,8 @@ class ClientSoftware(requests.Session):
             self.logger.exception("ConnectionError: ")
             raise
 
-        # d = (("python", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("python3", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("python2", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("java", "-version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("curl", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("nano", "-version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*'),
-        #      ("node", "--version", '[0-9]\.[0-9](\.[0-9])*[^\s]*'),
-        #      ("ruby", "--version",'[0-9]\.[0-9](\.[0-9])*[^\s]*'),
-        #      ("perl", "-version",'[0-9]\.[0-9](\.[0-9])'))
-        # for l in d:
-        #     yield l[0], l[1], l[2]
-
     def get_system(self):
-        # - {cmd: 'bash -c "cat /etc/*release"', re: '(?<=PRETTY_NAME=")[^"]*'}  # PRETTY_NAME=.*'
-        # - {cmd: 'bash -c "lsb_release -a"', re: 'Description:.*'}
+        """Get the command to know the linux distribution of an image."""
         self.logger.info("System commands requested")
         d = (('bash -c "cat /etc/*release"', '(?<=PRETTY_NAME=")[^"]*'),
              ('bash -c "lsb_release -a"', 'Description:.*'))
@@ -46,6 +37,7 @@ class ClientSoftware(requests.Session):
             yield l[0], l[1]
 
     def post_software(self, dict_software):
+        """Add a software."""
         try:
             res = self.post(self._url, headers={'Content-type': 'application/json'}, json=dict_software)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:

@@ -7,12 +7,10 @@ var mongoose = require('mongoose');
 var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 
-//var db_path = 'mongodb://172.17.0.2/software';
 
 var app = express();
 
 app.set('port', process.env.PORT || 3001);
-//app.set('db_path', 'mongo');sw_mongo
 app.set('db_path', 'software_db');
 
 app.use(logger('dev'));
@@ -66,19 +64,6 @@ app.use(function(err, req, res, next) {
 //                                 CONNECTION DATABASE
 // #################################################################################
 
-// var conn      = mongoose.createConnection('mongodb://localhost/testA');
-// var conn2     = mongoose.createConnection('mongodb://localhost/testB');
-//
-// // stored in 'testA' database
-// var ModelA    = conn.model('Model', new mongoose.Schema({
-//   title : { type : String, default : 'model in testA database' }
-// }));
-//
-// // stored in 'testB' database
-// var ModelB    = conn2.model('Model', new mongoose.Schema({
-//   title : { type : String, default : 'model in testB database' }
-// }));
-
 // Connect to the database before starting the application server.
 var mongo_path = 'mongodb://'+app.get('db_path') + table;
 
@@ -95,8 +80,6 @@ mongoose.connect(mongo_path, function (err, database) {
 });
 
 
-
-//module.exports = app;
 // Start server
 var server = app.listen(app.get('port'), function () {
     var host = server.address().address;

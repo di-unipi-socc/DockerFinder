@@ -5,6 +5,8 @@ from .client_dockerhub import ClientHub
 import logging
 from .utils import get_logger
 
+"""Ts module contains the *Scanner* implementation."""
+
 
 class Crawler:
 
@@ -13,8 +15,7 @@ class Crawler:
                  route_key="images.scan",
                  amqp_url='amqp://guest:guest@127.0.0.1:5672',
                  hub_url="https://hub.docker.com/"
-    ):
-                 #port_rabbit=5672, host_rabbit='localhost', queue_rabbit="dofinder"):
+                ):
 
         self.logger = get_logger(__name__, logging.DEBUG)
 
@@ -22,7 +23,7 @@ class Crawler:
         self.publisher = PublisherRabbit(amqp_url, exchange=exchange, queue= queue, route_key=route_key)
         self.logger.info("Publisher rabbit initialized: exchange=" +exchange+", queue="+queue+" route key="+route_key)
 
-        # Client hub in order to get the images
+        # Client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
 
     def run(self, from_page=1, page_size=10, max_images=100):
@@ -40,7 +41,7 @@ class Crawler:
 
     def filter_tag_latest(self, repo_name):
         """
-
+        Filters the images with the *latest* tag.
         :param repo_name: the name of a repository
         :return: True if the image must be downloaded, Flase if must be discarded
         """
@@ -65,7 +66,6 @@ class Crawler:
         :param max_images:  the number of images  name to downloads.
         :return:  generator of JSON images description
         """
-
 
         #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0

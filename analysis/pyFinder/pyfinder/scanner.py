@@ -2,7 +2,6 @@ import docker
 import docker.errors
 from subprocess import Popen, PIPE, STDOUT
 import re
-from .container import Container
 from .utils import *
 from .client_images_service import ClientImages
 from .client_daemon import ClientDaemon
@@ -12,6 +11,8 @@ from .consumer_rabbit import ConsumerRabbit
 from .utils import get_logger
 import logging
 
+"""This module contains the *Scanner* implementation."""
+
 
 class Scanner:
     def __init__(self, amqp_url='amqp://guest:guest@127.0.0.1:5672', exchange=None, queue=None, route_key=None,
@@ -20,28 +21,29 @@ class Scanner:
                  hub_url="https://hub.docker.com/",
                  rmi=True):
 
-        self.rmi = rmi  # remove an image ofter the scan
+        self.rmi = rmi  # remove an image after it is scanned
 
         self.logger = get_logger(__name__, logging.DEBUG)
 
-        # client of software service: the service that return the software to search in the images.
+        # client of Software service: the service that return the software to search in the images.
         self.client_software = ClientSoftware(api_url=software_url)
 
-        # client for interacting with the docker daemon on the host
+        # client of Docker daemon running on the local host
         self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
 
-        # rabbit consumer for receiving the images, on_message_callback is called when a message is received
+        # rabbit consumer of RabbittMQ: receives the images name to scan,
+        #       on_message_callback is called when a message is received
         self.consumer = ConsumerRabbit(amqp_url=amqp_url,
                                        exchange=exchange,
                                        queue=queue,
                                        route_key=route_key,
                                        on_msg_callback=self.on_message)
 
-        # the clientApi interacts with the server api in order to post the image description
+        # client of Images Service:  in order to add and update the image description.
         self.client_images = ClientImages(images_url=images_url)
         # host_service=host_images, port_service=port_images, url_path=path_images)
 
-        # the client hub interacts with the docker Hub registry
+        # client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
 
     def on_message(self, json_message):
@@ -53,10 +55,7 @@ class Scanner:
         self.process_repo_name(json_message['name'])
 
     def run(self):
-        """
-        Run the scanner starting the consumer client of the RabbitMQ server.
-        :return:
-        """
+        """Start the scanner running the consumer client of the RabbitMQ server."""
 
         try:
             self.consumer.run()
@@ -64,11 +63,11 @@ class Scanner:
             self.consumer.stop()
 
     def process_repo_name(self, repo_name):
+        """Process a single image. It checks if an image must Scanned or it is already updated."""
         self.logger.info("[" + repo_name + "] Processing image")
         list_tags = self.client_hub.get_all_tags(repo_name)
         tag = "latest"
         if tag in list_tags:
-            # TODO; is new must contains also the tag latest ...
             if self.client_images.is_new(repo_name):  # the image is totally new
                 dict_image = self.scan(repo_name, tag)
                 self.client_images.post_image(dict_image)  # POST the description of the image
@@ -82,9 +81,11 @@ class Scanner:
                 self.logger.info("[" + repo_name + "] already up to date.")
 
     def scan(self, repo_name, tag="latest"):
-
+        """It scans an image and create the description. \n
+         The description is ccreaed with the Docker Hub informations \n
+         and the software distributions.
+        """
         self.client_daemon.pull_image(repo_name, tag)
-        #self.client_daemon.pull(repo_name, tag)
 
         dict_image = {}
         dict_image["repo_name"] = repo_name
@@ -104,30 +105,9 @@ class Scanner:
                 self.logger.error(e)
         return dict_image
 
-    # def info_inspect(self, repo_name, dict_image):
-    #     """
-    #      docker inspect IMAGE
-    #     """
-    #     self.logger.info'[{}] docker inspect ... '.format(repo_name))
-    #     dict_inspect = self.client_daemon.inspect_image(repo_name)
-    #     #dict_image['size'] = dict_inspect['Size']
-
     def info_docker_hub(self, repo_name, dict_image, tag):
-        """
-        Download the image information among Docker API v2.
-        :param repo_name:
-        :param dict_image:
-        :return:
-        """
+        """Get the informations of an image from Docker Hub."""
         self.logger.info('[{}] adding Docker Hub info ... '.format(repo_name))
-
-        # take info from the repository
-        # {"user": "dido", "name": "webofficina", "namespace": "dido", "status": 1,
-        #  "description": "Automated repo for the webOfficina gitHub repository", "is_private": false,
-        #  "is_automated": true, "can_edit": false, "star_count": 0, "pull_count": 40,
-        #  "last_updated": "2016-06-12T15:46:21.454420Z", "has_starred": false,
-        #  "full_description": "# webOfficina\nWebOfficina is a web application"
-        #  "permissions": {"read": true, "write": false, "admin": false}}
         json_response = self.client_hub.get_json_repo(repo_name)
 
         if json_response:
@@ -139,12 +119,6 @@ class Scanner:
             if 'pull_count' in json_response:
                 # dict_image['pull_count'] = json_response['pull_count']
                 dict_image['pulls'] = json_response['pull_count']
-
-
-        # take info from a tag
-        # {"name": "latest", "full_size": 279654175, "id": 1720126, "repository": 479046, "creator": 534858,
-        #  "last_updater": 534858, "last_updated": "2016-06-12T15:46:18.292828Z", "image_id": null, "v2": true,
-        #  "platforms": [5]}
         json_response = self.client_hub.get_json_tag(repo_name, tag)
 
         if 'name' in json_response:
@@ -155,38 +129,25 @@ class Scanner:
             dict_image['size'] = json_response['full_size']
 
     def info_dofinder(self, image_name, dict_image, tag):
-
+        """It Extracts the OS distribution and the software in the image"""
         repo_name_tag = image_name + ":" + tag
         self.logger.info('[{}] searching software ... '.format(repo_name_tag))
 
-        # with Container(repo_name) as c:
-
-        # search distribution Operating system,
+        # search distribution Operating system in the image,
         for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
             try:
                 distro = self.version_from_regex(repo_name_tag, cmd, regex)
                 if distro:
                     dict_image['distro'] = distro
-                # output = self.run_command(repo_name, cmd)
-                # p = re.compile(reg)
-                # match = p.search(output)
-                # if match:
-                #     # take the non-capturing group: only the matches, group[0] return all the match
-                #     dist = match.group(0)
-                #     dict_image['distro'] = dist
-                # else:
-                #     self.logger.debug("[{0}] not found {1}".format(repo_name, cmd))
             except docker.errors.NotFound as e:
                 self.logger.error(e)
-                #   with Container(repo_name) as c:
 
-        # search binary versions
+        # search software distribution in the image.
         softwares = []
-        for sw in self.client_software.get_software():  # self._get_bins(self.versionCommands):
+        for sw in self.client_software.get_software():  #
             try:
                 software = sw['name']
                 command = software+" " + sw['cmd']
-                #cmd = sw['cmd']
                 regex = sw['regex']
                 version = self.version_from_regex(repo_name_tag, command, regex)
                 if version:
@@ -212,13 +173,7 @@ class Scanner:
         """Just like 'docker run CMD'.
         Return the output of the command.
         """
-        # Popen version: PROBLEM; the scanner is executed in a container and docker in not installed inside.
-        # self.logger.debug("Executing in " + repo_name+": "+program +" "+option)
-        # p = Popen(['docker', 'run', '--rm', repo_name, program, option], stdout=PIPE, stderr=STDOUT)
-        # out = p.stdout.read().decode()
-        # return out
 
-        #ver_command = program + " " + option
         self.logger.info("[{0}] running command {1}".format(repo_name, command))
         container_id = self.client_daemon.create_container(image=repo_name,
                                                            entrypoint=command,
@@ -231,22 +186,9 @@ class Scanner:
         except docker.errors.APIError as e:
             self.logger.error(e)
             return " "
-        #self.logger.debug("Searching [{0}] in {1} ...".format(command, repo_name))
         self.client_daemon.wait(container_id)
         output = self.client_daemon.logs(container=container_id)
         self.client_daemon.remove_container(container_id)
         self.logger.debug("Removed container "+container_id)
         return output.decode()
 
-    # def pull_officials(self):
-    #     # TODO excpetion raise for the connection to docker hub
-    #     # download all the official library
-    #     images_libraries = self.client_hub.crawl_official_images()
-    #     self.logger.info("[" + str(images_libraries)+ "] number of official images to pull...")
-    #     for image in images_libraries:
-    #         try:
-    #
-    #             self.client_daemon.pull_image(image)
-    #         except docker.errors.APIError:
-    #             self.logger.exception("Docker api error")
-    #             pass

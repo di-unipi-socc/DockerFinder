@@ -4,6 +4,10 @@ import urllib.parse
 import logging
 from .utils import get_logger
 
+"""
+This module interacts with Docker Hub endpoint.
+"""
+
 
 class ClientHub:
 
@@ -13,6 +17,7 @@ class ClientHub:
         self.logger = get_logger(__name__, logging.INFO)
 
     def get_num_tags(self, repo_name):
+        """ Count the number of tags associated with a repository name."""
         url_tags = self.docker_hub + "/v2/repositories/" + repo_name + "/tags/"
         try:
             res = self.session.get(url_tags)
@@ -25,9 +30,9 @@ class ClientHub:
 
     def get_all_tags(self, repo_name):
         """
-        Return a lsit of all the tags associated with the repository name
-        :param repo_name:
-        :return:
+        RGEt  all the tags associated with the repository name.
+        :param repo_name: the name of the repository.
+        :return: a list of (strings) tags.
         """
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
         try:
@@ -55,10 +60,11 @@ class ClientHub:
 
     def crawl_images(self, page=1, page_size=10, max_images=None, filter_images=lambda repo_name: True):
         """
-        :param page:
-        :param page_size:
-        :param max_images: (int) the maximun number of images crawled from the docker hub.
-         If None all the images will be crawled [default: None]
+        This is a generator function that crawls and yield the images' name crawled from Docker Hub .
+        :param page: the starting page where starting
+        :param page_size: the number of results in a page,
+        :param max_images: the  number of images to be crawled from Docker hub.
+         If *None* all the images  of Docker Hub will be crawled [default: None]
         :return:
         """
         url_next_page = self.build_search_url(page=page, page_size=page_size)
@@ -91,6 +97,9 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
 
     def _apply_filter(self, list_of_json_images, filter_function):
+        """Filters the *list_of_json_images* applying the *filter_function*.  \n
+        The *filter_function* take as input an image name and return  \n
+        ``True`` if the image must be mantained, ``False`` if the image must be discarded."""
         filtered_images = []
         for image in list_of_json_images:
             repo_name = image['repo_name']
@@ -108,6 +117,10 @@ class ClientHub:
         return url_images
 
     def get_json_repo(self, repo_name):
+        """Get a the informations present on Docker Hub for a given repository name.
+        :return: JSON object with the Docker Hub info for the repository name.
+
+        """
         url_namespace = self.docker_hub+"/v2/repositories/" + repo_name
         try:
             res = self.session.get(url_namespace)
@@ -121,6 +134,7 @@ class ClientHub:
             self.logger.exception("ConnectionError: ")
 
     def get_json_tag(self, repo_name, tag="latest"):
+        """ Get the informations for the repository with *tag*."""
         url_tag = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
         try:
             res = self.session.get(url_tag)
@@ -131,9 +145,10 @@ class ClientHub:
                 self.logger.error(str(res.status_code) + " error response: " + res.text)
                 return {}
         except requests.exceptions.ConnectionError as e:
-            self.logger.exception("ConnectionError: " )
+            self.logger.exception("ConnectionError: ")
 
     def count_all_images(self):
+        """ Count all the images stored into Docker Hub"""
         url_hub = self.build_search_url(page_size=10, page=1)
         try:
             res = self.session.get(url_hub)
@@ -147,7 +162,7 @@ class ClientHub:
             self.logger.exception("ConnectionError: " )
 
     def crawl_official_images(self):
-        #https://hub.docker.com/v2/repositories/library
+        """ Crawls only the official repositories"""
         url_repositories = self.docker_hub + "/v2/repositories/library?"
         params = (('page', 1), ('page_size', 100))
         url_encode = urllib.parse.urlencode(params)
@@ -156,14 +171,13 @@ class ClientHub:
             res = self.session.get(url_repositories+url_encode)
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-                #list_images =[res['user']+"/"+res['name'] for res in json_response['results']]
                 list_images = [res['name'] for res in json_response['results']]
                 count += json_response['count']
                 next_page = json_response['next']
                 while next_page:
                     res = self.session.get(next_page)
                     json_response = res.json()
-                    #list_images += [res['user']+"/"+res['name'] for res in json_response['results']]
+
                     list_images += [res['name'] for res in json_response['results']]
                     next_page = json_response['next']
                 return list_images
@@ -172,7 +186,6 @@ class ClientHub:
                 return []
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " + str(e))
-
 
     def get_dockerhub(self, path_url):
         url_repositories = self.docker_hub + path_url

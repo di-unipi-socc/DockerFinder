@@ -4,17 +4,18 @@ import sys
 from .utils import *
 import logging
 
+""" This module interacts with the *Images service* running on the *storage* part."""
 
 class ClientImages:
 
     def __init__(self, images_url="http://127.0.0.1:3000/api/images", host_service="127.0.0.1", port_service=3000, url_path="/api/images/"):
         self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
-        #self.url_api = "http://" + host_service + ":" + str(port_service)+url_path
         self.url_api = images_url
         self.logger.info("URL images service: "+self.url_api)
 
     def post_image(self, dict_image):
+        """Add an image description"""
         try:
             res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
@@ -25,10 +26,10 @@ class ClientImages:
             self.logger.exception("ConnectionError: ")
         except:
             self.logger.exception("Unexpected error:")
-        # else:
-        #     return res.json()
+
 
     def put_image(self, dict_image):
+        """Update an image description"""
         try:
             id_image = self.get_id_image(dict_image['repo_name'])
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_image)
@@ -45,6 +46,7 @@ class ClientImages:
         #     return res.json()
 
     def get_images(self):
+        """Get all the images descriptions."""
         try:
             res = self.session.get(self.url_api)
             if res.status_code == requests.codes.ok:
@@ -58,6 +60,7 @@ class ClientImages:
             raise
 
     def get_id_image(self, repo_name):
+        """Return the *id* of the *repo_name*."""
         json_image_list = self.get_image(repo_name)
         if json_image_list:
             if "_id" in json_image_list[0].keys():
@@ -66,6 +69,7 @@ class ClientImages:
                 raise Exception(" _id not found in "+repo_name)
 
     def get_image(self, repo_name):
+        """Return the description of a single iamge"""
         url = self.url_api + "?repo_name=" + repo_name
         try:
             res = self.session.get(url)
@@ -82,6 +86,8 @@ class ClientImages:
             self.logger.exception("ConnectionError: " )
 
     def is_new(self, repo_name):
+        """Check if the image is new into the images service. \n
+        An image is new if it is not present."""
         res_json = self.get_image(repo_name)
         if res_json['count'] is 0:
             self.logger.info("["+repo_name+"] is new into IMAGES SERVER")
@@ -89,19 +95,16 @@ class ClientImages:
         else:
             self.logger.info("[" + repo_name + "] is present")
             return False
-        # self.logger.debug("["+repo_name+"] verifing if is new ")
-        # return False if self.get_image(repo_name) else True
+
 
     def must_scanned(self, repo_name, tag="latest"):
         """
-        Check if the repo_name has been scanned recently and it is not require the scan.
+        Check if the *repo_name* has been scanned recently and it is not require the scan.
          if(local.last_updated > remote.last_scan ) then {scan}
-        :param repo_name:
-        :return:
+        :param repo_name: the image name.
+        :return: True if the image must be scan. False otherwise.
         """
-        # last update and last scan from images service
-        #{'images': [{'_id': '57aef6efba60732000d3cf0d', 'last_updated': '2015-11-13T01:39:51.929Z',
-        #             'last_scan': '2016-08-13T10:31:11.270Z'}], 'count': 1}
+
         res_image_json = self.get_scan_updated(repo_name)  # {"images:[
         if res_image_json is not None:   # if not empty list, the result is there
             self.logger.debug("Received from Images service" + str(res_image_json))

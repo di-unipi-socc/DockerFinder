@@ -14,19 +14,11 @@ class ClientDaemon(docker.Client):
         self.logger = get_logger(__name__, logging.INFO)
 
     def pull_image(self, repo_name, tag="latest"):
-        # # try to set image
-        # if not repo_name:
-        #     ims = self.images()
-        #     if len(ims) >= 1:
-        #         repo_name = [im['RepoTags'][0] for im in self.images()][0]
-        #
-        # #assert repo_name, 'No image given or found locally.'
-        #
-        # # get image if not available locally
-        # im_names = [im['RepoTags'][0] for im in self.images()]  # all the images in the host (first tag)
-        #
-        # if (not any([repo_name in imname for imname in im_names])) and self.search(repo_name):  # not found locally and found remote
-        #    self.logger.info('[{0}] not found locally. Pulling from docker hub...'.format(repo_name))
+        """
+        The method pulls the image from the Docker Hub.
+        :param repo_name: the name of the iamge to pull.
+        :param tag: tha tag of the iamge to pull (dafault latest)
+        """
         try:
             self.logger.info("[" + repo_name + "] pulling ...")
             for line in self.pull(repo_name, tag, stream=True):
@@ -39,12 +31,3 @@ class ClientDaemon(docker.Client):
                     self.logger.info("[" + repo_name + "] " + json_image['status'])
         except docker.errors as e:
                 self.logger.exception(e)
-        # else:
-        #     self.logger.info("[" + repo_name + "] already exists or not found int the Docker Hub")
-
-    # def remove_image(self, image, force=False):
-    #
-    #     try:
-    #         self.remove_image(image, force)
-    #     except :
-    #         e = sys.exc_info()[0]

@@ -2,7 +2,6 @@ import datetime
 import time
 import logging
 import pickle
-#from .client_dockerhub import ClientHub
 
 
 def string_to_date(string_date):

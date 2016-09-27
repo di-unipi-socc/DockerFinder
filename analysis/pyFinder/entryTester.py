@@ -3,7 +3,7 @@ from pyfinder import ClientSoftware
 
 from docopt import docopt
 
-__doc__= """Crawler
+__doc__= """Tester
 
 Usage:
   Tester.py build [--ni=<100>] [--fp=<1>] [--pf=<images.test>]

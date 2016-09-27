@@ -103,25 +103,7 @@ router.get('/', function (req, res, next) {
             queryBuild.sort(ordering);
             break;
 }
-
-    // var ordering = '-star_count';  //-pull_count
-    // console.log("DEFAULT ordering "+ordering);
-    // queryBuild.sort(ordering);
-    /*
-    //?sort=<key>
-    if(req.query.sort){
-        console.log("Sorting  by "+req.query.sort);
-        //queryBuild.sort(String(req.query.sort));  //  ERROR BUG: IT doesn't work, return empty list
-        //queryBuild.sort('-star_count');             //  return empty list even if  I pass the order <key> directly
-        queryBuild.sort({ 'star_count': 'asc'});
-    }
-    else{
-        var ordering = 'star_count';  //-pull_count
-        console.log("DEFAULT ordering "+ordering);
-        //queryBuild.sort(ordering);{ field: 'asc',
-        queryBuild.sort({ 'star_count': 'asc'});
-    }
-*/
+    
     //execution of the query
     queryBuild.exec(function (err, results) {
         if (err) {
@@ -141,14 +123,3 @@ router.get('/', function (req, res, next) {
 // Return router
 module.exports = router;
 
-// Using query builder
-// Model
-// .where('age').gte(25)
-// .where('tags').in(['movie', 'music', 'art'])
-// .select('name', 'age', 'tags')
-// .skip(20)
-// .limit(10)
-// .asc('age')
-// .slaveOk()
-// .hint({ age: 1, name: 1 })
-// .exec(callback);
