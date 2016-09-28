@@ -17,11 +17,11 @@ import {ImagesComponent}        from "../componenets/images.component";
 export const appRoutes: Routes = [
       {
       path: '',
-      redirectTo: '/dashboard',
+      redirectTo: '/dockerfidner',
       pathMatch: 'full'
     },
     {
-        path: 'dashboard',
+        path: 'dockerfidner',
         component: DashboardComponent
     },
     // {
