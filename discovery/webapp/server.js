@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 var http = require('http');
 
 app.get('/search', function (req, res) { //  /api
@@ -60,8 +59,10 @@ app.get('/search', function (req, res) { //  /api
 // TODO: return all the routes in GET, -> return only a blacklist of route , and configure angular to redirect to "/"
 app.get('*', function (req, res) {
     console.log(__dirname + '/public'+req.originalUrl);
-    //res.sendFile(__dirname + '/public/index.html');
-    res.sendFile(__dirname + '/public'+req.originalUrl);
+    if (req.originalUrl == '/dockerfinder')
+        res.sendFile(__dirname + '/public/index.html');
+    else
+        res.sendFile(__dirname + '/public'+req.originalUrl);
 });
 
 app.use(function (err, req, res, next) {

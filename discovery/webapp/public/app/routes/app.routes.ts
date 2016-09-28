@@ -17,11 +17,11 @@ import {ImagesComponent}        from "../componenets/images.component";
 export const appRoutes: Routes = [
       {
       path: '',
-      redirectTo: '/dockerfidner',
+      redirectTo: '/dockerfinder',
       pathMatch: 'full'
     },
     {
-        path: 'dockerfidner',
+        path: 'dockerfinder',
         component: DashboardComponent
     },
     // {
