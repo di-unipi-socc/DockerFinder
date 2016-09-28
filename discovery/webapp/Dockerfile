@@ -13,7 +13,8 @@ RUN npm install
 # COPY . /code
 
 # replace this with your application's default port
-EXPOSE 8080
+#EXPOSE 8080
+EXPOSE 80
 
 #commnand to run the app
 CMD [ "npm", "start" ]

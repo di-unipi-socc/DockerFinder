@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 // Environment configurations
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 80);
 
 
 app.use(bodyParser.urlencoded({extended: true}));

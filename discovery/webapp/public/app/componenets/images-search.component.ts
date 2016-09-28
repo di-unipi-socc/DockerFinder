@@ -18,7 +18,7 @@ import {Router} from "@angular/router";
 
 })
 export class ImagesSearchComponent implements  OnInit {
-    sorting  = [{name:'Ascending stars', val:"stars"},{name:'Descending stars',val:"-stars"},
+    sorting  = [{name:'Descending stars',val:"-stars"},{name:'Ascending stars', val:"stars"},
         {name:'Ascending pulls', val:"pulls"},{name:'Descending pulls',val:"-pulls"},
         {name:'Ascending stars  Ascending pulls', val:"-stars -pulls"}
     ];
@@ -29,13 +29,15 @@ export class ImagesSearchComponent implements  OnInit {
      softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
      msg: string = '';
 
-      selectedSort = {name:"sort", val:""};
+    
+     selectedSort = {name:"sort", val:"-stars"}; //default selection od sorting (descending order)
 
      sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};  //size_gt=x, size_lt=y, size=z
      pullsCmpValue = {name:"pulls", cmp: this.comparisons[0].val, val:"0"};
      starsCmpValue = {name:"stars", cmp: this.comparisons[0].val, val:"0"};
 
-     availableSoftware : string [] =["java", "python","pip", "wget"];
+     availableSoftware : string [] =["java", "python","pip", "wget",'perl','nano',
+                'php','ruby','scala','groovy','apache2','nginx','nodejs','npm','gunicorn','curl'];
 
     resultImages : Image[];
     count = 0;
@@ -54,9 +56,9 @@ export class ImagesSearchComponent implements  OnInit {
     remove(id: number) {
         this.softwares.splice(id, 1);
     }
-
+    
     add(id){
-        this.softwares.push(new Software(" ", " ", false));
+        this.softwares.push(new Software("", "", false));
     }
 
       change_version(item) {
@@ -92,7 +94,8 @@ export class ImagesSearchComponent implements  OnInit {
     constructSearchUrl(){
         var url_search ="";
         for(var sw of this.softwares){
-            url_search += sw.name+"="+sw.version+"&";
+            url_search +=sw.name+"="+sw.version+"&";
+            console.log("VERSION:"+sw.version+"########")
         }
         url_search += "sort="+this.selectedSort.val;
         url_search += "&"+this.sizeCmpValue.name+this.sizeCmpValue.cmp+"="+this.sizeCmpValue.val;
