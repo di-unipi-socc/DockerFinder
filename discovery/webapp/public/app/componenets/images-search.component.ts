@@ -18,9 +18,9 @@ import {Router} from "@angular/router";
 
 })
 export class ImagesSearchComponent implements  OnInit {
-    sorting  = [{name:'Descending stars',val:"-stars"},{name:'Ascending stars', val:"stars"},
-        {name:'Ascending pulls', val:"pulls"},{name:'Descending pulls',val:"-pulls"},
-        {name:'Ascending stars  Ascending pulls', val:"-stars -pulls"}
+    sorting  = [{name:'Decreasing stars', val:"stars"},{name:'Increasing stars',val:"-stars"},
+        {name:'Decreasing pulls', val:"pulls"},{name:'Increasing pulls',val:"-pulls"},
+        {name:'Increasing stars  Increasing pulls', val:"-stars -pulls"}
     ];
 
     comparisons = [{name:">=", val:"_gt"},{name:"<",val:"_lt"},{name:"=",val:""}];
@@ -30,7 +30,7 @@ export class ImagesSearchComponent implements  OnInit {
      msg: string = '';
 
     
-     selectedSort = {name:"sort", val:"-stars"}; //default selection od sorting (descending order)
+     selectedSort = {name:"sort", val:"stars"}; //default selection od sorting (Descreaing order)
 
      sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};  //size_gt=x, size_lt=y, size=z
      pullsCmpValue = {name:"pulls", cmp: this.comparisons[0].val, val:"0"};
