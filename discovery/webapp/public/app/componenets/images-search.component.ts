@@ -23,7 +23,7 @@ export class ImagesSearchComponent implements  OnInit {
         {name:'Ascending stars  Ascending pulls', val:"-stars -pulls"}
     ];
 
-    comparisons = [{name:"Greater than", val:"_gt"},{name:"Less than",val:"_lt"},{name:"Equal",val:""}];
+    comparisons = [{name:">=", val:"_gt"},{name:"<",val:"_lt"},{name:"=",val:""}];
 
 
      softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];

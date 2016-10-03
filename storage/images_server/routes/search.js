@@ -47,8 +47,10 @@ router.get('/', function (req, res, next) {
         console.log("Size less than " + req.query['size_lt']);
     }
     else if(req.query['size_gt']) {
-        queryBuild.where('size').gt(req.query['size_gt']);
-        console.log("Size greater than " + req.query['size_gt']);
+            // TODO grater than or equal in the API
+        queryBuild.where('size').gte(req.query['size_gt']);
+        //queryBuild.where('size').gt(req.query['size_gt']);
+        console.log("Size greater than or equal " + req.query['size_gt']);
     }
 
     if(req.query['pulls']) {
@@ -60,8 +62,10 @@ router.get('/', function (req, res, next) {
         console.log("Pulls less than " + req.query['pulls_lt']);
     }
     else if(req.query['pulls_gt']) {
+        // TODO grater than or equal in the API
         queryBuild.where('pulls').gt(req.query['pulls_gt']);
-        console.log("Pulls greater than" + req.query['pulls_gt']);
+        //queryBuild.where('pulls').gte(req.query['pulls_gt']);
+        console.log("Pulls greater than or equal" + req.query['pulls_gt']);
     }
     if(req.query['stars']) {
         queryBuild.where('stars', req.query['stars']);
@@ -72,8 +76,9 @@ router.get('/', function (req, res, next) {
         console.log("Stars less than " + req.query['stars_lt']);
     }
     else if(req.query['stars_gt']) {
-        queryBuild.where('stars').gt(req.query['stars_gt']);
-        console.log("Stars greater than " + req.query['stars_gt']);
+        // TODO grater than or equal in the API
+        queryBuild.where('stars').gte(req.query['stars_gt']);
+        console.log("Stars greater than or equal" + req.query['stars_gt']);
     }
       if(req.query.limit) {
         console.log("Limit " + req.query.limit);
