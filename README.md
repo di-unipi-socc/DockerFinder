@@ -30,7 +30,9 @@ and
 3. search the images by looking into the Docker Finder description storage.
 
 ## GUI of Docker Finder
-
+<div style="text-align:center">
+<img src="./docs/df_gif-gif" width="500">
+</div>
 
 ## Docker Finder-in-Docker
 The figure represents the architecture of Docker Fidner deployed with the Docker platform.
