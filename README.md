@@ -31,7 +31,7 @@ and
 
 ## GUI of Docker Finder
 <div style="text-align:center">
-<img src="./docs/df_gif-gif" width="500">
+<img src="./docs/df_gif.gif" width="500">
 </div>
 
 ## Docker Finder-in-Docker
