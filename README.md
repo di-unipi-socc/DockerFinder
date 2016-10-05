@@ -22,17 +22,27 @@ University of Pisa and SSSUP Sant’Anna. a.a. 2015/2016
 Docker Finder is a tool enabling a more powerful search of Docker images with
 respect to the tools currently provided by the Docker platform (**docker search**, **Docker Hub**).
 
-The main steps performed by Docker Finder are the following
 
-1. Download Docker images from the Docker Hub,
-2. generate and store a new description of the images into a local storage,
+## Docker Finder steps
+The main steps performed by Docker Finder are the following:
+
+1. *Download* Docker images from a Docker registry (e.g. Docker Hub),
+2. *generate* a descriptions of the images into a local storage,
 and
-3. search the images by looking into the Docker Finder description storage.
+3. users can search the images via APIs and a GUI.
+
+<div align="center">
+<img src="./docs/df_discovery.png" width="500">
+</div>
+
 
 ## GUI of Docker Finder
-<div style="text-align:center">
+The GUI of Docker Finder.
+<div  align="center">
 <img src="./docs/df_gif.gif" width="500">
 </div>
+
+
 
 ## Docker Finder-in-Docker
 The figure represents the architecture of Docker Fidner deployed with the Docker platform.
