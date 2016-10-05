@@ -47,7 +47,7 @@ The GUI of Docker Finder.
 ## Docker Finder-in-Docker
 The figure represents the architecture of Docker Fidner deployed with the Docker platform.
 
-<div style="text-align:center">
+<div align="center">
 <img src="./docs/architecture_docker.png" width="500">
 </div>
  
