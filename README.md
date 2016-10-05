@@ -13,7 +13,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 **Enhanced discovery of Docker
-images**  is the title thesis submitted for the degree of
+images**  is the title of the thesis submitted for the degree of
 MSc in Computer Science and Networking
 University of Pisa and SSSUP Sant’Anna. a.a. 2015/2016
 
@@ -45,7 +45,7 @@ The GUI of Docker Finder.
 
 
 ## Docker Finder-in-Docker
-The figure represents the architecture of Docker Fidner deployed with the Docker platform.
+The figure represents the architecture of Docker Finder deployed in the Docker platform. Each compoenet is shippend inside a Docker image.
 
 <div align="center">
 <img src="./docs/architecture_docker.png" width="500">
