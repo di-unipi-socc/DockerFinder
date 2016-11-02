@@ -1,3 +1,4 @@
+# crawler image based on python 
 FROM python:3.4-alpine
 
 RUN mkdir /code
