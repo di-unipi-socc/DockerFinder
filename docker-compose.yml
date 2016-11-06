@@ -10,6 +10,8 @@ services:
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
     labels:
       - "constraint:node==didoUbuntu"
+    # networks:
+    #   - docker-finder
     # Schedule containers on a specific node
     # environment:
     #   - "constraint:node==node-1"
@@ -22,10 +24,10 @@ services:
     #container_name: rabbitmq
     ports:
       - 8082:15672
-    # networks:
-    #   - core-net
     volumes:
       - /var/lib/rabbitmq
+    networks:
+       - docker-finder
 
   scanner:
     build:
@@ -34,6 +36,8 @@ services:
     command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    # networks:
+    #     - docker-finder
 
 #####################################################
 ###############   DISCOVERY PHASE ####################
@@ -46,6 +50,8 @@ services:
       - "3001:3001"
     labels:
       - "constraint:node==didoUbuntu"
+    # networks:
+    #   - docker-finder
 
   # Software database
   software_db:
@@ -55,12 +61,8 @@ services:
       - /data/db
     labels:
       - "constraint:node==didoUbuntu"
-
-  # webapp:
-  #   build: discovery/webapp
-  #   command: []
-
-
+    # networks:
+    #   - docker-finder
 
 #####################################################
 ###############   STORAGE PHASE ####################
@@ -77,8 +79,8 @@ services:
       - "3000:3000"
     depends_on:
      - images_db
-    # links:
-    #  - images_db
+    # networks:
+    #   - docker-finder
 
   # Images database
   images_db:
@@ -86,8 +88,9 @@ services:
     container_name: images_mongo
     volumes:
       - /data/db
+    # networks:
+    #   - docker-finder
 
-#
-# networks:
-#    docker-finder:
-#      external: true
+networks:
+   docker-finder:
+     external: true
