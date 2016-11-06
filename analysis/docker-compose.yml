@@ -1,55 +1,55 @@
 version: "2"
 services:
   #run -d --hostname my-rabbit --name rabbitMq -p 8081:15672 --net core-net rabbitmq:3-management
-  rabbitmq:
-    image: rabbitmq:3-management
-    hostname: rabbitmq
-    restart: on-failure:3
-    restart: always
-    container_name: rabbitmq
-    ports:
-      - 8081:15672
-    networks:
-      - core-net
-    volumes:
-      - /var/lib/rabbitmq
-    # LOOK FOR NAMED VOLUME
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   hostname: rabbitmq
+  #   restart: on-failure:3
+  #   restart: always
+  #   #container_name: rabbitmq
+  #   ports:
+  #     - 8081:15672
+  #   networks:
+  #     - core-net
+  #   volumes:
+  #     - /var/lib/rabbitmq
+  #   # LOOK FOR NAMED VOLUME
 
   crawler:
     build:
       context: .
       dockerfile: ./Dockerfile_crawler
-    image: dofinder/crawler:latest
-    #restart: on-failure:3
-    #restart: always
+    # image: dofinder/crawler:latest
+    # restart: on-failure:3
+    # restart: always
     #container_name: crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
     # volumes:
     # - .:/code
-    depends_on:
-     - rabbitmq
-    links:
-     - rabbitmq
-    networks:
-      - core-net
+    #depends_on:
+    # - rabbitmq
+    # links:
+    # - rabbitmq
+    #networks:
+    #  - core-net
 
   scanner:
     build:
       context: .
       dockerfile: ./Dockerfile_scanner
-    image: dofinder/scanner:latest
-    container_name: scanner
-    restart: on-failure:3
+    #image: dofinder/scanner:latest
+    #container_name: scanner
+    #restart: on-failure:3
     #restart: always
     command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-     - rabbitmq
-    links:
-     - rabbitmq
-    networks:
-     - core-net
+    #depends_on:
+    # - rabbitmq
+    #links:
+    # - rabbitmq
+    #networks:
+    # - core-net
 
 networks:
   core-net:

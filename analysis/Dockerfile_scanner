@@ -1,3 +1,4 @@
+#scanner image
 FROM python:3.4-alpine
 
 RUN mkdir /code
