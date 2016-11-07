@@ -21,8 +21,21 @@ for SERVICE in  software_server images_server scanner crawler ;do # is built on 
   docker-compose build $SERVICE
   docker tag dockerfinder_$SERVICE $HUB_REPOSITORY:$SERVICE
   docker push $HUB_REPOSITORY:$SERVICE
-  echo "  Pushed:  $HUB_REPOSITORY:$SERVICE"
+  echo " Pushed:  $HUB_REPOSITORY:$SERVICE"
 done
+
+
+# echo "Creating Manager Node ..."
+# e = $(docker-machine  create  --driver virtualbox manager)
+#
+#
+# TOKEN=$(docker swarm join-token -q manager)
+#
+# for N in 1 2; do
+#   eval $(docker-machine env worker$N)
+#   docker swarm join --token $TOKEN manager:2377
+#   echo "worker$N : added mnafger token..."
+# done
 
 # assign type to the master node
 #docker node update --label-add type=master didoUbuntu
