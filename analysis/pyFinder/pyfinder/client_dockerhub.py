@@ -11,10 +11,17 @@ This module interacts with Docker Hub endpoint.
 
 class ClientHub:
 
-    def __init__(self, docker_hub_endpoint="https://hub.docker.com/"):
+    def __init__(self, docker_hub_endpoint="https://hub.docker.com/",from_page=1, page_size=100):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
         self.logger = get_logger(__name__, logging.INFO)
+        self.path_file_url = "/data/crawler/lasturl.txt"
+
+        if(self.get_last_url(self.path_file_url) is None):  # se non è mai stato salvato un url nel file
+            init_url = self.build_search_url(page=from_page, page_size=page_size)
+            self.logger.info("Set init Url page=1,page-size=100")
+            self.save_last_url(self.path_file_url, init_url)
+
 
     def get_num_tags(self, repo_name):
         """ Count the number of tags associated with a repository name."""
@@ -58,30 +65,35 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, page=1, page_size=10, max_images=None, filter_images=lambda repo_name: True):
+    def crawl_images(self, max_images=None, filter_images=lambda repo_name: True):
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub .
-        :param page: the starting page where starting
-        :param page_size: the number of results in a page,
         :param max_images: the  number of images to be crawled from Docker hub.
          If *None* all the images  of Docker Hub will be crawled [default: None]
         :return:
         """
-        url_next_page = self.build_search_url(page=page, page_size=page_size)
+
+
+        url_next_page=  self.get_last_url(self.path_file_url)
+        #self.build_search_url(page=from_page, page_size=page_size)
+
+
         count = self.count_all_images()
         max_images = count if not max_images else max_images  # download all images if max_images=None
         crawled_images = 0
         self.logger.info("Total images to crawl: " + str(max_images))
         try:
             while url_next_page and crawled_images < max_images: # max_images > 0
-                self.logger.debug("GET to "+url_next_page)
+
+                self.save_last_url(self.path_file_url, url_next_page) # save last url
+
+                self.logger.debug("GET to "+ url_next_page)
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
                     list_json_image = self._apply_filter(json_response['results'], filter_function=filter_images)
-                    url_next_page = json_response['next']
+                    url_next_page= json_response['next']
                     temp_images = len(list_json_image)
-                    page += 1
                     if temp_images + crawled_images > max_images:
                         list_json_image = list_json_image[:max_images-crawled_images]
                     crawled_images += len(list_json_image)
@@ -95,6 +107,24 @@ class ClientHub:
             self.logger.exception("ConnectionError: ")
         except:
             self.logger.exception("Unexpected error:")
+
+    def save_last_url(self, path, url):
+        with open(path, 'w') as f:
+            f.write(url)
+            self.logger.info(url + " saved into "+ path)
+
+    def get_last_url(self,path):
+        ##return an array of two position:[0] page; [1] page-size
+        try:
+            with open(path, 'r') as f:
+                url = f.read()
+                self.logger.info("read: "+ url)
+                return url
+        except FileNotFoundError:
+            self.logger.info("File from reading the page not found")
+            return None
+
+
 
     def _apply_filter(self, list_of_json_images, filter_function):
         """Filters the *list_of_json_images* applying the *filter_function*.  \n
@@ -199,4 +229,3 @@ class ClientHub:
                 return []
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " + str(e))
-

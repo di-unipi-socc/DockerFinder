@@ -8,8 +8,10 @@ services:
       context: analysis
       dockerfile: ./Dockerfile_crawler
     command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
-    labels:
-      - "constraint:node==didoUbuntu"
+    volumes:
+        - /data/crawler/
+    # labels:
+    #   - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
     # Schedule containers on a specific node
@@ -26,8 +28,8 @@ services:
       - 8082:15672
     volumes:
       - /var/lib/rabbitmq
-    labels:
-      - "constraint:node==didoUbuntu"
+    # labels:
+    #   - "constraint:node==didoUbuntu"
     # networks:
     #    - docker-finder
 
@@ -61,8 +63,8 @@ services:
     #container_name: software_mongo
     volumes:
       - /data/db
-    labels:
-      - "constraint:node==didoUbuntu"
+    # labels:
+    #   - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
 
@@ -79,8 +81,8 @@ services:
     restart: on-failure:3
     ports:
       - "3000:3000"
-    labels:
-      - "constraint:node==didoUbuntu"
+    # labels:
+    #   - "constraint:node==didoUbuntu"
     #depends_on:
     # - images_db
     # networks:

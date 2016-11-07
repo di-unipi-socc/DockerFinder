@@ -64,16 +64,16 @@ class Crawler:
         :param from_page:  the starting page into the Docker Hub.
         :param page_size:  is the number of images per image that Docker Hub return.
         :param max_images:  the number of images  name to downloads.
-        :return:  generator of JSON images description
+        :return: generator of JSON images description
         """
 
         #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
-        for list_images in self.client_hub.crawl_images(page=from_page, page_size=page_size, max_images=max_images,
+
+        for list_images in self.client_hub.crawl_images(max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
             for image in list_images:
                 repo_name = image['repo_name']
                 sent_images += 1
                 yield json.dumps({"name": repo_name})
         self.logger.info("Number of images sent to RabbtiMQ: {0}\n".format(str(sent_images)))
-
