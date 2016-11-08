@@ -98,6 +98,14 @@ services:
       - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
+#####################################################
+###############   ANALYSIS PHASE ####################
+#####################################################
+
+  scale_scanner:
+    build: monitor
+    # labels:
+    #   - "constraint:node==didoUbuntu"
 
 # networks:
 #    docker-finder:
