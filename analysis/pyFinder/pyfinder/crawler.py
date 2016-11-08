@@ -26,7 +26,7 @@ class Crawler:
         # Client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
 
-    def run(self, from_page=1, page_size=10, max_images=100):
+    def run(self, from_page, page_size, max_images=100):
         """
         Starts the publisher of the RabbitMQ server, and send to the images crawled with the crawl() method.
         :param from_page:  the starting page into the Docker Hub.
@@ -57,20 +57,20 @@ class Crawler:
         else:
             return False
 
-    def crawl(self, from_page=1, page_size=10, max_images=None):
+    def crawl(self, from_page, page_size, max_images=None):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
         IT return a JSON of the image .
         :param from_page:  the starting page into the Docker Hub.
         :param page_size:  is the number of images per image that Docker Hub return.
-        :param max_images:  the number of images  name to downloads.
+        :param max_images:  the number of images to download.
         :return: generator of JSON images description
         """
 
         #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
 
-        for list_images in self.client_hub.crawl_images(max_images=max_images,
+        for list_images in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
             for image in list_images:
                 repo_name = image['repo_name']

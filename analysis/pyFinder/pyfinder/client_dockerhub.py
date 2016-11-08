@@ -11,11 +11,12 @@ This module interacts with Docker Hub endpoint.
 
 class ClientHub:
 
-    def __init__(self, docker_hub_endpoint="https://hub.docker.com/",from_page=1, page_size=100):
+    def __init__(self, docker_hub_endpoint="https://hub.docker.com/"):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
         self.logger = get_logger(__name__, logging.INFO)
         self.path_file_url = "/data/crawler/lasturl.txt"
+        from_page, page_size= 1, 100  # initial page to start the crawling
 
         if(self.get_last_url(self.path_file_url) is None):  # se non è mai stato salvato un url nel file
             init_url = self.build_search_url(page=from_page, page_size=page_size)
@@ -65,17 +66,21 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, max_images=None, filter_images=lambda repo_name: True):
+    def crawl_images(self, from_page=None, page_size=None, max_images=None, filter_images=lambda repo_name: True):
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub .
+        :param from_page: page number for starting crawling images. If
+        :param page_size: the number of images in a single page.
         :param max_images: the  number of images to be crawled from Docker hub.
          If *None* all the images  of Docker Hub will be crawled [default: None]
         :return:
         """
 
-
-        url_next_page=  self.get_last_url(self.path_file_url)
-        #self.build_search_url(page=from_page, page_size=page_size)
+        if(from_page and page_size):
+            url_next_page = self.build_search_url(from_page, page_size)
+        else:
+            url_next_page=  self.get_last_url(self.path_file_url)
+            #self.build_search_url(page=from_page, page_size=page_size)
 
 
         count = self.count_all_images()

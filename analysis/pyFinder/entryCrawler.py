@@ -15,9 +15,9 @@ Options:
   --queue=QUEUE        Queue is the name of the queue of rabbitMQ   [default: images]
   --ex=EXCHANGE        Exchange name in the rabbitMQ.               [default: dofinder]
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
-  --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
-  --ps=PAGE_SIZE      number of images in a single page [default: 10].
-  --mi=MAX_PAGE       Max number of images to be crawled from the docker hub [default: None].
+  --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: None].
+  --ps=PAGE_SIZE      number of images in a single page [default: None].
+  --mi=MAX_IMAGES       Max number of images to be crawled from the docker hub [default: None].
   --version     Show version.
 """
 
@@ -30,8 +30,8 @@ if __name__ == '__main__':
                           exchange=args['--ex'],
                           route_key=args['--key'])
         crawler.run(max_images=None if args['--mi'] == "None" else int(args['--mi']),
-                    page_size=int(args['--ps']),
-                    from_page=int(args['--fp']))
+                    page_size=None if args['--ps'] == "None"  else int(args['--ps']),
+                    from_page=None if args['--fp'] == "None"  else int(args['--fp']))
 
     if args['test']:
         tester = Tester(path_file_images=args['--pf'])
@@ -41,4 +41,3 @@ if __name__ == '__main__':
         if args['send']:
             tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
                              route_key=args['--key'])
-

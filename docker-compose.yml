@@ -7,7 +7,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_crawler
-    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images', '--fp=100', '--ps=10','--mi=100']
+    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images','--mi=100', '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
     # labels:
@@ -99,6 +99,6 @@ services:
     # networks:
     #   - docker-finder
 
-networks:
-   docker-finder:
-     external: true
+# networks:
+#    docker-finder:
+#      external: true
