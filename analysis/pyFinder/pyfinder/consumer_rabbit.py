@@ -47,7 +47,6 @@ class ConsumerRabbit(object):
         :rtype: pika.SelectConnection
 
         """
-        self.logger.info('Connecting to %s', self._url)
 
         return pika.SelectConnection(pika.URLParameters(self._url),
                                      self.on_connection_open,
@@ -318,9 +317,11 @@ class ConsumerRabbit(object):
         starting the IOLoop to block and allow the SelectConnection to operate.
 
         """
+        self.logger.info('Connecting to %s ...', self._url)
         while True:
             try:
                 self._connection = self.connect()
+                self.logger.info('Succesful connected to %s', self._url)                
                 break
             except:
                 pass

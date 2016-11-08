@@ -24,7 +24,7 @@ class Crawler:
         self.logger.info("Publisher rabbit initialized: exchange=" +exchange+", queue="+queue+" route key="+route_key)
 
         # Client of Docker Hub.
-        self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url, path_last_url="/data/crawler/lasturl.txt")
 
     def run(self, from_page, page_size, max_images=100):
         """

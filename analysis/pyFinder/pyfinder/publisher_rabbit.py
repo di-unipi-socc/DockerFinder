@@ -60,7 +60,6 @@ class PublisherRabbit(object):
         :rtype: pika.SelectConnection
 
         """
-        self.logger.info('Connecting to %s', self._url)
         return pika.SelectConnection(pika.URLParameters(self._url),
                                      self.on_connection_open,
                                      stop_ioloop_on_close=False)
@@ -327,9 +326,11 @@ class PublisherRabbit(object):
 
         """
         self.images_generator = images_generator_function
+        self.logger.info('Connecting to %s ...', self._url)
         while True:
             try:
                 self._connection = self.connect()
+                self.logger.info('Succesful connection to %s', self._url)
                 break
             except:
                 pass

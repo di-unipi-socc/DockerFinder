@@ -11,17 +11,19 @@ This module interacts with Docker Hub endpoint.
 
 class ClientHub:
 
-    def __init__(self, docker_hub_endpoint="https://hub.docker.com/"):
+    def __init__(self, docker_hub_endpoint="https://hub.docker.com/", path_last_url=None):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
         self.logger = get_logger(__name__, logging.INFO)
-        self.path_file_url = "/data/crawler/lasturl.txt"
-        from_page, page_size= 1, 100  # initial page to start the crawling
 
-        if(self.get_last_url(self.path_file_url) is None):  # se non è mai stato salvato un url nel file
-            init_url = self.build_search_url(page=from_page, page_size=page_size)
-            self.logger.info("Set init Url page=1,page-size=100")
-            self.save_last_url(self.path_file_url, init_url)
+        if(path_last_url):
+            self.path_file_url = path_last_url # "/data/crawler/lasturl.txt"
+            from_page, page_size= 1, 100  # initial page to start the crawling
+
+            if(self.get_last_url(self.path_file_url) is None):  # if the url is not assigned
+                init_url = self.build_search_url(page=from_page, page_size=page_size)
+                self.logger.info("Set init Url page=1,page-size=100")
+                self.save_last_url(self.path_file_url, init_url)
 
 
     def get_num_tags(self, repo_name):
@@ -114,9 +116,9 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
 
     def save_last_url(self, path, url):
-        with open(path, 'w') as f:
-            f.write(url)
-            self.logger.info(url + " saved into "+ path)
+            with open(path, 'w') as f:
+                f.write(url)
+                self.logger.info(url + " saved into "+ path)
 
     def get_last_url(self,path):
         ##return an array of two position:[0] page; [1] page-size
