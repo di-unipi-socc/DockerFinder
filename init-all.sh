@@ -17,7 +17,7 @@ fi
 HUB_REPOSITORY=diunipisocc/docker-finder
 #TAG=v0.1
 echo "Build and publish the images ..."
-for SERVICE in  software_server images_server scanner crawler ;do # is built on a image
+for SERVICE in scale_scanner; do #software_server images_server scanner crawler scale_scanner;do # is built on a image
   docker-compose build $SERVICE
   docker tag dockerfinder_$SERVICE $HUB_REPOSITORY:$SERVICE
   docker push $HUB_REPOSITORY:$SERVICE

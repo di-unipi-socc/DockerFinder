@@ -76,7 +76,7 @@ services:
   images_server:
     build: storage/images_server
     #image: dofinder/imagesserver:latest
-    container_name: images_server
+    #container_name: images_server
     #restart: always
     restart: on-failure:3
     ports:
@@ -91,7 +91,7 @@ services:
   # Images database
   images_db:
     image: mongo:3
-    container_name: images_mongo
+    #container_name: images_mongo
     volumes:
       - /data/db
     labels:
@@ -104,6 +104,8 @@ services:
 
   scale_scanner:
     build: monitor
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
     # labels:
     #   - "constraint:node==didoUbuntu"
 

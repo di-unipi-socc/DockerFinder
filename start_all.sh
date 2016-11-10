@@ -60,3 +60,15 @@ docker service create  --network $NET  --name scanner  \
       --images-url=http://images_server:3000/api/images  \
       --queue=images  --key=images.scan  \
       --software-url=http://192.168.99.100:3001/api/software  --rmi
+
+#####################################################
+###############   MONITOR PHASE ####################
+#####################################################
+# docker service create  --network $NET  --name scale_scanner \
+#   --constraint  $CONSTRAINT_NODE \
+#   $HUB_REPOSITORY:scale_scanner
+
+
+docker service create  --network docker-finder  --name scale_scanner \
+  --constraint  "node.hostname==manager" \
+  diunipisocc/docker-finder:scale_scanner

@@ -1,1 +1,7 @@
 pika==0.10.0
+docker-py==1.10.6
+docker-pycreds==0.2.1
+pika==0.10.0
+requests==2.11.1
+six==1.10.0
+websocket-client==0.37.0

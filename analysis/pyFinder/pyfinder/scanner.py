@@ -191,4 +191,3 @@ class Scanner:
         self.client_daemon.remove_container(container_id)
         self.logger.debug("Removed container "+container_id)
         return output.decode()
-
