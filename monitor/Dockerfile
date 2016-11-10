@@ -1,4 +1,4 @@
-FROM python:3.5-alpine
+FROM python:alpine
 
 RUN mkdir /code
 
@@ -12,7 +12,8 @@ RUN pip install -r requirements.txt
 
 # copy the source code in the /code folder of the container
 COPY scaling/ /code
+EXPOSE 80
 
-ENTRYPOINT ["python","/code/scaleScanner.py" ]
+ENTRYPOINT ["python","/code/app.py" ]
 
 #CMD ["--help"]

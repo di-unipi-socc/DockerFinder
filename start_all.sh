@@ -68,7 +68,7 @@ docker service create  --network $NET  --name scanner  \
 #   --constraint  $CONSTRAINT_NODE \
 #   $HUB_REPOSITORY:scale_scanner
 
-
-docker service create  --network docker-finder  --name scale_scanner \
-  --constraint  "node.hostname==manager" \
-  diunipisocc/docker-finder:scale_scanner
+# 
+# docker service create  --network docker-finder  --name scale_scanner \
+#   --constraint  "node.hostname==manager" \
+#   diunipisocc/docker-finder:scale_scanner
