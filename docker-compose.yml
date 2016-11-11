@@ -98,18 +98,17 @@ services:
       - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
+
 #####################################################
-###############   ANALYSIS PHASE ####################
+###############   MANAGEMENT PHASE ####################
 #####################################################
 
-  scale_scanner:
-    build: monitor
+  monitor:
+    build: management
     ports:
-      - "80:80"
-    volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-    # labels:
-    #   - "constraint:node==didoUbuntu"
+      - "3002:3002"
+    labels:
+      - "constraint:node==didoUbuntu"
 
 # networks:
 #    docker-finder:
