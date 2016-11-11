@@ -19,10 +19,10 @@ class ScaleScanner:
 
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-                print(json_response)
+                #print(json_response)
                 if(not json_response['err']):
                     count_msg=json_response['load']
-                    print(str(count_msg)+ ": number of msgs in the queue")
+                    print(str(count_msg)+  ": msgs in the queue")
                     scale = 1
                     if count_msg < 100:
                         scale = 5
@@ -34,8 +34,6 @@ class ScaleScanner:
                         scale = 40
                     #scale the scanners
                     self.scale_service(service, scale)
-
-                    print("Scaled to "+ service + "="+str(scale))
                 else:
                     print(json_response['msg'])
 
@@ -47,22 +45,27 @@ class ScaleScanner:
 
 
     def scale_compose(self, service_name, scale):
-        print("scaling compose")
 
-        r = subprocess.run(["docker-compose scale "+ service_name+"="+str(scale)],
+        command = "docker-compose scale "+ service_name+"="+str(scale)
+        print("Scaling compose mode :"+ command)
+        #r =    subprocess.check_output(["docker-compose scale "+ service_name+"="+str(scale)],
+        r = subprocess.call(command, shell=True)
+        #r = subprocess.run(["docker-compose scale "+ service_name+"="+str(scale)],
         #"docker-compose", "scale",  service_name+"="+str(scale) ],
-                        shell=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE)
-        print(r.stderr.decode("utf-8"))
+        #                shell=True,
+        #                stdout=subprocess.PIPE,
+        #                stderr=subprocess.PIPE)
+        #print(r.stderr.decode("utf-8"))
 
     def scale_swarm(self, service_name, scale):
-        print("scaling swarm")
-        r = subprocess.run(["docker", "service", "scale",  service_name+"="+str(scale)],
-                        shell=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE)
-        print(r)
+        command = "docker service scale "+service_name+"="+str(scale)
+        print("Scaling swarm mode: "+ command)
+        r = subprocess.call(command, shell=True)
+        # r = subprocess.run(["docker", "service", "scale",  service_name+"="+str(scale)],
+        #                 shell=True,
+        #                 stdout=subprocess.PIPE,
+        #                 stderr=subprocess.PIPE)
+        #print(r)
 
 
 if __name__ == '__main__':
