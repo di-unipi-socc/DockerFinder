@@ -5,7 +5,7 @@ from docopt import docopt
 __doc__= """Crawler
 
 Usage:
-  Crawler.py crawl  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
+  Crawler.py crawl  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -13,6 +13,7 @@ Options:
   -h --help     Show this screen.
   --amqp_url=AMQP_URL  Complete amqp url of the rabbitMQ server     [default: amqp://guest:guest@rabbitmq:5672]
   --queue=QUEUE        Queue is the name of the queue of rabbitMQ   [default: images]
+  --images-url=IMAGES_URL      The url of the images service        [default: http://127.0.0.1:3000/api/images]
   --ex=EXCHANGE        Exchange name in the rabbitMQ.               [default: dofinder]
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
   --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: None].
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     if args['crawl']:
         crawler = Crawler(amqp_url=args['--amqp-url'],
                           queue=args['--queue'],
+                          images_url=args['--images-url'],
                           exchange=args['--ex'],
                           route_key=args['--key'])
         crawler.run(max_images=None if args['--mi'] == "None" else int(args['--mi']),

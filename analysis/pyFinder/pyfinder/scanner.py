@@ -41,7 +41,6 @@ class Scanner:
 
         # client of Images Service:  in order to add and update the image description.
         self.client_images = ClientImages(images_url=images_url)
-        # host_service=host_images, port_service=port_images, url_path=path_images)
 
         # client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
@@ -64,10 +63,10 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
         """Process a single image. It checks if an image must Scanned or it is already updated."""
-        self.logger.info("[" + repo_name + "] Processing image")
-        list_tags = self.client_hub.get_all_tags(repo_name)
-        tag = "latest"
-        if tag in list_tags:
+        # self.logger.info("[" + repo_name + "] Processing image")
+        # list_tags = self.client_hub.get_all_tags(repo_name)
+        # tag = "latest"
+        # if tag in list_tags:
             if self.client_images.is_new(repo_name):  # the image is totally new
                 dict_image = self.scan(repo_name, tag)
                 self.client_images.post_image(dict_image)  # POST the description of the image

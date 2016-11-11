@@ -16,7 +16,7 @@ Options:
   --ex=EXCHANGE         The exchange name of the rabbitMQ       [default: dofinder]
   --queue==QUEUE        Queue name of the rabbitMQ server       [default: images]
   --key=KEY             Routing key used by the rabbitMQ server [default: images.scan]
-  --images-url=IMAGES-URL      The url of the images service     [default: http://127.0.0.1:3000/api/images]
+  --images-url=IMAGES_URL      The url of the images service    [default: http://127.0.0.1:3000/api/images]
   --software-url=SOFTWARE-URL  THe url of the software service  [default: http://127.0.0.1:3001/api/software]
   --hub-url=HUB-URL            The url of the DockerHub          [default: https://hub.docker.com/]
   --rmi                 If True remove the images after the scan.

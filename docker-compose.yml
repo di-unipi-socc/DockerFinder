@@ -7,7 +7,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_crawler
-    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672','--queue=images','--mi=100'] #, '--fp=100', '--ps=10']
+    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672', '--images-url=http://images_server:3000/api/images', '--queue=images','--mi=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
     # labels:
