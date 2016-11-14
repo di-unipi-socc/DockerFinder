@@ -97,6 +97,24 @@ class ClientImages:
             return False
 
 
+    def delete_image(self, image_id):
+        try:
+            url_image_id =self.url_api + "/"+image_id
+            res = self.session.delete(self.url_images)
+            if res.status_code == 204:
+                print("Deleted ", image_id)
+                #return res.json()
+            else:
+                self.logger.error(str(res.status_code) + " Error code. " + res.text)
+                #print(str(res.status_code) + " Error code. " + res.text)
+        except requests.exceptions.ConnectionError as e:
+             self.logger.exception("ConnectionError: ")
+             #print("ConnectionError: ")
+        except:
+            self.logger.exception("Unexpected error:")
+            raise
+
+
     def must_scanned(self, repo_name, tag="latest"):
         """
         Check if the *repo_name* has been scanned recently and it is not require the scan.
@@ -109,7 +127,7 @@ class ClientImages:
         if res_image_json is not None:   # if not empty list, the result is there
             self.logger.debug("Received from Images service" + str(res_image_json))
             image_json = res_image_json['images'][0]
-            self.logger.info("[" + repo_name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
+            self.logger.debug("[" + repo_name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
                 'last_updated']))
             dofinder_last_scan = string_to_date(image_json['last_scan'])
             if image_json['last_updated']:
@@ -133,5 +151,3 @@ class ClientImages:
             else:
                 self.logger.debug("["+repo_name+"] NOT need to scan, last update into docker Hub is less or equal")
                 return False
-
-

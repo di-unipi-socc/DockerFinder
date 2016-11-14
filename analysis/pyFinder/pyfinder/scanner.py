@@ -67,17 +67,17 @@ class Scanner:
         # list_tags = self.client_hub.get_all_tags(repo_name)
         # tag = "latest"
         # if tag in list_tags:
-            if self.client_images.is_new(repo_name):  # the image is totally new
-                dict_image = self.scan(repo_name, tag)
-                self.client_images.post_image(dict_image)  # POST the description of the image
-                self.logger.info("[" + repo_name + "]  uploaded the new image description")
-            elif self.client_images.must_scanned(repo_name):  # the image must be scan again
-                self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
-                dict_image = self.scan(repo_name, tag)
-                self.client_images.put_image(dict_image)  # PUT the new image description of the image
-                self.logger.info("[" + repo_name + "] updated the image description")
-            else:
-                self.logger.info("[" + repo_name + "] already up to date.")
+        if self.client_images.is_new(repo_name):  # the image is totally new
+            dict_image = self.scan(repo_name, tag)
+            self.client_images.post_image(dict_image)  # POST the description of the image
+            self.logger.info("[" + repo_name + "]  uploaded the new image description")
+        elif self.client_images.must_scanned(repo_name):  # the image must be scan again
+            self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
+            dict_image = self.scan(repo_name, tag)
+            self.client_images.put_image(dict_image)  # PUT the new image description of the image
+            self.logger.info("[" + repo_name + "] updated the image description")
+        else:
+            self.logger.info("[" + repo_name + "] already up to date.")
 
     def scan(self, repo_name, tag="latest"):
         """It scans an image and create the description. \n

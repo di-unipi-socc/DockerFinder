@@ -236,3 +236,16 @@ class ClientHub:
                 return []
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " + str(e))
+
+    def is_alive_in_hub(self, repo_name, tag = "latest"):
+        image_hub = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
+        #try:
+        res = self.session.get(image_hub)
+        if res.status_code == 404:# or res.json()['count'] == 0:
+            self.logger.info(repo_name+":"+tag +" is NOT alive in Docker Hub")
+            return False
+        elif res.status_code == requests.codes.ok:
+            self.logger.info("["+repo_name+":"+tag +"] is alive  in Docker Hub")
+            return True
+        else:
+            return False
