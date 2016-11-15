@@ -1,7 +1,7 @@
 FROM node:argon
 # node.js and npm already installed
 
-# Create code directore that contain the source code
+# Create code directory that contains the source code
 RUN mkdir -p /code
 WORKDIR /code
 

@@ -43,19 +43,19 @@ def _delete_softwares(url, list_software):
         print("removed: " + url_delete)
     print(str(deleted_sw)+" Tot deleted softwares")
 
-__doc__= """Crawler
+__doc__= """SoftwareManager
 
 Usage:
-  Tester.py upload [--file=<softwares.json>] [--software-url=<http://127.0.0.1:3001/api/software>]
-  Tester.py rm    [--software-url=<http://127.0.0.1:3001/api/software>]
-  Tester.py (-h | --help)
-  Tester.py --version
+  SoftwareManager.py upload [--file=<softwares.json>] [--software-url=<http://127.0.0.1:3001/api/software>]
+  SoftwareManager.py rm    [--software-url=<http://127.0.0.1:3001/api/software>]
+  SoftwareManager.py (-h | --help)
+  SoftwareManager.py --version
 
 Options:
-  -h --help     Show this screen.
-  --file=FILE        File JSON with all the softwares   [default: softwares.json]
-  --software-url=SOWTWARESERVICE  Url software service [default: http://127.0.0.1:3001/api/software].
-  --version     Show version.
+  -h --help                         Show this screen.
+  --file=FILE                       File JSON with all the softwares   [default: softwares.json]
+  --software-url=SOWTWARESERVICE    Url software service [default: http://127.0.0.1:3001/api/software].
+  --version                         Show version.
 """
 
 if __name__=="__main__":
