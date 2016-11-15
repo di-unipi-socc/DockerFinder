@@ -25,7 +25,7 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
-    print(args)
+    #print(args)
     checker = Checker(  amqp_url=args['--amqp-url'],
                         exchange=args['--ex'],
                         queue=args['--queue'],
@@ -34,7 +34,5 @@ if __name__ == '__main__':
                         hub_url=args['--hub-url'],
                         )
 
-
-    #
     if args['run']:
         checker.run(interval_next_check=int(args['--interval']))

@@ -56,12 +56,15 @@ class Checker:
             connection.close()
 
     def check_images(self):
-        removed_images = 0
-        requeued_images = 0
+        checked = {}
+        checked['removed'] = []
+        checked['requeued'] = []
+        #removed_images = 0
+        #requeued_images = 0
 
         json_res = self.client_images.get_images()
         #json_res = {"count":<number>,"images":[..]}
-        self.logger.info( str(json_res ['count']) + "images received ")
+        self.logger.info( str(json_res ['count']) + ": images prensent into local database")
         images = json_res['images']
         # { "repo_name":<name> , "tag":"latest" }
         for image in images:
@@ -70,14 +73,16 @@ class Checker:
             image_id = image['_id']
             if not self.client_hub.is_alive_in_hub(name, tag):
                 self.client_images.delete_image(image_id)
-                removed_images+=1
+                checked['removed'].append(name)
+                #removed_images+=1
             else:
                 if self.client_images.must_scanned(name, tag):
                     self.logger.debug("["+name+":"+tag+"] out of date.")
                     self.send_to_rabbitmq(json.dumps({"name": name }))
-                    self.logger.info("["+name+":"+tag+"] requeues into rabbitMq queue.")
-                    requeued_images+=1
-        self.logger.info("Removed images: " + str(removed_images)+ "; Requeued images:"+str(requeued_images))
+                    self.logger.info("["+name+":"+tag+"] requeued into queue.")
+                    checked['requeued'].append(name)
+                    #requeued_images+=1
+        self.logger.info("Removed images: " + str(len(checked['removed']))+ "; Requeued images:"+ str(len(checked['requeued'])))
 
     def run(self, interval_next_check):
         self.logger.info("Starting the checker module...")
