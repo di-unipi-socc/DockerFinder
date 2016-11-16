@@ -9,6 +9,7 @@ from .client_dockerhub import ClientHub
 from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
 from .utils import get_logger
+from .model.image import Image
 import logging
 
 """This module contains the *Scanner* implementation."""
@@ -61,20 +62,20 @@ class Scanner:
         except KeyboardInterrupt:
             self.consumer.stop()
 
-    def process_repo_name(self, repo_name):
+    def process_repo_name(self, repo_name, tag="latest"):
         """Process a single image. It checks if an image must Scanned or it is already updated."""
         # self.logger.info("[" + repo_name + "] Processing image")
         # list_tags = self.client_hub.get_all_tags(repo_name)
         # tag = "latest"
         # if tag in list_tags:
         if self.client_images.is_new(repo_name):  # the image is totally new
-            dict_image = self.scan(repo_name, tag)
-            self.client_images.post_image(dict_image)  # POST the description of the image
+            image = self.scan(repo_name, tag)
+            self.client_images.post_image(repr(image))  # POST the description of the image
             self.logger.info("[" + repo_name + "]  uploaded the new image description")
         elif self.client_images.must_scanned(repo_name):  # the image must be scan again
             self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
-            dict_image = self.scan(repo_name, tag)
-            self.client_images.put_image(dict_image)  # PUT the new image description of the image
+            image = self.scan(repo_name, tag)
+            self.client_images.put_image(repr(image))  # PUT the new image description of the image
             self.logger.info("[" + repo_name + "] updated the image description")
         else:
             self.logger.info("[" + repo_name + "] already up to date.")
@@ -86,58 +87,94 @@ class Scanner:
         """
         self.client_daemon.pull_image(repo_name, tag)
 
+        image = Image()
+
         dict_image = {}
         dict_image["repo_name"] = repo_name
-        self.logger.info('[{0}] start scanning'.format(repo_name))
 
-        self.info_docker_hub(repo_name, dict_image, tag)
-        self.info_dofinder(repo_name, dict_image, tag)
+        image.name = repo_name+":"+tag
 
-        self.logger.info('[{0}] finish scanning'.format(repo_name))
-        dict_image['last_scan'] = str(datetime.datetime.now())
+        self.logger.info('[{0}] start scanning'.format(image.name))
+
+        # add info from DockerHub
+        self.info_docker_hub(image)
+        # search software versions and system commands
+        self.info_dofinder(image)
+        # add informatiom from the inspect command
+        self.info_inspect(image)
+
+        self.logger.info('[{0}] finish scanning'.format(image.name))
+        #dict_image['last_scan'] = str(datetime.datetime.now())
+        image.last_scan = str(datetime.datetime.now())
+
+        #self.logger.info("IMAGE TYPE:" + str(type(repr(image))))
+        #self.logger.info("IMAGE NEW: "+repr(image))
 
         if self.rmi:
             try:
-                self.client_daemon.remove_image(repo_name, force=True)
-                self.logger.info('[{0}] removed image'.format(repo_name))
+                #self.client_daemon.remove_image(repo_name, force=True)
+                self.client_daemon.remove_image(image.name, force=True)
+                self.logger.info('[{0}] removed image'.format(image.name))
             except docker.errors.NotFound as e:
                 self.logger.error(e)
-        return dict_image
+        #return dict_image
+        return image
 
-    def info_docker_hub(self, repo_name, dict_image, tag):
+    def info_docker_hub(self,image):
         """Get the informations of an image from Docker Hub."""
-        self.logger.info('[{}] adding Docker Hub info ... '.format(repo_name))
+        self.logger.info('[{}] adding Docker Hub info ... '.format(image.name))
+
+        repo_name  = image.name.split(":")[0]
+        tag        = image.name.split(":")[1]
+
         json_response = self.client_hub.get_json_repo(repo_name)
 
         if json_response:
             if 'description' in json_response:
-                dict_image['description'] = json_response['description']
+                image.description = json_response['description']
+                # dict_image['description'] = json_response['description']
             if 'star_count' in json_response:
-                # dict_image['star_count'] = json_response['star_count']
-                dict_image['stars'] = json_response['star_count']
+                image.stars = json_response['star_count']
+                #dict_image['stars'] = json_response['star_count']
             if 'pull_count' in json_response:
-                # dict_image['pull_count'] = json_response['pull_count']
-                dict_image['pulls'] = json_response['pull_count']
+                image.pulls =  json_response['pull_count']
+                #dict_image['pulls'] = json_response['pull_count']
+
         json_response = self.client_hub.get_json_tag(repo_name, tag)
 
-        if 'name' in json_response:
-            dict_image['tag'] = json_response['name']
+        #if 'name' in json_response:
+        #
+        #    #dict_image['tag'] = json_response['name']
         if 'last_updated' in json_response:
-            dict_image['last_updated'] = json_response['last_updated']
-        if 'full_size' in json_response:
-            dict_image['size'] = json_response['full_size']
+            image.last_updated = json_response['last_updated']
+            #dict_image['last_updated'] = json_response['last_updated']
+        if 'last_updater'  in json_response:
+            image.last_updater = json_response['last_updater']
 
-    def info_dofinder(self, image_name, dict_image, tag):
+        if 'full_size' in json_response:
+            image.size = json_response['full_size']
+            #dict_image['size'] = json_response['full_size']
+        if 'repository' in json_response:
+            image.repository = json_response['repository']
+
+        if 'id' in json_response:
+            image.id_tag= json_response['id']
+
+        if 'creator' in json_response:
+            image.creator = json_response['creator']
+
+    def info_dofinder(self, image):
         """It Extracts the OS distribution and the software in the image"""
-        repo_name_tag = image_name + ":" + tag
-        self.logger.info('[{}] searching software ... '.format(repo_name_tag))
+        name = image.name
+        self.logger.info('[{}] searching software ... '.format(name))
 
         # search distribution Operating system in the image,
         for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
             try:
-                distro = self.version_from_regex(repo_name_tag, cmd, regex)
+                distro = self.version_from_regex(name, cmd, regex)
                 if distro:
-                    dict_image['distro'] = distro
+                    image.distro = distro
+                    #dict_image['distro'] = distro
             except docker.errors.NotFound as e:
                 self.logger.error(e)
 
@@ -146,14 +183,22 @@ class Scanner:
         for sw in self.client_software.get_software():  #
             try:
                 software = sw['name']
-                command = software+" " + sw['cmd']
+                command = software + " " + sw['cmd']
                 regex = sw['regex']
-                version = self.version_from_regex(repo_name_tag, command, regex)
+                version = self.version_from_regex(name, command, regex)
                 if version:
                     softwares.append({'software': software, 'ver': version})
             except docker.errors.NotFound as e:
                 self.logger.error(e)
-        dict_image['softwares'] = softwares
+        #dict_image['softwares'] = softwares
+        image.softwares = softwares
+
+    def info_inspect(self, image):
+        self.logger.info('[{}] inspect the image'.format(image.name))
+        json_inspect = self.client_daemon.inspect_image(image.name)
+        image.inspect_info = json_inspect
+
+
 
     def version_from_regex(self, repo_name, command, regex):
         output = self.run_command(repo_name, command)

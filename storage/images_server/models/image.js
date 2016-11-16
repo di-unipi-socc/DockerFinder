@@ -16,7 +16,7 @@ var imageSchema =  new mongoose.Schema({
     size:      Number,
     stars:     {
         type:       Number,
-        min:        [0, 'star-count must be positive number']
+        min:        [0, 'stars must be positive number']
     },
     pulls:     Number,
     description:    String,
