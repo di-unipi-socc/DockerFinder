@@ -9,6 +9,8 @@ class ScaleScanner:
     def __init__(self, update_interval, swarm=True):
         self.update_interval = update_interval
         self._swarm_mode=swarm
+
+        # TODO; change from rabbitmq to monitor service
         self._rabbitUrl = "http://0.0.0.0:3002/service/rabbitmq/queue/images"
 
     def run_loop(self, service):

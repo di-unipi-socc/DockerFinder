@@ -16,12 +16,12 @@ class Image:
         self.creator    = None    # number
 
         # property of the repository
-        self.user = None
-        self.stars = None
-        self.pulls = None
-        self.description = None
-        self.is_automated = None
-        self.is_private = None
+        self.user = None            # String
+        self.stars = None           # Number
+        self.pulls = None           # Number
+        self.description = None     # String
+        self.is_automated = None    # Bool
+        self.is_private = None      # Bool
 
         # info of docker finder
         self.distro = None
@@ -30,8 +30,8 @@ class Image:
         # info inspect
         self.inspect_info = None  #
 
-    def __repr__(self):
-        return json.dumps(self.__dict__)
+    def to_dict(self):
+        return self.__dict__
 
     def __str__(self):
         return json.dumps(self.__dict__)

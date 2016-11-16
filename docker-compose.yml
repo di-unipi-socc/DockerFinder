@@ -100,9 +100,9 @@ services:
     image: mongo:3
     #container_name: images_mongo
     volumes:
-      - /data/db
-    labels:
-      - "constraint:node==didoUbuntu"
+      - /data/images
+    # labels:
+    #   - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
 
@@ -114,8 +114,8 @@ services:
     build: management
     ports:
       - "3002:3002"
-    labels:
-      - "constraint:node==didoUbuntu"
+    # labels:
+    #   - "constraint:node==didoUbuntu"
 
 # networks:
 #    docker-finder:

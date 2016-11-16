@@ -11,7 +11,7 @@ This module interacts with Docker Hub endpoint.
 
 class ClientHub:
 
-    def __init__(self, docker_hub_endpoint="https://hub.docker.com/", path_last_url=None):
+    def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
         self.logger = get_logger(__name__, logging.INFO)
@@ -42,10 +42,11 @@ class ClientHub:
         """
         RGEt  all the tags associated with the repository name.
         :param repo_name: the name of the repository.
-        :return: a list of (strings) tags.
+        :return: a list of (string) tags name.
         """
         url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
         try:
+            #self.logger.info(url_tags)
             res = self.session.get(url_tags)
             self.logger.debug("["+repo_name+"] Getting all the tags")
             if res.status_code == requests.codes.ok:

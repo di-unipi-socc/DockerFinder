@@ -8,7 +8,7 @@ import logging
 
 class ClientImages:
 
-    def __init__(self, images_url="http://127.0.0.1:3000/api/images", host_service="127.0.0.1", port_service=3000, url_path="/api/images/"):
+    def __init__(self, images_url="http://127.0.0.1:3000/api/images"):
         self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
         self.url_api = images_url
@@ -19,7 +19,7 @@ class ClientImages:
         try:
             res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                self.logger.info("POST ["+dict_image['repo_name']+"]  into  "+res.url)
+                self.logger.info("POST ["+dict_image['name']+"]  into  "+res.url)
             else:
                 self.logger.error(str(res.status_code)+" response: "+res.text)
         except requests.exceptions.ConnectionError as e:
@@ -31,10 +31,10 @@ class ClientImages:
     def put_image(self, dict_image):
         """Update an image description"""
         try:
-            id_image = self.get_id_image(dict_image['repo_name'])
+            id_image = self.get_id_image(dict_image['name'])
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
-                self.logger.info("UPDATED [" + dict_image['repo_name'] + "] into "+res.url)
+                self.logger.info("UPDATED [" + dict_image['name'] + "] into "+res.url)
             else:
                 self.logger.error(str(res.status_code) + " Error code " + res.text)
         except requests.exceptions.ConnectionError as e:
@@ -70,7 +70,8 @@ class ClientImages:
 
     def get_image(self, repo_name):
         """Return the description of a single iamge"""
-        url = self.url_api + "?repo_name=" + repo_name
+        #url = self.url_api + "?repo_name=" + repo_name
+        url = self.url_api + "?name=" + repo_name
         try:
             res = self.session.get(url)
             return res.json()
@@ -78,7 +79,7 @@ class ClientImages:
             self.logger.exception("ConnectionError: ")
 
     def get_scan_updated(self, repo_name):
-        payload = {'repo_name': repo_name, 'select': 'last_scan last_updated'}
+        payload = {'name': repo_name, 'select': 'last_scan last_updated'}
         try:
             res = requests.get(self.url_api, params=payload)
             return res.json()

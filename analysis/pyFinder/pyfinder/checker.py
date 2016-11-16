@@ -17,15 +17,14 @@ class Checker:
                         queue="images",
                         route_key="images.scan",
                         ):
+
+        # For publishing into RabbitMq queue the iamge name
         self.url_amqp = amqp_url
         self._exchange = exchange
         self._route_key =route_key
 
         #self.logger = get_logger(__name__, logging.INFO)
         self.logger = get_logger(__name__, logging.INFO)
-
-        # publischer on the rabbitMq queue
-        #self.publisher = PublisherRabbit(amqp_url, exchange=exchange, queue= queue, route_key=route_key)
 
         # client of Images Service:  in order to add and update the image description.
         self.client_images = ClientImages(images_url=images_url)
@@ -68,7 +67,7 @@ class Checker:
         images = json_res['images']
         # { "repo_name":<name> , "tag":"latest" }
         for image in images:
-            name = image['repo_name']
+            name = image['name']
             tag = image['tag']
             image_id = image['_id']
             if not self.client_hub.is_alive_in_hub(name, tag):

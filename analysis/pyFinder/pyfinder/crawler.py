@@ -16,7 +16,7 @@ class Crawler:
                  route_key="images.scan",
                  amqp_url='amqp://guest:guest@127.0.0.1:5672',
                  images_url="http://127.0.0.1:3000/api/images",
-                 hub_url="https://hub.docker.com/"
+                 hub_url="https://hub.docker.com"
                 ):
 
         self.logger = get_logger(__name__, logging.DEBUG)
@@ -66,22 +66,24 @@ class Crawler:
         #
         #def process_repo_name(self, repo_name):
         #"""Process a single image. It checks if an image must Scanned or it is already updated."""
-        process_image = True
+        process_image = False
         self.logger.info("[" + repo_name + "] Processing image")
         list_tags = self.client_hub.get_all_tags(repo_name)
+        #elf.logger.info(str(list_tags))
 
         if list_tags and 'latest' in list_tags:
             json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
             size  =  json_image_latest['full_size']
             if size > 0:
-                self.logger.debug("[ " + repo_name + " ] is selected: tag=latest, size="+str(size))
+
                 if self.client_images.is_new(repo_name):  # the image is totally new
+                    self.logger.debug("[ " + repo_name + " ] is selected: tag=latest, in new, size="+str(size))
                     #dict_image = self.scan(repo_name, tag)
                     #self.client_images.post_image(dict_image)  # POST the description of the image
-                    process_image = False
+                    process_image = True
                     self.logger.info("[" + repo_name + "]  totally new image")
                 elif self.client_images.must_scanned(repo_name):  # the image must be scan again
-                    self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
+                    self.logger.debug("[" + repo_name + "] is selected: to br scan again")
                     #dict_image = self.scan(repo_name, tag)
                     process_image = True
                     #self.client_images.put_image(dict_image)  # PUT the new image description of the image
@@ -106,7 +108,9 @@ class Crawler:
         #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
 
-        for list_images in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,
+        for list_images in self.client_hub.crawl_images(from_page=from_page,
+                                                        page_size=page_size,
+                                                        max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
             for image in list_images:
                 repo_name = image['repo_name']
