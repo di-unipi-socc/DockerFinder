@@ -101,7 +101,7 @@ class ClientImages:
     def delete_image(self, image_id):
         try:
             url_image_id =self.url_api + "/"+image_id
-            res = self.session.delete(self.url_images)
+            res = self.session.delete(url_image_id)
             if res.status_code == 204:
                 print("Deleted ", image_id)
                 #return res.json()
@@ -116,19 +116,20 @@ class ClientImages:
             raise
 
 
-    def must_scanned(self, repo_name, tag="latest"):
+    def must_scanned(self, name):#, tag="latest"):
         """
         Check if the *repo_name* has been scanned recently and it is not require the scan.
          if(local.last_updated > remote.last_scan ) then {scan}
-        :param repo_name: the image name.
+        :param repo_name: the image name with tag.
         :return: True if the image must be scan. False otherwise.
         """
-
-        res_image_json = self.get_scan_updated(repo_name)  # {"images:[
+        tag = name.split(":")[1]
+        repo = name.split(":")[0]
+        res_image_json = self.get_scan_updated(name)  # {"images:[
         if res_image_json is not None:   # if not empty list, the result is there
             self.logger.debug("Received from Images service" + str(res_image_json))
             image_json = res_image_json['images'][0]
-            self.logger.debug("[" + repo_name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
+            self.logger.debug("[" + name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
                 'last_updated']))
             dofinder_last_scan = string_to_date(image_json['last_scan'])
             if image_json['last_updated']:
@@ -137,7 +138,7 @@ class ClientImages:
                 dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
 
             # latest_updated from docker hub
-            url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo_name + "/tags/" + tag
+            url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo + "/tags/" + tag
             json_response = self.session.get(url_tag_latest).json()
             hub_last_update_string = json_response['last_updated']
             if(json_response['last_updated']):
@@ -147,8 +148,8 @@ class ClientImages:
 
             # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
             if hub_last_update > dofinder_last_update:
-                self.logger.debug("[" + repo_name + "] need to update, last update of docker Hub is greater than last scan")
+                self.logger.debug("[" + name + "] need to update, last update of docker Hub is greater than last scan")
                 return True
             else:
-                self.logger.debug("["+repo_name+"] NOT need to scan, last update into docker Hub is less or equal")
+                self.logger.debug("["+name+"] NOT need to scan, last update into docker Hub is less or equal")
                 return False

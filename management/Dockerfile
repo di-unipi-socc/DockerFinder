@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 # copy the source code in the /code folder of the container
 COPY monitor/ /code
-EXPOSE 80
+EXPOSE 3002
 
 ENTRYPOINT ["python","/code/app.py" ]
 

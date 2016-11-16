@@ -65,20 +65,23 @@ class Checker:
         #json_res = {"count":<number>,"images":[..]}
         self.logger.info( str(json_res ['count']) + ": images prensent into local database")
         images = json_res['images']
-        # { "repo_name":<name> , "tag":"latest" }
+        # { "name":<name:tag> }
         for image in images:
+            self.logger.info( image['name'] + ": checking image")
             name = image['name']
-            tag = image['tag']
+            splitname = image['name'].split(":")
+            repo = splitname[0]
+            tag = splitname[1]
             image_id = image['_id']
-            if not self.client_hub.is_alive_in_hub(name, tag):
+            if not self.client_hub.is_alive_in_hub(repo, tag):
                 self.client_images.delete_image(image_id)
                 checked['removed'].append(name)
                 #removed_images+=1
             else:
-                if self.client_images.must_scanned(name, tag):
-                    self.logger.debug("["+name+":"+tag+"] out of date.")
-                    self.send_to_rabbitmq(json.dumps({"name": name }))
-                    self.logger.info("["+name+":"+tag+"] requeued into queue.")
+                if self.client_images.must_scanned(name):
+                    self.logger.debug("["+name+"] out of date.")
+                    self.send_to_rabbitmq(json.dumps({"name": repo }))
+                    self.logger.info("["+name+"] requeued into queue.")
                     checked['requeued'].append(name)
                     #requeued_images+=1
         self.logger.info("Removed images: " + str(len(checked['removed']))+ "; Requeued images:"+ str(len(checked['requeued'])))
