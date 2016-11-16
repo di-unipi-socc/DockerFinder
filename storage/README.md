@@ -1,5 +1,36 @@
 # Server images Api documentation
 
+An image is represented by the Schema.
+```
+{
+    name:    String,  // <repo:tag>
+ 
+    /// info of a particular tagged  image
+    id_tag: Number,
+    last_scan:      Date,    // Date of the last scan performaed by Docker finder
+    last_updated:   Date,    // Date of the last:updated of the tag in the docker hub
+    size:      Number,       
+    repository: Number,       // Reference number of the repository
+    creator: Number,
+
+    //Docker repository information
+    user:String,              // user of the repository
+    stars:  Number            // The number of stars of the repository
+    pulls:     Number,        // The number of pulls of the repository
+    description:    String,   // Description of the repository
+    is_automated: Boolean,    // if the repository is automated
+    is_private: Boolean,       // if the repository is aprivate
+
+    //Docker Finder information
+    distro:     String,       // The operating system of the iamge
+    softwares:       [{       // the list of the software versions found in the images
+        software: String,
+        ver: String
+    }],
+
+    inspect_info:  mongoose.Schema.Types.Mixed  //the result of  $docker inspect <image:tag>
+}
+```
 
 ## Search images
 
