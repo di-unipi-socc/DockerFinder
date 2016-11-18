@@ -1,6 +1,7 @@
 import requests
 import time
 import subprocess
+import math
 #from subprocess import Popen, PIPE
 from docopt import docopt
 __doc__= """ScaleScanner.
@@ -21,14 +22,14 @@ class ScaleScanner:
 
     def __init__(self, monitor_interval, max_scanners, swarm):
         self.monitor_interval = monitor_interval
-        self._swarm_mode=swarm
+        self._swarm_mode = swarm
+        self.max_scanners = monitor_interval
 
         # TODO; change from rabbitmq to monitor service
         self._rabbitUrl = "http://0.0.0.0:3002/service/rabbitmq/queue/images"
 
     def run_loop(self, service):
         while(True):
-            time.sleep(self.monitor_interval)
             # count the message in the queue
             res = requests.get(self._rabbitUrl)
 
@@ -38,19 +39,31 @@ class ScaleScanner:
                 if(not json_response['err']):
                     count_msg=json_response['load']
                     print(str(count_msg)+  ": msgs in the queue")
-                    scale = 1
-                    if count_msg < 100:
-                        scale = 5
-                    elif count_msg < 500:
-                        scale = 10
-                    elif count_msg < 1000:
-                        scale = 30
-                    else:
-                        scale = 40
+                    scale = self.calc_scale(count_msg)
+                    # scale = 1
+                    # if count_msg < 100:
+                    #     scale = 5
+                    # elif count_msg < 500:
+                    #     scale = 10
+                    # elif count_msg < 1000:
+                    #     scale = 30
+                    # else:
+                    #     scale = 40
                     #scale the scanners
                     self.scale_service(service, scale)
                 else:
                     print(json_response['msg'])
+            time.sleep(self.monitor_interval)
+    def calc_scale(self, num_msgs):
+        """
+        y=1 : 0,01  is the load of the messages tha we want to divide to the scanners
+
+        x:load = y: 100
+        x = (load * y) / 100
+        """
+        y = 1
+        return min(self.max_scanners, math.ceil((num_msgs * y) / 100) )
+
 
     def scale_service(self, service, scale):
         if(self._swarm_mode):
@@ -85,8 +98,8 @@ class ScaleScanner:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='ScaleScanner 0.0.1')
-    print(args)
-  #--monitor-interval=<10>] [--max-scanners=<20>]  [--swarm-mode]
+    #print(args)
+   #--monitor-interval=<10>] [--max-scanners=<20>]  [--swarm-mode]
     scaling = ScaleScanner(monitor_interval=int(args['--monitor-interval']),
                             max_scanners=int(args['--max-scanners']),
                             swarm=args['--swarm-mode'],
