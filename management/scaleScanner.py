@@ -2,12 +2,25 @@ import requests
 import time
 import subprocess
 #from subprocess import Popen, PIPE
+from docopt import docopt
+__doc__= """ScaleScanner.
 
+Usage:
+  ScaleScanner.py run [--monitor-interval=<10>] [--max-scanners=<20>]  [--swarm-mode]
+  ScaleScanner.py (-h | --help)
+  ScaleScanner.py --version
 
+Options:
+  -h --help             Show this screen.
+  --monitor-interval=interval   Interval time in seconds between two monitor invocation [default:10]
+  --max-scanners=MAX-SCANNERS  Max number of scanners to scale [default:20]
+  --swarm-mode          If True scale the swarm node, otherwise docker compose sclae [default:False]
+  --version             Show version.
+"""
 class ScaleScanner:
 
-    def __init__(self, update_interval, swarm=True):
-        self.update_interval = update_interval
+    def __init__(self, monitor_interval, max_scanners, swarm):
+        self.monitor_interval = monitor_interval
         self._swarm_mode=swarm
 
         # TODO; change from rabbitmq to monitor service
@@ -15,7 +28,7 @@ class ScaleScanner:
 
     def run_loop(self, service):
         while(True):
-            time.sleep(self.update_interval)
+            time.sleep(self.monitor_interval)
             # count the message in the queue
             res = requests.get(self._rabbitUrl)
 
@@ -71,16 +84,19 @@ class ScaleScanner:
 
 
 if __name__ == '__main__':
+    args = docopt(__doc__, version='ScaleScanner 0.0.1')
+    print(args)
+  #--monitor-interval=<10>] [--max-scanners=<20>]  [--swarm-mode]
+    scaling = ScaleScanner(monitor_interval=int(args['--monitor-interval']),
+                            max_scanners=int(args['--max-scanners']),
+                            swarm=args['--swarm-mode'],
 
-    scaling = ScaleScanner(5, swarm=False)  # rabbitmq
-
-    while True:
-        try:
-            scaling.run_loop("scanner")
-        except Exception as e:
-            print (e)
-            print("Waiting 10s and restarting.")
-            time.sleep(10)
-
-
-    #update_service with mode={'Replicated': {'Replicas': n}}.
+    )
+    if args['run']:
+        while True:
+            try:
+                scaling.run_loop("scanner")
+            except Exception as e:
+                print (e)
+                print("Waiting 10s and restarting.")
+                time.sleep(10)

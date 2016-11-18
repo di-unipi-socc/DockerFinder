@@ -20,7 +20,7 @@ Options:
   --software-url=SOFTWARE-URL  THe url of the software service  [default: http://127.0.0.1:3001/api/software]
   --hub-url=HUB-URL            The url of the DockerHub          [default: https://hub.docker.com]
   --rmi                 If True remove the images after the scan.
-  --tag=TAG             TAG  of the image to scan [default: latest]
+  --tag=TAG             TAG  of the image to scan                  [default: latest]
   --p=PROGRAM           The program name to pass to the container.
   --opt=OPTION          Option of the command to run in the contianer
   --regex=REGEX          Regular expression used to exctarct info of PROGRAM OPTION

@@ -66,10 +66,6 @@ class Scanner:
 
     def process_repo_name(self, repo_name):
         """Process a single image. It checks if an image must Scanned or it is already updated."""
-        # self.logger.info("[" + repo_name + "] Processing image")
-        # list_tags = self.client_hub.get_all_tags(repo_name)
-        # tag = "latest"
-        # if tag in list_tags:
 
         tags = self.client_hub.get_all_tags(repo_name)
         #self.logger.info(tags)
@@ -99,8 +95,6 @@ class Scanner:
 
         image = Image()
 
-        #dict_image = {}
-        #dict_image["repo_name"] = repo_name
 
         image.name = repo_name+":"+tag
 
@@ -118,9 +112,6 @@ class Scanner:
         image.last_scan = str(datetime.datetime.now())
 
         image.set_updated()
-
-        #self.logger.info("IMAGE TYPE:" + str(type(repr(image))))
-        #self.logger.info("IMAGE NEW: "+repr(image))
 
         if self.rmi:
             try:
