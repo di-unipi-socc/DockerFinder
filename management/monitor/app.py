@@ -32,11 +32,11 @@ def service(servicename, queuename):
                 queue=queuename
                 )
     except :
-        #err_msg=
         return jsonify(
                 err=True,
                 msg="Error in connecting"+servicename
                 )
+
 
 
 
@@ -55,6 +55,7 @@ def count_queue_msg(service, queue):
                     auto_delete=False
                     )
 
+    connection.close()
     c = queue.method.message_count
     return c
 

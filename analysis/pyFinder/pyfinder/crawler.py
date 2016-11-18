@@ -6,7 +6,7 @@ from .client_dockerhub import ClientHub
 import logging
 from .utils import get_logger
 
-"""Ts module contains the *Scanner* implementation."""
+"""The module contains the *Crawler* implementation."""
 
 
 class Crawler:
@@ -52,20 +52,6 @@ class Crawler:
         :param repo_name: the name of a repository
         :return: True if the image must be downloaded, Flase if must be discarded
         """
-        #list_tags = self.client_hub.get_all_tags(repo_name)
-        # if list_tags and 'latest' in list_tags:  # only the images that contains "latest" tag
-        #     # json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
-        #     # size  =  json_image_latest['full_size']
-        #     # if size > 0:
-        #     #     self.logger.debug("[ " + repo_name + " ] is selected: tag=latest, size="+str(size))
-        #     #     return True
-        #     # else:
-        #     #     return False
-        # else:
-        #     return False
-        #
-        #def process_repo_name(self, repo_name):
-        #"""Process a single image. It checks if an image must Scanned or it is already updated."""
         process_image = False
         self.logger.info("[" + repo_name + "] Processing image")
         list_tags = self.client_hub.get_all_tags(repo_name)
@@ -82,14 +68,14 @@ class Crawler:
                     #self.client_images.post_image(dict_image)  # POST the description of the image
                     process_image = True
                     self.logger.info("[" + repo_name + "]  totally new image")
-                elif self.client_images.must_scanned(repo_name):  # the image must be scan again
-                    self.logger.debug("[" + repo_name + "] is selected: to br scan again")
-                    #dict_image = self.scan(repo_name, tag)
-                    process_image = True
-                    #self.client_images.put_image(dict_image)  # PUT the new image description of the image
-                    #self.logger.info("[" + repo_name + "] updated the image description")
+                # elif self.client_images.must_scanned(repo_name):  # the image must be scan again
+                #     self.logger.debug("[" + repo_name + "] is selected: to br scan again")
+                #     #dict_image = self.scan(repo_name, tag)
+                #     process_image = True
+                #     #self.client_images.put_image(dict_image)  # PUT the new image description of the image
+                #     #self.logger.info("[" + repo_name + "] updated the image description")
                 else:
-                    self.logger.info("[" + repo_name + "] already up to date.")
+                    self.logger.info("[" + repo_name + "] already present into local database.")
                     process_image = False
             else:
                 process_image = False

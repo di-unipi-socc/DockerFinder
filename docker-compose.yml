@@ -7,7 +7,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_crawler
-    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672', '--images-url=http://images_server:3000/api/images', '--queue=images','--mi=100'] #, '--fp=100', '--ps=10']
+    command: [crawl, '--amqp-url=amqp://guest:guest@rabbitmq:5672', '--images-url=http://images_server:3000/api/images/', '--queue=images','--mi=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
     # labels:
@@ -37,7 +37,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
-    command: [run, '--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
+    command: [run, '--images-url=http://images_server:3000/api/images/', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     # networks:
@@ -47,7 +47,7 @@ services:
       build:
         context: analysis
         dockerfile: ./Dockerfile_checker
-      command: [run, '--interval=30','--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
+      command: [run, '--interval=30','--images-url=http://images_server:3000/api/images/', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
 
 
 #####################################################

@@ -29,7 +29,7 @@ def get_all_images(url="http://127.0.0.1:3000/api/images"):
         res = requests.get(url)
         if res.status_code == requests.codes.ok:
             json_response = res.json()
-            print(str(json_response['count']) + " totoal images downloaded")
+            print(str(json_response['count']) + " total images downloaded")
             software_list = json_response['images']  # list of object
             return software_list
     except requests.exceptions.ConnectionError:

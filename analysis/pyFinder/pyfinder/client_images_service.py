@@ -1,15 +1,17 @@
 import requests
 import json
 import sys
+from .dfexception import *
 from .utils import *
 import logging
+from urllib.parse import urljoin
 
 """ This module interacts with the *Images service* running on the *storage* part."""
 
 class ClientImages:
 
-    def __init__(self, images_url="http://127.0.0.1:3000/api/images"):
-        self.logger = get_logger(__name__, logging.INFO)
+    def __init__(self, images_url):
+        self.logger = get_logger(__name__, logging.DEBUG)
         self.session = requests.Session()
         self.url_api = images_url
         self.logger.info("URL images service: "+self.url_api)
@@ -36,14 +38,32 @@ class ClientImages:
             if res.status_code == requests.codes.ok:
                 self.logger.info("UPDATED [" + dict_image['name'] + "] into "+res.url)
             else:
-                self.logger.error(str(res.status_code) + " Error code " + res.text)
+                self.logger.error(str(res.status_code) + ": " + res.text)
+        except ImageNotFound as e:
+            self.logger.exception(str(e))
+            raise  e
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " )
+            raise e
         except:
             self.logger.exception("Unexpected error:")
             raise
-        # else:
-        #     return res.json()
+
+    def update_status(self, id_image, status):
+        try:
+            #id_image = self.get_id_image(dict_image['name'])
+            dict_status = { "status": status }
+            res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_status)
+            if res.status_code == requests.codes.ok:
+                self.logger.info( res.json()['name'] +" UPDATED status: "+status)
+            else:
+                self.logger.error(str(res.status_code) + ": " + res.text)
+        except requests.exceptions.ConnectionError as e:
+            self.logger.exception("ConnectionError: " )
+            raise e
+        except:
+            self.logger.exception("Unexpected error:")
+            raise
 
     def get_images(self):
         """Get all the images descriptions."""
@@ -60,21 +80,31 @@ class ClientImages:
             raise
 
     def get_id_image(self, repo_name):
-        """Return the *id* of the *repo_name*."""
-        json_image_list = self.get_image(repo_name)
-        if json_image_list:
-            if "_id" in json_image_list[0].keys():
-                return json_image_list[0]['_id']
+        """
+        Return the *id* of the *repo_name*.
+        """
+        try:
+            json_image = self.get_image(repo_name)
+            if "_id" in json_image:
+                return json_image['_id']
             else:
-                raise Exception(" _id not found in "+repo_name)
+                raise ImageNotFound(" _id not found in "+repo_name)
+        except ImageNotFound as e:
+            raise
 
     def get_image(self, repo_name):
-        """Return the description of a single iamge"""
-        #url = self.url_api + "?repo_name=" + repo_name
-        url = self.url_api + "?name=" + repo_name
+        """Return the description of a single image"""
+        #url = self.url_api + "?name=" + repo_name
+        # {"count": 1,  "images": []}
         try:
-            res = self.session.get(url)
-            return res.json()
+            payload = {'name': repo_name}
+            res = self.session.get(self.url_api, params=payload)
+            res_json = res.json()
+            images = res_json['images']
+            if res_json['count'] == 1:
+                return images[0]  # return the first image object
+            else:
+                raise ImageNotFound("Image "+ repo_name + " not found")
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
 
@@ -89,14 +119,14 @@ class ClientImages:
     def is_new(self, repo_name):
         """Check if the image is new into the images service. \n
         An image is new if it is not present."""
-        res_json = self.get_image(repo_name)
-        if res_json['count'] is 0:
-            self.logger.info("["+repo_name+"] is new into IMAGES SERVER")
-            return True
-        else:
-            self.logger.info("[" + repo_name + "] is present")
+        try:
+            res_json = self.get_image(repo_name)
+            ## Return the json or raise an exception if does not exist
+            self.logger.info("[" + repo_name + "] is present into local database")
             return False
-
+        except ImageNotFound as e:
+            self.logger.info(str(e))
+            return True
 
     def delete_image(self, image_id):
         try:
@@ -129,7 +159,7 @@ class ClientImages:
         if res_image_json is not None:   # if not empty list, the result is there
             self.logger.debug("Received from Images service" + str(res_image_json))
             image_json = res_image_json['images'][0]
-            self.logger.debug("[" + name + "] Images Service last scan: " + str(image_json['last_scan']) + " last update: " + str(image_json[
+            self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
                 'last_updated']))
             dofinder_last_scan = string_to_date(image_json['last_scan'])
             if image_json['last_updated']:
@@ -147,9 +177,8 @@ class ClientImages:
                 hub_last_update = dofinder_last_scan
 
             # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
-            if hub_last_update > dofinder_last_update:
+            if hub_last_update > dofinder_last_update or  hub_last_update > dofinder_last_scan:
                 self.logger.debug("[" + name + "] need to update, last update of docker Hub is greater than last scan")
                 return True
             else:
-                self.logger.debug("["+name+"] NOT need to scan, last update into docker Hub is less or equal")
-                return False
+                self.logger.debug("["+name+"] NOT need to update: Hub last update:"+str(hub_last_update)+" local last upate:" +str(dofinder_last_update))

@@ -63,6 +63,8 @@ var imageSchema =  new mongoose.Schema({
         ver: String
     }],
 
+    status: String, // "pending" | "updated"
+
     inspect_info:  mongoose.Schema.Types.Mixed
 
 });

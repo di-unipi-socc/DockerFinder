@@ -22,6 +22,8 @@ class Scanner:
                  hub_url="https://hub.docker.com/",
                  rmi=True):
 
+        # TODO: Try todo list
+
         self.rmi = rmi  # remove an image after it is scanned
 
         self.logger = get_logger(__name__, logging.DEBUG)
@@ -114,6 +116,8 @@ class Scanner:
         self.logger.info('[{0}] finish scanning'.format(image.name))
         #dict_image['last_scan'] = str(datetime.datetime.now())
         image.last_scan = str(datetime.datetime.now())
+
+        image.set_updated()
 
         #self.logger.info("IMAGE TYPE:" + str(type(repr(image))))
         #self.logger.info("IMAGE NEW: "+repr(image))

@@ -27,8 +27,17 @@ class Image:
         self.distro = None
         self.softwares = None # list =[{"software": <name>, "ver":<version>},]
 
+        self.status = None  #  "pending" | "updated"
+
         # info inspect
         self.inspect_info = None  #
+
+
+    def set_updated(self):
+        self.status  = "updated"
+
+    def set_pending(self):
+        self.status  = "pending"
 
     def to_dict(self):
         return self.__dict__

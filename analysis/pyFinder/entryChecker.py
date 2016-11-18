@@ -4,7 +4,7 @@ import time
 __doc__= """Checker.
 
 Usage:
-  entryChecker.py run [--interval=<10>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images>][--hub-url=<https://hub.docker.com/>]
+  entryChecker.py run [--interval=<10>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
   entryChecker.py (-h | --help)
   entryChecker.py --version
 
@@ -15,7 +15,7 @@ Options:
   --ex=EXCHANGE         The exchange name of the rabbitMQ       [default: dofinder]
   --queue==QUEUE        Queue name of the rabbitMQ server       [default: images]
   --key==KEY            Routing key used by the rabbitMQ server [default: images.scan]
-  --images-url=IMAGES_URL      The url of the images service    [default: http://127.0.0.1:3000/api/images]
+  --images-url=IMAGES_URL      The url of the images service    [default: http://127.0.0.1:3000/api/images/]
   --hub-url=HUB-URL            The url of the DockerHub         [default: https://hub.docker.com/]
   --version             Show version.
 """
