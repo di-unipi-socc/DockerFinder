@@ -157,7 +157,7 @@ class ClientImages:
         repo = name.split(":")[0]
         res_image_json = self.get_scan_updated(name)  # {"images:[
         if res_image_json is not None:   # if not empty list, the result is there
-            self.logger.debug("Received from Images service" + str(res_image_json))
+            #self.logger.debug("Received from Images service" + str(res_image_json))
             image_json = res_image_json['images'][0]
             self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
                 'last_updated']))

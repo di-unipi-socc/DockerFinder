@@ -4,13 +4,14 @@ import time
 __doc__= """Checker.
 
 Usage:
-  entryChecker.py run [--interval=<10>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
+  entryChecker.py run [--interval=<10>] [--path-logging=</data/crawler/log/stats.log>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
   entryChecker.py (-h | --help)
   entryChecker.py --version
 
 Options:
   -h --help             Show this screen.
   --amqp-url=AMQP-URL   url of the rabbitMQ  server             [default: amqp://guest:guest@rabbitmq:5672]
+  --path-logging=PATH-LOGGING the path for storing              [default: /data/crawler/log/stats.log]
   --interval=interval   interval time in seconds between two consecutnve cheks [default:10]
   --ex=EXCHANGE         The exchange name of the rabbitMQ       [default: dofinder]
   --queue==QUEUE        Queue name of the rabbitMQ server       [default: images]
@@ -32,6 +33,7 @@ if __name__ == '__main__':
                         route_key=args['--key'],
                         images_url=args['--images-url'],
                         hub_url=args['--hub-url'],
+                        path_file_logging=args['--path-logging']
                         )
 
     if args['run']:
