@@ -87,21 +87,22 @@ class Checker:
             tag = splitname[1]
             image_id = image['_id']
             if self.client_hub.is_alive_in_hub(repo, tag):
-                self.logger.info("["+name+"]status:" +image['status'])
+                self.logger.debug("["+name+"]status:" +image['status'])
                 if image['status'] == "updated":
-                    self.logger.info("["+name+"] status UPDTED")
+                    #self.logger.info("["+name+"] status UPDTED")
                     if self.client_images.must_scanned(name):
                         self.logger.debug("["+name+"] must be scanned again.")
                         self.client_images.update_status(image_id, "pending")  # Set status to Pending
-                        self.logger.info("["+name+"] setted PENDING status.")
+                        self.logger.info("["+name+"] from UPDATED to PENDING status.")
                         self.send_to_rabbitmq(json.dumps({"name": repo }))
-                        self.logger.info("["+name+"] pending into queue.")
+                        self.logger.info("["+name+"] requeud into queue.")
                         #checked['pending'].append(name)
                         pending +=1
                     else:
+                        self.logger.info("["+name+"] remains UPDATED status.")
                         uptodate +=1
                 if image['status'] == "pending":
-                    self.logger.info("["+name+"] status PENDING")
+                    self.logger.debug("["+name+"] remains PENDING status")
                     pending +=1
             else:
                 #the image is removed from the database if it is not present into Docker Hub
