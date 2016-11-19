@@ -21,7 +21,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq
-    restart: on-failure:3
+    #restart: on-failure:3
     restart: always
     #container_name: rabbitmq
     ports:
