@@ -271,10 +271,10 @@ class ConsumerRabbit(object):
 
         processed = self.on_message_callback(json.loads(body.decode()))  #.decode("utf-8")))
 
-        if not processed:
-            self.reject_message(basic_deliver.delivery_tag)
-        else:
-            self.acknowledge_message(basic_deliver.delivery_tag)
+        #if not processed:
+        #    self.reject_message(basic_deliver.delivery_tag)
+        #else:
+        self.acknowledge_message(basic_deliver.delivery_tag)
 
     def reject_message(self, delivery_tag):
         """(dido) Purge the message in the queue.

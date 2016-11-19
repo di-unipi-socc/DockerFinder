@@ -112,7 +112,7 @@ services:
 #####################################################
 
   monitor:
-    container_name: monitor
+    #container_name: monitor
     build: management
     ports:
       - "3002:3002"

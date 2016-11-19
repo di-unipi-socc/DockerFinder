@@ -11,7 +11,7 @@ from .consumer_rabbit import ConsumerRabbit
 from .utils import get_logger
 from .model.image import Image
 import logging
-
+import sys
 """This module contains the *Scanner* implementation."""
 
 class Scanner:
@@ -60,13 +60,13 @@ class Scanner:
             try:
                 self.process_repo_name(json_message['name'])
                 processed = True
-            except as e:
-                self.logger.error(str(e))
-                self.logger.error("["+json_message['name']+"] processing attempt number: "+ attempt)
+            except :
+                self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
+                self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
                 attempt +=1
 
-        if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
-        return processed
+        #if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
+        #return processed
 
     def run(self):
         """Start the scanner running the consumer client of the RabbitMQ server."""
@@ -243,14 +243,14 @@ class Scanner:
             self.client_daemon.remove_container(container_id)
             self.logger.debug("Removed container "+container_id)
 
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as e:
             self.logger.error(e)
             raise
         except docker.errors.APIError as e:
             self.logger.error(e)
             raise
         except:
-            self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
+            #self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
             raise
 
         return output.decode()

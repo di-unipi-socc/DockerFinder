@@ -74,35 +74,69 @@ app.use(function(err, req, res, next) {
 // Connect to the database before starting the application server.
 var mongo_path = 'mongodb://'+app.get('db_path') + table;
 
-console.log("Try to connect "+ mongo_path);
 
-mongoose.connect(mongo_path, function (err, database) {
-    if (err) {
-        console.log(err);
-        process.exit(1);
+var connectWithRetry = function() {
+  return mongoose.connect(mongo_path, function (err, database) {
+      console.log("\nTry to connect "+ mongo_path);
+      if (err) {
+        console.error(err.message+ '- retrying in 5 sec' );
+        setTimeout(connectWithRetry, 5000);
+
+      }else{
+      // Save database object from the callback for reuse.
+      console.log("Succesful Connection to database "+ mongo_path );
+      load_softwares()
 
     }
+  });
+};
 
-    // Save database object from the callback for reuse.
-    console.log("Database connection ready");
+function load_softwares(){
+  //read THE JSON software and store them into database
+  var json = require(path.resolve(__dirname, 'softwares.json'));
+  Software.count({}, function( err, count){
+    console.log(  count + ": read softwares" );
+    if(count == 0){
+        Software.collection.insertMany(json, function(err,r) {
+                 assert.equal(Object.keys(json).length, r.insertedCount);
+                 console.log(r.insertedCount + ": software inserted into database")
+      });
+    }else {
+       console.log(count + ": software already present into database")
+    }
 
-    //read THE JSON software and store them into database
-    var json = require(path.resolve(__dirname, 'softwares.json'));
+  });
 
-    Software.count({}, function( err, count){
-      console.log(  count + ": read softwares" );
-      if(count == 0){
-          Software.collection.insertMany(json, function(err,r) {
-                   assert.equal(Object.keys(json).length, r.insertedCount);
-                   console.log(r.insertedCount + ": software inserted into database")
-        });
-      }else {
-         console.log(count + ": software already present into database")
-      }
-
-    });
-
-});
+}
+connectWithRetry();
+//
+// mongoose.connect(mongo_path, function (err, database) {
+//     if (err) {
+//         console.log(err);
+//         process.exit(1);
+//
+//     }
+//
+//     // Save database object from the callback for reuse.
+//     console.log("Database connection ready");
+//
+//     //read THE JSON software and store them into database
+//     var json = require(path.resolve(__dirname, 'softwares.json'));
+//
+//     Software.count({}, function( err, count){
+//       console.log(  count + ": read softwares" );
+//       if(count == 0){
+//           Software.collection.insertMany(json, function(err,r) {
+//                    assert.equal(Object.keys(json).length, r.insertedCount);
+//                    console.log(r.insertedCount + ": software inserted into database")
+//         });
+//       }else {
+//          console.log(count + ": software already present into database")
+//       }
+//
+//     });
+//
+// });
 
 
 // Start server

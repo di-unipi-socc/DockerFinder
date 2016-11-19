@@ -89,17 +89,33 @@ if ('production' == app.get('env')) {
 var mongo_path = 'mongodb://'+app.get('db_path') + table;
 
 // Connect to the database before starting the application server.
-mongoose.connect(mongo_path, function (err, database) {
-    console.log("\nTry to connect "+ mongo_path +"\n");
-    if (err) {
-        console.log(err);
-        //return next(err);
-        process.exit(1);
+// mongoose.connect(mongo_path, function (err, database) {
+//     console.log("\nTry to connect "+ mongo_path +"\n");
+//     if (err) {
+//         console.log(err);
+//         //return next(err);
+//         process.exit(1);
+//
+//     }
+//     // Save database object from the callback for reuse.
+//     console.log("Succesful Connection to database "+ mongo_path );
+// });
 
+var connectWithRetry = function() {
+  return mongoose.connect(mongo_path, function (err, database) {
+      console.log("\nTry to connect "+ mongo_path);
+      if (err) {
+        console.error(err.message+ '- retrying in 5 sec' );
+        setTimeout(connectWithRetry, 5000);
+
+      }else{
+      // Save database object from the callback for reuse.
+      console.log("Succesful Connection to database "+ mongo_path );
     }
-    // Save database object from the callback for reuse.
-    console.log("Succesful Connection to database "+ mongo_path );
-});
+  });
+};
+
+connectWithRetry();
 
 /*
  ROUTES
@@ -140,4 +156,3 @@ var server = app.listen(app.get('port'), function(){
     var port = server.address().port;
     console.log('Images Server is listening port: '+ port +"\n");
 });
-
