@@ -24,7 +24,7 @@ class Scanner:
 
         self.rmi = rmi  # remove an image after it is scanned
 
-        self.logger = get_logger(__name__, logging.DEBUG)
+        self.logger = get_logger(__name__, logging.INFO)
 
         # client of Software service: the service that return the software to search in the images.
         self.client_software = ClientSoftware(api_url=software_url)
@@ -207,7 +207,7 @@ class Scanner:
         image.softwares = softwares
 
     def info_inspect(self, image):
-        self.logger.info('[{}] inspect the image'.format(image.name))
+        self.logger.info('[{}] $dokcer inspect <image> .format(image.name))
         json_inspect = self.client_daemon.inspect_image(image.name)
         image.inspect_info = json_inspect
 

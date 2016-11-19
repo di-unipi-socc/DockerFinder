@@ -10,6 +10,7 @@ services:
     command: [crawl, '--save-url=/data/crawler/lasturl.txt', '--amqp-url=amqp://guest:guest@rabbitmq:5672', '--images-url=http://images_server:3000/api/images/', '--queue=images'] #,'--mi=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
+
     # labels:
     #   - "constraint:node==didoUbuntu"
     # networks:
