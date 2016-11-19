@@ -14,16 +14,16 @@ class ClientImages:
         self.logger = get_logger(__name__, logging.DEBUG)
         self.session = requests.Session()
         self.url_api = images_url
-        self.logger.info("URL images service: "+self.url_api)
+        self.logger.info("Images server: "+self.url_api)
 
     def post_image(self, dict_image):
         """Add an image description"""
         try:
             res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                self.logger.info("POST ["+dict_image['name']+"]  into  "+res.url)
+                self.logger.debug("POST ["+dict_image['name']+"]  into  "+res.url)
             else:
-                self.logger.error(str(res.status_code)+" response: "+res.text)
+                self.logger.error(str(res.status_code)+": "+res.text)
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
         except:
@@ -36,7 +36,7 @@ class ClientImages:
             id_image = self.get_id_image(dict_image['name'])
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
-                self.logger.info("UPDATED [" + dict_image['name'] + "] into "+res.url)
+                self.logger.debug("PUT [" + dict_image['name'] + "] into "+res.url)
             else:
                 self.logger.error(str(res.status_code) + ": " + res.text)
         except ImageNotFound as e:
@@ -55,7 +55,7 @@ class ClientImages:
             dict_status = { "status": status }
             res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
-                self.logger.info( res.json()['name'] +" UPDATED status: "+status)
+                self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
                 self.logger.error(str(res.status_code) + ": " + res.text)
         except requests.exceptions.ConnectionError as e:
@@ -122,7 +122,7 @@ class ClientImages:
         try:
             res_json = self.get_image(repo_name)
             ## Return the json or raise an exception if does not exist
-            self.logger.info("[" + repo_name + "] is present into local database")
+            self.logger.debug("[" + repo_name + "] found within local database")
             return False
         except ImageNotFound as e:
             self.logger.info(str(e))
@@ -133,7 +133,8 @@ class ClientImages:
             url_image_id =self.url_api + "/"+image_id
             res = self.session.delete(url_image_id)
             if res.status_code == 204:
-                print("Deleted ", image_id)
+                self.logger.debug("DELETE [" + image_id + "] found within local database")
+                #print("Deleted ", image_id)
                 #return res.json()
             else:
                 self.logger.error(str(res.status_code) + " Error code. " + res.text)

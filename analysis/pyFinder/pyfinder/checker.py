@@ -120,6 +120,6 @@ class Checker:
             try:
                 self.check_images()
                 time.sleep(interval_next_check)
-            except  Exception as e::
+            except  Exception as e:
                 self.file_logger.info("Waiting 5s and restarting.")
                 time.sleep(5)

@@ -22,7 +22,7 @@ class ClientHub:
 
             if(self.get_last_url(self.path_file_url) is None):  # if the url is not assigned
                 init_url = self.build_search_url(page=from_page, page_size=page_size)
-                self.logger.info("Set init Url page=1,page-size=100")
+                self.logger.info("Init URL:"+init_url)
                 self.save_last_url(self.path_file_url, init_url)
 
 
@@ -81,10 +81,11 @@ class ClientHub:
 
         if(from_page and page_size):
             url_next_page = self.build_search_url(from_page, page_size)
+
         else:
             url_next_page=  self.get_last_url(self.path_file_url)
             #self.build_search_url(page=from_page, page_size=page_size)
-
+        self.logger.info("Next URL: "+url_next_page)
 
         count = self.count_all_images()
         max_images = count if not max_images else max_images  # download all images if max_images=None
@@ -95,7 +96,7 @@ class ClientHub:
 
                 self.save_last_url(self.path_file_url, url_next_page) # save last url
 
-                self.logger.debug("GET to "+ url_next_page)
+                self.logger.debug("URL :  "+ url_next_page)
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
@@ -119,17 +120,17 @@ class ClientHub:
     def save_last_url(self, path, url):
             with open(path, 'w') as f:
                 f.write(url)
-                self.logger.info(url + " saved into "+ path)
+                self.logger.debug(url + " saved into "+ path)
 
     def get_last_url(self,path):
         ##return an array of two position:[0] page; [1] page-size
         try:
             with open(path, 'r') as f:
                 url = f.read()
-                self.logger.info("read: "+ url)
+                self.logger.debug("Read last URL: "+ url)
                 return url
-        except FileNotFoundError:
-            self.logger.info("File from reading the page not found")
+        except FileNotFoundError as e:
+            self.logger.debug("File from reading the page not found" + str(e))
             return None
 
 
@@ -144,7 +145,7 @@ class ClientHub:
             if filter_function(repo_name):
                 filtered_images.append(image)
             else:
-                self.logger.info("["+repo_name+"] negative filtered, not taken")
+                self.logger.debug("["+repo_name+"] negative filtered, not taken")
         return filtered_images
 
     def build_search_url(self, page, page_size=10):
@@ -243,10 +244,10 @@ class ClientHub:
         #try:
         res = self.session.get(image_hub)
         if res.status_code == 404:# or res.json()['count'] == 0:
-            self.logger.info(repo_name+":"+tag +" is NOT alive in Docker Hub")
+            self.logger.debug(repo_name+":"+tag +" is NOT alive in Docker Hub")
             return False
         elif res.status_code == requests.codes.ok:
-            self.logger.info("["+repo_name+":"+tag +"] is alive  in Docker Hub")
+            self.logger.debug("["+repo_name+":"+tag +"] is alive in Docker Hub")
             return True
         else:
             return False
