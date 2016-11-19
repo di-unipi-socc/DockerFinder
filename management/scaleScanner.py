@@ -23,7 +23,7 @@ class ScaleScanner:
     def __init__(self, monitor_interval, max_scanners, swarm):
         self.monitor_interval = monitor_interval
         self._swarm_mode = swarm
-        self.max_scanners = monitor_interval
+        self.max_scanners = max_scanners
 
         # TODO; change from rabbitmq to monitor service
         self._rabbitUrl = "http://0.0.0.0:3002/service/rabbitmq/queue/images"
