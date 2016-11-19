@@ -5,13 +5,14 @@ from docopt import docopt
 __doc__= """Crawler
 
 Usage:
-  Crawler.py crawl  [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
+  Crawler.py crawl  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--mi=<100>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
 Options:
   -h --help     Show this screen.
-  --amqp_url=AMQP_URL  Complete amqp url of the rabbitMQ server     [default: amqp://guest:guest@rabbitmq:5672]
+  --amqp-url=AMQP_URL  Complete amqp url of the rabbitMQ server     [default: amqp://guest:guest@rabbitmq:5672]
+  --save-url==FILE_SAVE File where the crawler save the last url crawled [default:/data/crawler/lasturl.txt]
   --queue=QUEUE        Queue is the name of the queue of rabbitMQ   [default: images]
   --images-url=IMAGES_URL      The url of the images service        [default: http://127.0.0.1:3000/api/images]
   --hub-url=HUB-URL            The url of the DockerHub             [default: https://hub.docker.com]
@@ -32,7 +33,8 @@ if __name__ == '__main__':
                           images_url=args['--images-url'],
                           hub_url=args['--hub-url'],
                           exchange=args['--ex'],
-                          route_key=args['--key'])
+                          route_key=args['--key'],
+                          path_last_url=args['--save-url'])
         crawler.run(max_images=None if args['--mi'] == "None" else int(args['--mi']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
                     from_page=None if args['--fp'] == "None"  else int(args['--fp']))

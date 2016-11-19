@@ -16,7 +16,8 @@ class Crawler:
                  route_key="images.scan",
                  amqp_url='amqp://guest:guest@127.0.0.1:5672',
                  images_url="http://127.0.0.1:3000/api/images",
-                 hub_url="https://hub.docker.com"
+                 hub_url="https://hub.docker.com",
+                 path_last_url="/data/crawler/lasturl.txt"
                 ):
 
         self.logger = get_logger(__name__, logging.DEBUG)
@@ -26,7 +27,7 @@ class Crawler:
         self.logger.info("Publisher rabbit initialized: exchange=" +exchange+", queue="+queue+" route key="+route_key)
 
         # Client of Docker Hub.
-        self.client_hub = ClientHub(docker_hub_endpoint=hub_url, path_last_url="/data/crawler/lasturl.txt")
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url, path_last_url=path_last_url)
 
         # client of Images Service:  in order to add and update the image description.
         self.client_images = ClientImages(images_url=images_url)

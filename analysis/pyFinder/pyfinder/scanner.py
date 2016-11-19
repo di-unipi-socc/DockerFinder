@@ -21,7 +21,6 @@ class Scanner:
                  hub_url="https://hub.docker.com/",
                  rmi=True):
 
-        # TODO: Try todo list
 
         self.rmi = rmi  # remove an image after it is scanned
 
@@ -34,7 +33,7 @@ class Scanner:
         self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
 
         # rabbit consumer of RabbittMQ: receives the images name to scan,
-        #       on_message_callback is called when a message is received
+        #   on_message_callback is called when a message is received
         self.consumer = ConsumerRabbit(amqp_url=amqp_url,
                                        exchange=exchange,
                                        queue=queue,
@@ -60,10 +59,14 @@ class Scanner:
             try:
                 self.process_repo_name(json_message['name'])
                 processed = True
-            except :
-                self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
+            except docker.errors as e:
+                self.logger.error(str(e))
                 self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
                 attempt +=1
+            # except :
+            #     self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
+            #     self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
+            #     attempt +=1
 
         #if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
         #return processed
@@ -99,11 +102,14 @@ class Scanner:
                 self.logger.info("[" + repo_name + "] already up to date.")
 
     def scan(self, repo_name, tag="latest"):
-        """It scans an image and create the description. \n
-         The description is ccreaed with the Docker Hub informations \n
-         and the software distributions.
+        """It scans an image and create the new Docker finder description. \n
+
         """
-        self.client_daemon.pull_image(repo_name, tag)
+        try:
+            self.client_daemon.pull_image(repo_name, tag)
+        except docker.errors as e:
+            self.logger.exception(e)
+            raise
 
         image = Image()
 
@@ -243,14 +249,14 @@ class Scanner:
             self.client_daemon.remove_container(container_id)
             self.logger.debug("Removed container "+container_id)
 
-        except requests.exceptions.HTTPError as e:
-            self.logger.error(e)
-            raise
+        # except requests.exceptions.HTTPError as e:
+        #     self.logger.error(e)
+        #     raise
         except docker.errors.APIError as e:
             self.logger.error(e)
             raise
-        except:
-            #self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
-            raise
+        # except:
+        #     #self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
+        #     raise
 
         return output.decode()
