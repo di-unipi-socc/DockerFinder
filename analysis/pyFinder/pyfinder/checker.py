@@ -117,5 +117,9 @@ class Checker:
     def run(self, interval_next_check):
         self.logger.info("Starting the checker module...")
         while True:
-            self.check_images()
-            time.sleep(interval_next_check)
+            try:
+                self.check_images()
+                time.sleep(interval_next_check)
+            except  Exception as e::
+                self.file_logger.info("Waiting 5s and restarting.")
+                time.sleep(5)
