@@ -207,7 +207,7 @@ class Scanner:
         image.softwares = softwares
 
     def info_inspect(self, image):
-        self.logger.info('[{}] $dokcer inspect <image> .format(image.name))
+        self.logger.info('[{}] $dokcer inspect <image>'.format(image.name))
         json_inspect = self.client_daemon.inspect_image(image.name)
         image.inspect_info = json_inspect
 
