@@ -14,7 +14,6 @@ import logging
 
 """This module contains the *Scanner* implementation."""
 
-
 class Scanner:
     def __init__(self, amqp_url='amqp://guest:guest@127.0.0.1:5672', exchange=None, queue=None, route_key=None,
                  software_url="http://127.0.0.1:3001/api/software",
@@ -53,8 +52,21 @@ class Scanner:
         This is the CALLBACK function that is called when the consumer Rabbit receives a message.
         """
         self.logger.info("Received message:" + str(json_message))
+
         # first method called when an image name is received
-        self.process_repo_name(json_message['name'])
+        attempt = 1
+        processed = False
+        while attempt < 4 and not processed:
+            try:
+                self.process_repo_name(json_message['name'])
+                processed = True
+            except as e:
+                self.logger.error(str(e))
+                self.logger.error("["+json_message['name']+"] processing attempt number: "+ attempt)
+                attempt +=1
+
+        if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
+        return processed
 
     def run(self):
         """Start the scanner running the consumer client of the RabbitMQ server."""
@@ -68,8 +80,8 @@ class Scanner:
         """Process a single image. It checks if an image must Scanned or it is already updated."""
 
         tags = self.client_hub.get_all_tags(repo_name)
-        #self.logger.info(tags)
-        #for tag in tags :
+
+        #for tag in tags :  # for scanning all the tags
         if 'latest' in tags :
             tag = 'latest'
             if self.client_images.is_new(repo_name):  # the image is totally new
@@ -95,7 +107,6 @@ class Scanner:
 
         image = Image()
 
-
         image.name = repo_name+":"+tag
 
         self.logger.info('[{0}] start scanning'.format(image.name))
@@ -108,19 +119,16 @@ class Scanner:
         self.info_inspect(image)
 
         self.logger.info('[{0}] finish scanning'.format(image.name))
-        #dict_image['last_scan'] = str(datetime.datetime.now())
         image.last_scan = str(datetime.datetime.now())
 
         image.set_updated()
 
         if self.rmi:
             try:
-                #self.client_daemon.remove_image(repo_name, force=True)
                 self.client_daemon.remove_image(image.name, force=True)
                 self.logger.info('[{0}] removed image'.format(image.name))
             except docker.errors.NotFound as e:
                 self.logger.error(e)
-        #return dict_image
         return image
 
     def info_docker_hub(self,image):
@@ -135,28 +143,24 @@ class Scanner:
         if json_response:
             if 'description' in json_response:
                 image.description = json_response['description']
-                # dict_image['description'] = json_response['description']
+
             if 'star_count' in json_response:
                 image.stars = json_response['star_count']
-                #dict_image['stars'] = json_response['star_count']
+
             if 'pull_count' in json_response:
                 image.pulls =  json_response['pull_count']
-                #dict_image['pulls'] = json_response['pull_count']
 
         json_response = self.client_hub.get_json_tag(repo_name, tag)
 
-        #if 'name' in json_response:
-        #
-        #    #dict_image['tag'] = json_response['name']
         if 'last_updated' in json_response:
             image.last_updated = json_response['last_updated']
-            #dict_image['last_updated'] = json_response['last_updated']
+
         if 'last_updater'  in json_response:
             image.last_updater = json_response['last_updater']
 
         if 'full_size' in json_response:
             image.size = json_response['full_size']
-            #dict_image['size'] = json_response['full_size']
+
         if 'repository' in json_response:
             image.repository = json_response['repository']
 
@@ -204,7 +208,9 @@ class Scanner:
 
 
     def version_from_regex(self, repo_name, command, regex):
+
         output = self.run_command(repo_name, command)
+
         p = re.compile(regex)
         match = p.search(output)
         if match:
@@ -222,19 +228,29 @@ class Scanner:
         """
 
         self.logger.info("[{0}] running command {1}".format(repo_name, command))
-        container_id = self.client_daemon.create_container(image=repo_name,
+        try:
+            container_id = self.client_daemon.create_container(image=repo_name,
                                                            entrypoint=command,
                                                            tty=True,
                                                            stdin_open=True,
 
                                                          )['Id']
-        try:
+
             self.client_daemon.start(container=container_id)
+
+            self.client_daemon.wait(container_id)
+            output = self.client_daemon.logs(container=container_id)
+            self.client_daemon.remove_container(container_id)
+            self.logger.debug("Removed container "+container_id)
+
+        except requests.exceptions.HTTPError:
+            self.logger.error(e)
+            raise
         except docker.errors.APIError as e:
             self.logger.error(e)
-            return " "
-        self.client_daemon.wait(container_id)
-        output = self.client_daemon.logs(container=container_id)
-        self.client_daemon.remove_container(container_id)
-        self.logger.debug("Removed container "+container_id)
+            raise
+        except:
+            self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
+            raise
+
         return output.decode()

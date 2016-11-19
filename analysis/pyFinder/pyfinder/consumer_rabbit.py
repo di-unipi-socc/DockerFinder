@@ -269,9 +269,19 @@ class ConsumerRabbit(object):
                     basic_deliver.delivery_tag, properties.app_id, body)
 
 
-        self.on_message_callback(json.loads(body.decode()))  #.decode("utf-8")))
+        processed = self.on_message_callback(json.loads(body.decode()))  #.decode("utf-8")))
 
-        self.acknowledge_message(basic_deliver.delivery_tag)
+        if not processed:
+            self.reject_message(basic_deliver.delivery_tag)
+        else:
+            self.acknowledge_message(basic_deliver.delivery_tag)
+
+    def reject_message(self, delivery_tag):
+        """(dido) Purge the message in the queue.
+        :param int delivery_tag: The delivery tag from the Basic.Deliver frame
+        """
+        self.logger.info('Purge message %s', delivery_tag)
+        self._channel.basic_reject(delivery_tag, requeue=False)
 
     def acknowledge_message(self, delivery_tag):
         """Acknowledge the message delivery from RabbitMQ by sending a
@@ -321,7 +331,7 @@ class ConsumerRabbit(object):
         while True:
             try:
                 self._connection = self.connect()
-                self.logger.info('Succesful connected to %s', self._url)                
+                self.logger.info('Succesful connected to %s', self._url)
                 break
             except:
                 pass
