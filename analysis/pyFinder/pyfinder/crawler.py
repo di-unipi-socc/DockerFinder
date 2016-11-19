@@ -61,8 +61,7 @@ class Crawler:
         if list_tags and 'latest' in list_tags:
             json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
             size  =  json_image_latest['full_size']
-            if size > 0:
-
+            if size and size > 0:
                 if self.client_images.is_new(repo_name):  # the image is totally new
                     self.logger.debug("[ " + repo_name + " ] is selected: tag=latest, in new, size="+str(size))
                     #dict_image = self.scan(repo_name, tag)
