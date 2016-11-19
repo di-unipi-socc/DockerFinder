@@ -59,7 +59,7 @@ class Scanner:
             try:
                 self.process_repo_name(json_message['name'])
                 processed = True
-            except docker.errors as e:
+            except docker.errors.NotFound as e: # docker.errors.NotFound:
                 self.logger.error(str(e))
                 self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
                 attempt +=1
