@@ -11,7 +11,7 @@ from urllib.parse import urljoin
 class ClientImages:
 
     def __init__(self, images_url):
-        self.logger = get_logger(__name__, logging.DEBUG)
+        self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
         self.url_api = images_url
         self.logger.info("Images server: "+self.url_api)
@@ -125,7 +125,7 @@ class ClientImages:
             self.logger.debug("[" + repo_name + "] found within local database")
             return False
         except ImageNotFound as e:
-            self.logger.info(str(e))
+            self.logger.debug(str(e))
             return True
 
     def delete_image(self, image_id):

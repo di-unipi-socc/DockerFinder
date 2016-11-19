@@ -85,7 +85,7 @@ class ClientHub:
         else:
             url_next_page=  self.get_last_url(self.path_file_url)
             #self.build_search_url(page=from_page, page_size=page_size)
-        self.logger.info("Next URL: "+url_next_page)
+        self.logger.info("Next URL="+url_next_page)
 
         count = self.count_all_images()
         max_images = count if not max_images else max_images  # download all images if max_images=None
@@ -96,7 +96,7 @@ class ClientHub:
 
                 self.save_last_url(self.path_file_url, url_next_page) # save last url
 
-                self.logger.debug("URL :  "+ url_next_page)
+                self.logger.info("URL="+ url_next_page)
                 res = requests.get(url_next_page)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()

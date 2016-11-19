@@ -46,7 +46,7 @@ class PublisherRabbit(object):
         self.routing_key = route_key
 
 
-        self.logger = utils.get_logger(__name__, logging.DEBUG)
+        self.logger = utils.get_logger(__name__, logging.INFO)
 
 
 
@@ -72,7 +72,7 @@ class PublisherRabbit(object):
         :type unused_connection: pika.SelectConnection
 
         """
-        self.logger.info('Connection opened')
+        self.logger.debug('Connection opened')
         self.add_on_connection_close_callback()
         self.open_channel()
 
@@ -81,7 +81,7 @@ class PublisherRabbit(object):
         when RabbitMQ closes the connection to the publisher unexpectedly.
 
         """
-        self.logger.info('Adding connection close callback')
+        self.logger.debug('Adding connection close callback')
         self._connection.add_on_close_callback(self.on_connection_closed)
 
     def on_connection_closed(self, connection, reply_code, reply_text):
@@ -128,7 +128,7 @@ class PublisherRabbit(object):
         will be invoked.
 
         """
-        self.logger.info('Creating a new channel')
+        self.logger.debug('Creating a new channel')
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_channel_open(self, channel):
@@ -140,7 +140,7 @@ class PublisherRabbit(object):
         :param pika.channel.Channel channel: The channel object
 
         """
-        self.logger.info('Channel opened')
+        self.logger.debug('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
         self.setup_exchange(self.exchange)
@@ -150,7 +150,7 @@ class PublisherRabbit(object):
         RabbitMQ unexpectedly closes the channel.
 
         """
-        self.logger.info('Adding channel close callback')
+        self.logger.debug('Adding channel close callback')
         self._channel.add_on_close_callback(self.on_channel_closed)
 
     def on_channel_closed(self, channel, reply_code, reply_text):
@@ -177,7 +177,7 @@ class PublisherRabbit(object):
         :param str|unicode exchange_name: The name of the exchange to declare
 
         """
-        self.logger.info('Declaring exchange %s', exchange_name)
+        self.logger.debug('Declaring exchange %s', exchange_name)
         self._channel.exchange_declare(self.on_exchange_declareok,
                                        exchange_name,
                                        self.exchange_type,
@@ -191,7 +191,7 @@ class PublisherRabbit(object):
         :param pika.Frame.Method unused_frame: Exchange.DeclareOk response frame
 
         """
-        self.logger.info('Exchange declared')
+        self.logger.debug('Exchange declared')
         self.setup_queue(self.queue)
 
     def setup_queue(self, queue_name):
@@ -202,7 +202,7 @@ class PublisherRabbit(object):
         :param str|unicode queue_name: The name of the queue to declare.
 
         """
-        self.logger.info('Declaring queue %s', queue_name)
+        self.logger.debug('Declaring queue %s', queue_name)
         self._channel.queue_declare(self.on_queue_declareok, queue_name, durable=True)
 
     def on_queue_declareok(self, method_frame):
@@ -215,7 +215,7 @@ class PublisherRabbit(object):
         :param pika.frame.Method method_frame: The Queue.DeclareOk frame
 
         """
-        self.logger.info('Binding %s to %s with %s',
+        self.logger.info('Binding exchenge: %s, to: %s with: %s',
                     self.exchange, self.queue, self.routing_key)
         self._channel.queue_bind(self.on_bindok, self.queue,
                                  self.exchange, self.routing_key)
@@ -224,7 +224,7 @@ class PublisherRabbit(object):
         """This method is invoked by pika when it receives the Queue.BindOk
         response from RabbitMQ. Since we know we're now setup and bound, it's
         time to start publishing."""
-        self.logger.info('Queue bound')
+        self.logger.debug('Queue bound')
         #self.enable_delivery_confirmations()
         self.start_publishing()
 
@@ -233,7 +233,7 @@ class PublisherRabbit(object):
         first message to be sent to RabbitMQ
 
         """
-        self.logger.info('Issuing consumer related RPC commands')
+        self.logger.debug('Issuing consumer related RPC commands')
 
         for json_image in self.images_generator:
             self.publish_message(json_image)
@@ -250,7 +250,7 @@ class PublisherRabbit(object):
         is confirming or rejecting.
 
         """
-        self.logger.info('Issuing Confirm.Select RPC command')
+        self.logger.debug('Issuing Confirm.Select RPC command')
         self._channel.confirm_delivery(self.on_delivery_confirmation)
 
     def on_delivery_confirmation(self, method_frame):
@@ -267,7 +267,7 @@ class PublisherRabbit(object):
 
         """
         confirmation_type = method_frame.method.NAME.split('.')[1].lower()
-        self.logger.info('Received %s for delivery tag: %i',
+        self.logger.debug('Received %s for delivery tag: %i',
                     confirmation_type,
                     method_frame.method.delivery_tag)
         if confirmation_type == 'ack':
@@ -309,7 +309,7 @@ class PublisherRabbit(object):
                                     properties)
         self._message_number += 1
         self._deliveries.append(self._message_number)
-        self.logger.info('Published message # %i', self._message_number)
+        self.logger.debug('Published message # %i', self._message_number)
 
 
     def close_channel(self):

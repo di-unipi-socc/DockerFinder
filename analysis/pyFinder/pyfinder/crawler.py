@@ -20,7 +20,7 @@ class Crawler:
                  path_last_url="/data/crawler/lasturl.txt"
                 ):
 
-        self.logger = get_logger(__name__, logging.DEBUG)
+        self.logger = get_logger(__name__, logging.INFO)
 
         # publish the images downloaded into the rabbitMQ server.
         self.publisher = PublisherRabbit(amqp_url, exchange=exchange, queue= queue, route_key=route_key)
@@ -61,11 +61,13 @@ class Crawler:
                                                         page_size=page_size,
                                                         max_images=max_images,
                                                         filter_images=self.filter_tag_latest):
+
             for image in list_images:
                 repo_name = image['repo_name']
                 sent_images += 1
                 yield json.dumps({"name": repo_name})
-        self.logger.info("Number of images sent to RabbtiMQ: {0}\n".format(str(sent_images)))
+            self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+        self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
 
 
     def filter_tag_latest(self, repo_name):
@@ -75,10 +77,9 @@ class Crawler:
         :return: True if the image must be downloaded, Flase if must be discarded
         """
         process_image = False
-        self.logger.info("[" + repo_name + "] processing image.")
+        self.logger.debug("[" + repo_name + "] processing image.")
         list_tags = self.client_hub.get_all_tags(repo_name)
         #self.logger.info(str(list_tags))
-
         if list_tags and 'latest' in list_tags:
             json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
             size  =  json_image_latest['full_size']
@@ -86,12 +87,12 @@ class Crawler:
                 if self.client_images.is_new(repo_name):  # the image is totally new
                     self.logger.debug("[" + repo_name + "]  is new into local database")
                     process_image = True
-                    self.logger.info("[" + repo_name + "] selected")
+                    self.logger.debug("[" + repo_name + "] selected")
                 else:
                     self.logger.debug("[" + repo_name + "] already present into local database.")
                     process_image = False
-                    self.logger.info("[" + repo_name + "] NOT selected")
+                    self.logger.debug("[" + repo_name + "] NOT selected")
             else:
                 process_image = False
-                self.logger.info(("[" + repo_name + "] not selected")
+                self.logger.debug("[" + repo_name + "] not selected")
         return process_image

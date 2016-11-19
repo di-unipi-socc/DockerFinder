@@ -46,17 +46,26 @@ class Scanner:
         # client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
 
+    def run(self):
+        """Start the scanner running the consumer client of the RabbitMQ server."""
+
+        try:
+            self.consumer.run()
+        except KeyboardInterrupt:
+            self.consumer.stop()
+
     def on_message(self, json_message):
         """
         This is the CALLBACK function that is called when the consumer Rabbit receives a message.
         """
-        self.logger.info("Received message:" + str(json_message))
+        self.logger.debug("Received message:" + str(json_message))
 
         # first method called when an image name is received
         attempt = 1
         processed = False
         while attempt < 4 and not processed:
             try:
+                self.logger.debug("["+ json_message['name']+ "] scanning ...")
                 self.process_repo_name(json_message['name'])
                 processed = True
             except docker.errors.NotFound as e: # docker.errors.NotFound:
@@ -71,13 +80,7 @@ class Scanner:
         #if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
         #return processed
 
-    def run(self):
-        """Start the scanner running the consumer client of the RabbitMQ server."""
 
-        try:
-            self.consumer.run()
-        except KeyboardInterrupt:
-            self.consumer.stop()
 
     def process_repo_name(self, repo_name):
         """Process a single image. It checks if an image must Scanned or it is already updated."""
@@ -91,13 +94,13 @@ class Scanner:
                 image = self.scan(repo_name, tag)
                 dict_image = image.to_dict()
                 self.client_images.post_image(dict_image)  # POST the description of the image
-                self.logger.info("[" + dict_image['name'] + "]  POST the image description")
+                self.logger.debug("POST [" + dict_image['name'] + "] to images server")
             elif self.client_images.must_scanned(repo_name):  # the image must be scan again
                 self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
                 image = self.scan(repo_name, tag)
                 dict_image = image.to_dict()
                 self.client_images.put_image(dict_image)  # PUT the new image description of the image
-                self.logger.info("[" + dict_image['name'] + "] PUT the image description")
+                self.logger.info("PUT [" + dict_image['name'] + "] to images server")
             else:
                 self.logger.info("[" + repo_name + "] already up to date.")
 
@@ -115,7 +118,7 @@ class Scanner:
 
         image.name = repo_name+":"+tag
 
-        self.logger.info('[{0}] start scanning'.format(image.name))
+        self.logger.debug('[{0}] start scanning'.format(image.name))
 
         # add info from DockerHub
         self.info_docker_hub(image)
@@ -139,7 +142,7 @@ class Scanner:
 
     def info_docker_hub(self,image):
         """Get the informations of an image from Docker Hub."""
-        self.logger.info('[{}] adding Docker Hub info ... '.format(image.name))
+        self.logger.debug('[{}] adding Docker Hub info ... '.format(image.name))
 
         repo_name  = image.name.split(":")[0]
         tag        = image.name.split(":")[1]
@@ -179,7 +182,7 @@ class Scanner:
     def info_dofinder(self, image):
         """It Extracts the OS distribution and the software in the image"""
         name = image.name
-        self.logger.info('[{}] searching software ... '.format(name))
+        self.logger.debug('[{}] searching software ... '.format(name))
 
         # search distribution Operating system in the image,
         for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
@@ -207,7 +210,7 @@ class Scanner:
         image.softwares = softwares
 
     def info_inspect(self, image):
-        self.logger.info('[{}] $dokcer inspect <image>'.format(image.name))
+        self.logger.debug('[{}] $dokcer inspect <image>'.format(image.name))
         json_inspect = self.client_daemon.inspect_image(image.name)
         image.inspect_info = json_inspect
 
@@ -233,7 +236,7 @@ class Scanner:
         Return the output of the command.
         """
 
-        self.logger.info("[{0}] running command {1}".format(repo_name, command))
+        self.logger.debug("[{0}] running command {1}".format(repo_name, command))
         try:
             container_id = self.client_daemon.create_container(image=repo_name,
                                                            entrypoint=command,
