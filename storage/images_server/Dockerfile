@@ -1,4 +1,4 @@
-FROM node:argon
+FROM node:alpine
 # node.js and npm already installed
 
 # Create  directory that store the source code

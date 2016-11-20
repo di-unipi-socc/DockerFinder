@@ -20,7 +20,7 @@ class Crawler:
                  path_last_url="/data/crawler/lasturl.txt"
                 ):
 
-        self.logger = get_logger(__name__, logging.INFO)
+        self.logger = get_logger(__name__, logging.DEBUG)
 
         # publish the images downloaded into the rabbitMQ server.
         self.publisher = PublisherRabbit(amqp_url, exchange=exchange, queue= queue, route_key=route_key)

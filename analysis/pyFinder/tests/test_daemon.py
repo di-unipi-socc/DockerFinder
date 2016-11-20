@@ -1,13 +1,12 @@
 import unittest
 import docker
-from pyfinder import ClientDaemon
 from pyfinder import Container
 import re
 
 class TestDaemon(unittest.TestCase):
 
     def setUp(self):
-        self.client = ClientDaemon(base_url='unix://var/run/docker.sock')
+        self.client = docker.Client(base_url='unix://var/run/docker.sock')
         #client = docker.Client(**docker.utils.kwargs_from_env(assert_hostname=False))
 
     def test_run(self):

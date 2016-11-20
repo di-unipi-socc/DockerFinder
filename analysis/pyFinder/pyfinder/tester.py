@@ -2,7 +2,6 @@ import pickle
 from .crawler import Crawler
 from .utils import get_logger
 from pyfinder import ClientHub
-from pyfinder import ClientDaemon
 from .publisher_rabbit import PublisherRabbit
 import logging
 import docker
@@ -19,7 +18,7 @@ class Tester:
         self.logger = get_logger(__name__, logging.INFO)
         # the client hub interacts with the docker Hub registry
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
-        self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
+        self.client_daemon = docker.Client(base_url='unix://var/run/docker.sock')
 
     def build_test(self, num_images_test=100, from_page=1, page_size=10,):
         list_json_images = [image_json for image_json in self.crawler.crawl(max_images=num_images_test, from_page=from_page, page_size=page_size)]
@@ -71,4 +70,3 @@ class Tester:
                 if name not in images_libraries:
                     self.logger.info("Removing  " + repo_tag)
                     self.client_daemon.remove_image(repo_tag, force=True)
-

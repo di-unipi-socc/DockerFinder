@@ -23,9 +23,8 @@ def get_logger(name_class, level=logging.DEBUG):
     ch.setLevel(level)
 
     # create formatter and add it to the handlers
-    LOG_FORMAT = ('%(asctime)s -15s %(funcName) '
-              '-15s %(lineno) -5d: %(message)s')
-    formatter = logging.Formatter(LOG_FORMAT)
+    LOG_FORMAT = ('%(asctime)s %(levelname)s  %(funcName) -5s %(lineno) -5d: %(message)s')
+    formatter = logging.Formatter(LOG_FORMAT, datefmt='%m/%d/%Y %I:%M:%S')
 
     ch.setFormatter(formatter)
     # add the stream handlers to the logger

@@ -61,7 +61,7 @@ class ClientHub:
                     next_page = json_response['next']
                 return list_tags
             else:
-                self.logger.error(str(res.status_code) +" error response: "+ res.text)
+                self.logger.error(str(res.status_code) +": "+ res.text)
                 return []
 
         except requests.exceptions.ConnectionError as e:

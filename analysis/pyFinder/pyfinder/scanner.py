@@ -1,10 +1,10 @@
 import docker
+import json
 import docker.errors
 from subprocess import Popen, PIPE, STDOUT
 import re
 from .utils import *
 from .client_images_service import ClientImages
-from .client_daemon import ClientDaemon
 from .client_dockerhub import ClientHub
 from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
@@ -30,7 +30,8 @@ class Scanner:
         self.client_software = ClientSoftware(api_url=software_url)
 
         # client of Docker daemon running on the local host
-        self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
+        #self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
+        self.client_daemon = docker.Client(base_url='unix://var/run/docker.sock')
 
         # rabbit consumer of RabbittMQ: receives the images name to scan,
         #   on_message_callback is called when a message is received
@@ -69,10 +70,12 @@ class Scanner:
                 self.process_repo_name(json_message['name'])
                 processed = True
             except docker.errors.NotFound as e: # docker.errors.NotFound:
-                self.logger.error(str(e))
-                self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
+                self.logger.error(str(e) +": retry number "+ str(attempt))
                 attempt +=1
-            # except :
+            except docker.errors.APIError as e:
+                self.logger.error(str(e) +": retry number "+ str(attempt))
+                attempt +=1
+
             #     self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
             #     self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
             #     attempt +=1
@@ -108,11 +111,12 @@ class Scanner:
         """It scans an image and create the new Docker finder description. \n
 
         """
-        try:
-            self.client_daemon.pull_image(repo_name, tag)
-        except docker.errors as e:
-            self.logger.exception(e)
-            raise
+        self.logger.info("[" + repo_name + "] pulling the image ...")
+        for line in self.client_daemon.pull(repo_name, tag, stream=True):
+            json_image = json.loads(line.decode())
+            # self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
+            if 'status' in json_image.keys() and ("Downloaded" in json_image['status'] or "up to date"  in json_image['status']):
+                self.logger.info(json_image['status'])
 
         image = Image()
 
@@ -121,10 +125,13 @@ class Scanner:
         self.logger.debug('[{0}] start scanning'.format(image.name))
 
         # add info from DockerHub
+        self.logger.info('[{0}] Adding Docker Hub info'.format(image.name))
         self.info_docker_hub(image)
         # search software versions and system commands
+        self.logger.info('[{0}] Adding Softwares versions'.format(image.name))
         self.info_dofinder(image)
         # add informatiom from the inspect command
+        self.logger.info('[{0}] Adding docker inspect info'.format(image.name))
         self.info_inspect(image)
 
         self.logger.info('[{0}] finish scanning'.format(image.name))
@@ -136,8 +143,10 @@ class Scanner:
             try:
                 self.client_daemon.remove_image(image.name, force=True)
                 self.logger.info('[{0}] removed image'.format(image.name))
+            except docker.errors.APIError as e:
+                self.logger.error(str(e))
             except docker.errors.NotFound as e:
-                self.logger.error(e)
+                self.logger.error(str(e))
         return image
 
     def info_docker_hub(self,image):
@@ -186,49 +195,46 @@ class Scanner:
 
         # search distribution Operating system in the image,
         for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
-            try:
-                distro = self.version_from_regex(name, cmd, regex)
-                if distro:
-                    image.distro = distro
-                    #dict_image['distro'] = distro
-            except docker.errors.NotFound as e:
-                self.logger.error(e)
+            distro = self.version_from_regex(name, cmd, regex)
+            if distro:
+                image.distro = distro
 
         # search software distribution in the image.
         softwares = []
-        for sw in self.client_software.get_software():  #
-            try:
-                software = sw['name']
-                command = software + " " + sw['cmd']
-                regex = sw['regex']
-                version = self.version_from_regex(name, command, regex)
-                if version:
-                    softwares.append({'software': software, 'ver': version})
-            except docker.errors.NotFound as e:
-                self.logger.error(e)
-        #dict_image['softwares'] = softwares
+        for sw in self.client_software.get_software():
+            software = sw['name']
+            command = software + " " + sw['cmd']
+            regex = sw['regex']
+            version = self.version_from_regex(name, command, regex)
+            if version:
+                softwares.append({'software': software, 'ver': version})
         image.softwares = softwares
+        self.logger.info('[{}] : found {} softwares [{}] '.format(image.name, len(softwares), softwares))
 
     def info_inspect(self, image):
-        self.logger.debug('[{}] $dokcer inspect <image>'.format(image.name))
+        self.logger.debug('[{}] $docker inspect <image>'.format(image.name))
         json_inspect = self.client_daemon.inspect_image(image.name)
         image.inspect_info = json_inspect
 
-
-
     def version_from_regex(self, repo_name, command, regex):
+        try:
+            output = self.run_command(repo_name, command)
 
-        output = self.run_command(repo_name, command)
-
-        p = re.compile(regex)
-        match = p.search(output)
-        if match:
-            version = match.group(0)
-            self.logger.debug("[{0}] found in {1}".format(command, repo_name))
-            return version
-        else:
-            self.logger.debug("[{0}] NOT found in {1}".format(command, repo_name))
-            return None
+            p = re.compile(regex)
+            match = p.search(output)
+            if match:
+                version = match.group(0)
+                self.logger.debug("[{0}] found in {1}".format(command, repo_name))
+                return version
+            else:
+                self.logger.debug("[{0}] NOT found in {1}".format(command, repo_name))
+                return None
+        except docker.errors.NotFound as e:
+            self.logger.debug(command + " not found")
+            #raise
+        # except docker.errors.NotFound as e:
+        #     self.logger.error(e)
+        #     #raise
 
 
     def run_command(self, repo_name, command):
@@ -237,29 +243,24 @@ class Scanner:
         """
 
         self.logger.debug("[{0}] running command {1}".format(repo_name, command))
-        try:
-            container_id = self.client_daemon.create_container(image=repo_name,
+
+        container_id = self.client_daemon.create_container(image=repo_name,
                                                            entrypoint=command,
-                                                           tty=True,
-                                                           stdin_open=True,
-
+                                                           #tty=True,
+                                                           #stdin_open=True,
                                                          )['Id']
-
-            self.client_daemon.start(container=container_id)
+        try:
+            response =self.client_daemon.start(container=container_id)
 
             self.client_daemon.wait(container_id)
-            output = self.client_daemon.logs(container=container_id)
-            self.client_daemon.remove_container(container_id)
-            self.logger.debug("Removed container "+container_id)
 
-        # except requests.exceptions.HTTPError as e:
-        #     self.logger.error(e)
-        #     raise
-        except docker.errors.APIError as e:
-            self.logger.error(e)
-            raise
-        # except:
-        #     #self.logger.error("Unexpected error:"+str(sys.exc_info()[0]))
-        #     raise
+        except docker.errors.NotFound as e:
+            self.client_daemon.remove_container(container_id,force=True, v=True)
+            self.logger.debug(container_id +": ERROR so we have removed")
+
+        output = self.client_daemon.logs(container=container_id)
+        self.client_daemon.remove_container(container_id,force=True, v=True)
+        self.logger.debug(container_id +": Removed container")
+
 
         return output.decode()

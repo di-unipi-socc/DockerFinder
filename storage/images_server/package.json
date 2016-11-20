@@ -16,7 +16,7 @@
     "git": "^0.1.5",
     "mongoose": "^4.5.0",
     "node": "0.0.0",
-    "node-restful": "git+https://github.com/baugarten/node-restful.git",
+    "node-restful": "^0.2.5",
     "nodemon": "^1.9.2"
   },
   "devDependencies": {}
