@@ -25,7 +25,9 @@ class ConsumerRabbit(object):
         :param str amqp_url: The AMQP url to connect with
 
         """
-        self.logger = utils.get_logger(__name__, logging.INFO)
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
+
         self._connection = None
         self._channel = None
         self._closing = False

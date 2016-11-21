@@ -2,7 +2,7 @@ import requests
 import sys
 import urllib.parse
 import logging
-from .utils import get_logger
+
 
 """
 This module interacts with Docker Hub endpoint.
@@ -14,7 +14,10 @@ class ClientHub:
     def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
-        self.logger = get_logger(__name__, logging.INFO)
+        #self.logger = get_logger(__class__.__name__)
+        #self.logger = get_logger(__name__, logging.INFO)
+        self.logger =  logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__+ " logger initialized.")
 
         if(path_last_url):
             self.path_file_url = path_last_url # "/data/crawler/lasturl.txt"
@@ -61,7 +64,7 @@ class ClientHub:
                     next_page = json_response['next']
                 return list_tags
             else:
-                self.logger.error(str(res.status_code) +": "+ res.text)
+                self.logger.debug(str(res.status_code) +": "+ res.text)
                 return []
 
         except requests.exceptions.ConnectionError as e:

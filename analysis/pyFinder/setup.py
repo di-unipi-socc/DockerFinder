@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 setup(
     name='pyfinder',
     version='0.0.1',
-    description='Crawler and scanner definition of dofinder project',
+    description='Crawler and scanner definition of docker finder project',
     long_description=readme,
     author='Davide neri',
     author_email='davideneri18@gmail.com',

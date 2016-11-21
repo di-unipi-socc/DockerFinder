@@ -1,6 +1,5 @@
 import requests
 import logging
-from .utils import get_logger
 
 """ This module interacts with the *Software service* running in the *discovery* part."""
 
@@ -9,7 +8,8 @@ class ClientSoftware(requests.Session):
     def __init__(self, api_url="http://127.0.0.1:3001/api/software"): #,host_service="sw_server", port_service="3001", path_api="/api/software"):
         super(ClientSoftware, self).__init__()
         self._url = api_url
-        self.logger = get_logger(__name__, logging.INFO)
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
         self.logger.info("SOFTWARE server: " + self._url)
 
     def get_software(self):

@@ -3,12 +3,10 @@ import json
 import docker.errors
 from subprocess import Popen, PIPE, STDOUT
 import re
-from .utils import *
 from .client_images_service import ClientImages
 from .client_dockerhub import ClientHub
 from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
-from .utils import get_logger
 from .model.image import Image
 import logging
 import sys
@@ -24,7 +22,8 @@ class Scanner:
 
         self.rmi = rmi  # remove an image after it is scanned
 
-        self.logger = get_logger(__name__, logging.INFO)
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
 
         # client of Software service: the service that return the software to search in the images.
         self.client_software = ClientSoftware(api_url=software_url)
@@ -96,14 +95,14 @@ class Scanner:
             if self.client_images.is_new(repo_name):  # the image is totally new
                 image = self.scan(repo_name, tag)
                 dict_image = image.to_dict()
+                self.logger.debug("POST [" + dict_image['name'] + "] to images server...")
                 self.client_images.post_image(dict_image)  # POST the description of the image
-                self.logger.debug("POST [" + dict_image['name'] + "] to images server")
             elif self.client_images.must_scanned(repo_name):  # the image must be scan again
                 self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
                 image = self.scan(repo_name, tag)
                 dict_image = image.to_dict()
+                self.logger.info("PUT [" + dict_image['name'] + "] to images server ...")
                 self.client_images.put_image(dict_image)  # PUT the new image description of the image
-                self.logger.info("PUT [" + dict_image['name'] + "] to images server")
             else:
                 self.logger.info("[" + repo_name + "] already up to date.")
 

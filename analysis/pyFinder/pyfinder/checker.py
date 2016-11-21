@@ -1,7 +1,6 @@
 from .client_images_service import ClientImages
 from .client_dockerhub import ClientHub
 from .publisher_rabbit import PublisherRabbit
-from .utils import get_logger
 import logging
 import json
 import pika
@@ -27,13 +26,16 @@ class Checker:
         self._route_key =route_key
 
         # stream handler logger
-        self.logger = get_logger(__name__, logging.INFO)
+
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
 
         # file handler logger
         self.path_file_logging = path_file_logging
         self.file_logger = None
         if path_file_logging:
-            self.file_logger = logging.getLogger("statsLogger")
+            name_file_logger = __class__.__name__+"-stats"
+            self.file_logger = logging.getLogger(name_file_logger)
             self.file_logger.setLevel(logging.DEBUG)
             self.logger.info("LOGGING PATH: "+path_file_logging)
             fh = logging.FileHandler(path_file_logging)

@@ -1,7 +1,8 @@
 from pyfinder import Crawler
 from pyfinder import Tester
 from docopt import docopt
-
+from os import path
+import logging.config
 __doc__= """Crawler
 
 Usage:
@@ -26,6 +27,12 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Crawler 0.0.1')
+
+    log_file_path = path.dirname(path.abspath(__file__))+ '/pyfinder/resources/logging.conf'
+    logging.config.fileConfig(log_file_path)
+
+    #logger = logging.getLogger()
+    #logger.info("OEFIAH MOAIN")
 
     if args['crawl']:
         crawler = Crawler(amqp_url=args['--amqp-url'],

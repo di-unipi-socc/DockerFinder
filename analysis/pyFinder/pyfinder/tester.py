@@ -1,6 +1,5 @@
 import pickle
 from .crawler import Crawler
-from .utils import get_logger
 from pyfinder import ClientHub
 from .publisher_rabbit import PublisherRabbit
 import logging

@@ -2,7 +2,6 @@ import requests
 import json
 import sys
 from .dfexception import *
-from .utils import *
 import logging
 from urllib.parse import urljoin
 
@@ -11,9 +10,11 @@ from urllib.parse import urljoin
 class ClientImages:
 
     def __init__(self, images_url):
-        self.logger = get_logger(__name__, logging.INFO)
         self.session = requests.Session()
         self.url_api = images_url
+
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
         self.logger.info("Images server: "+self.url_api)
 
     def post_image(self, dict_image):

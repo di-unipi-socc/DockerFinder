@@ -46,7 +46,9 @@ class PublisherRabbit(object):
         self.routing_key = route_key
 
 
-        self.logger = utils.get_logger(__name__, logging.INFO)
+        #self.logger = utils.get_logger(__name__, logging.INFO)
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
 
 
 
