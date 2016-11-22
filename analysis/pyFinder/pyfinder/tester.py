@@ -54,7 +54,7 @@ class Tester:
         self.logger.info("[" + str(len(images_libraries)) + "] number of official images to pull...")
         for image in images_libraries:
             try:
-                self.client_daemon.pull_image(image)
+                self.client_daemon.pull(image)
             except docker.errors.APIError:
                 self.logger.exception("Docker api error")
 

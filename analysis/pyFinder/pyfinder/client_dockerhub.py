@@ -125,9 +125,12 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
 
     def save_last_url(self, path, url):
+        try:
             with open(path, 'w') as f:
                 f.write(url)
                 self.logger.debug(url + " saved into "+ path)
+        except FileNotFoundError as e:
+            self.logger.error(str(e))
 
     def get_last_url(self,path):
         ##return an array of two position:[0] page; [1] page-size
@@ -218,12 +221,13 @@ class ClientHub:
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
                 list_images = [res['name'] for res in json_response['results']]
+
                 count += json_response['count']
                 next_page = json_response['next']
                 while next_page:
+                    self.logger.info(next_page)
                     res = self.session.get(next_page)
                     json_response = res.json()
-
                     list_images += [res['name'] for res in json_response['results']]
                     next_page = json_response['next']
                 return list_images
