@@ -10,7 +10,7 @@ app = Flask(__name__)
 # app.debug = os.environ.get("DEBUG", "").lower().startswith('y')
 #
 hostname = socket.gethostname()
-#
+
 # urandom = os.open("/dev/urandom", os.O_RDONLY)
 
 @app.route('/')

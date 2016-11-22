@@ -3,7 +3,7 @@
 # DockerFinder
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE 
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Thesis](#What is Docker Finder ?)
@@ -50,4 +50,27 @@ The figure represents the architecture of Docker Finder deployed in the Docker p
 <div align="center">
 <img src="./docs/architecture_docker.png" width="500">
 </div>
- 
+
+
+### How to run Docker Finder
+**Docker Finder**  architecture can be runned with *Docker-compose* or using the swarm mode of *Docker 1.12*.
+
+#### Docker-compose mode
+
+In order to run all the microservices of the architecture, you should launch the following commmand from within the main folder of the project.
+```
+$ docker-compose up
+```
+
+### Docker 1.12 swarm mode
+
+The initializarion script `init-all.sh` does:
+
+- initialize am overlay network (if it does not exist).
+- *Build* and *push* the images into Docker HUb.
+
+The `start_all.sh` script:
+- *create* the services by downloading the iamges from Docker Hub.
+- *run* the services:
+    - **Crawler**, **RabbiMQ**, **images**, **software**  run in the same host with a label constraint.
+    - **scanner** can run in a ny host that are partecipating in the swarm.
