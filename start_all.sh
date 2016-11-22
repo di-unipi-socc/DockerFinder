@@ -2,7 +2,19 @@
 
 NET="docker-finder"
 HUB_REPOSITORY=diunipisocc/docker-finder
-CONSTRAINT_NODE="node.hostname==manager"
+
+#"${NODE_MANAGER?Set Manger node:  $ export NODE_MANAGER=<managernode>}"
+if [ -z "$NODE_MANAGER" ]; then
+    echo "NODE_MANAGER environment variable is not set"
+    THISHOST=$(hostname)
+    CONSTRAINT_NODE="node.hostname==$THISHOST"
+    echo "Using Constraint: " $CONSTRAINT_NODE
+else
+    CONSTRAINT_NODE="node.hostname==$NODE_MANAGER"
+    echo "Using Constraint: " $CONSTRAINT_NODE
+fi
+
+
 
 #####################################################
 ###############   DISCOVERY PHASE ####################
@@ -87,8 +99,10 @@ docker service create  --network $NET  --name crawler \
   --constraint  $CONSTRAINT_NODE \
   --mount type=volume,source=crawler-volume,destination=/data/crawler \
   $HUB_REPOSITORY:crawler crawl  \
+  --images-url=http://images_server:3000/api/images \
   --amqp-url=amqp://guest:guest@rabbitmq:5672  \
-  --queue=images --fp=100 --ps=10 --mi=100  > /dev/null
+  --save-url=/data/crawler/lasturl.txt \
+  --queue=images --fp=1 --ps=100   > /dev/null #--mi=100
   if [ $? -eq 0 ]
         then
           echo "crawler: service created"
@@ -115,7 +129,7 @@ fi
 #####################################################
 ###############   MONITOR PHASE ####################
 #####################################################
-docker service create  --network $NET  --name monitor \
+docker service create  --network $NET  -p 3002:3002 --name monitor \
   --constraint  $CONSTRAINT_NODE \
   $HUB_REPOSITORY:monitor > /dev/null
   if [ $? -eq 0 ]
@@ -127,4 +141,4 @@ docker service create  --network $NET  --name monitor \
   fi
 
 
-docker service ls
+#docker service ls

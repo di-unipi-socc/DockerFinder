@@ -19,8 +19,8 @@ Options:
   --hub-url=HUB-URL            The url of the DockerHub             [default: https://hub.docker.com]
   --ex=EXCHANGE        Exchange name in the rabbitMQ.               [default: dofinder]
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
-  --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: None].
-  --ps=PAGE_SIZE      number of images in a single page                    [default: None].
+  --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
+  --ps=PAGE_SIZE      number of images in a single page                    [default: 100].
   --mi=MAX_IMAGES       Max number of images to be crawled from the docker hub [default: None].
   --version     Show version.
 """
