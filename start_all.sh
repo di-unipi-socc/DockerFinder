@@ -1,11 +1,11 @@
 #!/bin/sh
 
 
-if [ $1 -eq 'start' ] && [ $1 -eq 'create'] && [ $1 -eq 'update']; then
-  CMD = $1
-else:
-  exit 1
-fi
+#if [ $1 -eq 'start' ] && [ $1 -eq 'create'] && [ $1 -eq 'update']; then
+#  CMD = $1
+#else:
+#  exit 1
+#fi
 
 NET="docker-finder"
 HUB_REPOSITORY=diunipisocc/docker-finder
@@ -26,7 +26,7 @@ fi
 #####################################################
 ###############   DISCOVERY PHASE ####################
 #####################################################
-if [ $2 -eq 'discover' ] || [ -z $2 ]; then
+#if [ $2 -eq 'discover' ] || [ -z $2 ]; then
 # Software Database mongo
 SOFTWAREDB=software_db
 docker service create --network $NET --name $SOFTWAREDB  \
