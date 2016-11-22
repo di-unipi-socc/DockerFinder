@@ -1,6 +1,8 @@
 from pyfinder import Scanner
 from docopt import docopt
 import time
+from os import path
+import logging.config
 __doc__= """Scanner.
 
 Usage:
@@ -37,7 +39,7 @@ if __name__ == '__main__':
     logging.config.fileConfig(log_file_path)
     logger = logging.getLogger()
     logger.info("Logging conf: "+ log_file_path)
-    
+
     scanner = Scanner(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'], route_key=args['--key'],
                       images_url=args['--images-url'],
                       software_url=args['--software-url'],

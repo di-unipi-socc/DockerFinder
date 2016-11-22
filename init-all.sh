@@ -8,7 +8,7 @@ if docker network ls | grep -q $NET ; then
     echo $NET network already exist.
 else
     echo $NET network not found.
-    echo "created $NET" : $(docker network create --driver overlay  --subnet 192.168.0.0/24 $NET)"
+    echo "OVerlay Network ceated " $NET $(docker network create --driver overlay  --subnet 192.168.0.0/24 $NET)
     #echo $(docker network create -d bridge --subnet 180.0.0.0/24 $NET)
 
 fi
@@ -17,11 +17,17 @@ fi
 HUB_REPOSITORY=diunipisocc/docker-finder
 #TAG=v0.1
 echo "Build and publish the images ..."
-for SERVICE in scale_scanner; do #software_server images_server scanner crawler scale_scanner;do # is built on a image
-  docker-compose build $SERVICE
-  docker tag dockerfinder_$SERVICE $HUB_REPOSITORY:$SERVICE
-  docker push $HUB_REPOSITORY:$SERVICE
-  echo " Pushed:  $HUB_REPOSITORY:$SERVICE"
+for SERVICE in software_server images_server scanner crawler monitor;do #scale_scanner;do # is built on a image
+  docker-compose build $SERVICE > /dev/null
+  docker tag dockerfinder_$SERVICE $HUB_REPOSITORY:$SERVICE > /dev/null
+  docker push $HUB_REPOSITORY:$SERVICE > /dev/null
+  if [ $? -eq 0 ]
+  then
+    echo "Created and Pushed:  $HUB_REPOSITORY:$SERVICE"
+  else
+    echo "Could not create $HUB_REPOSITORY:$SERVICE" >&2
+    exit 1
+  fi
 done
 
 

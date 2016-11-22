@@ -70,7 +70,7 @@ The initializarion script `init-all.sh` does:
 - *Build* and *push* the images into Docker HUb.
 
 The `start_all.sh` script:
-- *create* the services by downloading the iamges from Docker Hub.
+- *create* the services by downloading the images from Docker Hub.
 - *run* the services:
-    - **Crawler**, **RabbiMQ**, **images**, **software**  run in the same host with a label constraint.
+    - **Crawler**, **RabbiMQ**, **images_server**, **images_db**,**software_server**,**software_db**  ,**monitor**: run in the same host with a constraint  label.
     - **scanner** can run in a ny host that are partecipating in the swarm.

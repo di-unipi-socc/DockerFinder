@@ -1,6 +1,8 @@
 from pyfinder import Checker
 from docopt import docopt
 import time
+from os import path
+import logging.config
 __doc__= """Checker.
 
 Usage:
