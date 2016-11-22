@@ -8,7 +8,8 @@ if docker network ls | grep -q $NET ; then
     echo $NET network already exist.
 else
     echo $NET network not found.
-    echo "OVerlay Network ceated " $NET $(docker network create --driver overlay  --subnet 192.168.0.0/24 $NET)
+    docker network create --driver overlay  $NET
+    echo "OVerlay Network ceated " $NET
     #echo $(docker network create -d bridge --subnet 180.0.0.0/24 $NET)
 
 fi
