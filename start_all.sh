@@ -10,7 +10,8 @@
 NET="docker-finder"
 HUB_REPOSITORY=diunipisocc/docker-finder
 
-#"${NODE_MANAGER?Set Manger node:  $ export NODE_MANAGER=<managernode>}"
+"${NODE_SCANNERS?Set Manger node:  $ export NODE_SCANNERS=<nodeofscanners>}"
+
 if [ -z "$NODE_MANAGER" ]; then
     echo "NODE_MANAGER environment variable is not set"
     THISHOST=$(hostname)
@@ -131,6 +132,22 @@ if [ $? -eq 0 ]
         echo "scanner: service created"
     else
         echo "Could not create scanner service" >&2
+        exit 1
+fi
+
+#Checker service
+docker service create  --network $NET  --name checker  \
+      --mount type=bind,source=/dockerfinder/checker/log:/data/crawler/log \
+       $HUB_REPOSITORY:checker run \
+       --interval=30 --path-logging=/data/crawler/log/stats.log \
+       --images-url=http://images_server:3000/api/images/ \
+       --queue=images --key=images.scan \
+       --amqp-url=amqp://guest:guest@rabbitmq:5672    > /dev/null
+if [ $? -eq 0 ]
+    then
+        echo "Checker: service created"
+    else
+        echo "Could not create Checker service" >&2
         exit 1
 fi
 
