@@ -1,4 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+
+if [ $1 -eq 'start' ] && [ $1 -eq 'create'] && [ $1 -eq 'update']; then
+  CMD = $1
+else:
+  exit 1
+fi
 
 NET="docker-finder"
 HUB_REPOSITORY=diunipisocc/docker-finder
@@ -19,7 +26,7 @@ fi
 #####################################################
 ###############   DISCOVERY PHASE ####################
 #####################################################
-
+if [ $2 -eq 'discover' ] || [ -z $2 ]; then
 # Software Database mongo
 SOFTWAREDB=software_db
 docker service create --network $NET --name $SOFTWAREDB  \
@@ -84,8 +91,9 @@ fi
 # RabbitMQ service
 docker service create --network $NET --name rabbitmq \
   --constraint  $CONSTRAINT_NODE \
-  --mount type=volume,source=rabbit-volume,destination=/var/lib/rabbitmq,volume-label="color=red" \
-  -p  8082:15672 rabbitmq:3-management   > /dev/null
+  --mount type=volume,source=rabbit-volume,destination=/var/lib/rabbitmq \
+  -p  8082:15672 \
+  rabbitmq:3-management   > /dev/null
 if [ $? -eq 0 ]
       then
         echo "rabbitmq: service created"
@@ -117,7 +125,7 @@ docker service create  --network $NET  --name scanner  \
        $HUB_REPOSITORY:scanner run \
       --images-url=http://images_server:3000/api/images  \
       --queue=images  --key=images.scan  \
-      --software-url=http://192.168.99.100:3001/api/software  --rmi  > /dev/null
+      --software-url=http://software_server:3001/api/software  --rmi  > /dev/null
 if [ $? -eq 0 ]
     then
         echo "scanner: service created"

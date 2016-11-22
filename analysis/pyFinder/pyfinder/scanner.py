@@ -9,6 +9,7 @@ from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
 from pyfinder.model.image import Image
 import logging
+import datetime
 import sys
 """This module contains the *Scanner* implementation."""
 
