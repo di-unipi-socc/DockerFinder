@@ -134,6 +134,7 @@ docker service create  --network $NET  --name scanner  \
       --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock \
        $HUB_REPOSITORY:scanner run \
       --images-url=http://images_server:3000/api/images  \
+      --amqp-url=amqp://guest:guest@rabbitmq:5672  \
       --queue=images  --key=images.scan  \
       --software-url=http://software_server:3001/api/software  --rmi  > /dev/null
 if [ $? -eq 0 ]
