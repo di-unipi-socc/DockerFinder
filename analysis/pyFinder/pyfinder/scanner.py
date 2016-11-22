@@ -7,7 +7,7 @@ from .client_images_service import ClientImages
 from .client_dockerhub import ClientHub
 from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
-from .model.image import Image
+from pyfinder.model.image import Image
 import logging
 import sys
 """This module contains the *Scanner* implementation."""
@@ -106,6 +106,7 @@ class Scanner:
             else:
                 self.logger.info("[" + repo_name + "] already up to date.")
 
+    #@classmethod
     def scan(self, repo_name, tag="latest"):
         """It scans an image and create the new Docker finder description. \n
 

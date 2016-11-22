@@ -30,9 +30,8 @@ if __name__ == '__main__':
 
     log_file_path = path.dirname(path.abspath(__file__))+ '/pyfinder/resources/logging.conf'
     logging.config.fileConfig(log_file_path)
-
-    #logger = logging.getLogger()
-    #logger.info("OEFIAH MOAIN")
+    logger = logging.getLogger()
+    logger.info("Logging conf: "+ log_file_path)
 
     if args['crawl']:
         crawler = Crawler(amqp_url=args['--amqp-url'],

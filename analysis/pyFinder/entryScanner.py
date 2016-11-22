@@ -33,6 +33,11 @@ Options:
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
     #print(args)
+    log_file_path = path.dirname(path.abspath(__file__))+ '/pyfinder/resources/logging.conf'
+    logging.config.fileConfig(log_file_path)
+    logger = logging.getLogger()
+    logger.info("Logging conf: "+ log_file_path)
+    
     scanner = Scanner(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'], route_key=args['--key'],
                       images_url=args['--images-url'],
                       software_url=args['--software-url'],

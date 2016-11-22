@@ -26,6 +26,11 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
+
+    log_file_path = path.dirname(path.abspath(__file__))+ '/pyfinder/resources/logging.conf'
+    logging.config.fileConfig(log_file_path)
+    logger = logging.getLogger()
+    logger.info("Logging conf: "+ log_file_path)
     #print(args)
     checker = Checker(  amqp_url=args['--amqp-url'],
                         exchange=args['--ex'],

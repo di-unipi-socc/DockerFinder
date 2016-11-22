@@ -1,6 +1,6 @@
 import pickle
 from .crawler import Crawler
-from pyfinder import ClientHub
+from .client_dockerhub import ClientHub
 from .publisher_rabbit import PublisherRabbit
 import logging
 import docker
@@ -14,7 +14,8 @@ class Tester:
     def __init__(self, path_file_images="images.test",  hub_url="https://hub.docker.com/"):
         self._path = path_file_images
         self.crawler = Crawler()
-        self.logger = get_logger(__name__, logging.INFO)
+        self.logger = logging.getLogger(__class__.__name__)
+        self.logger.info(__class__.__name__ + " logger  initialized")
         # the client hub interacts with the docker Hub registry
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
         self.client_daemon = docker.Client(base_url='unix://var/run/docker.sock')

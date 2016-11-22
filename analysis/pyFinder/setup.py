@@ -17,5 +17,5 @@ setup(
     author_email='davideneri18@gmail.com',
     url='',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('docs'))
 )

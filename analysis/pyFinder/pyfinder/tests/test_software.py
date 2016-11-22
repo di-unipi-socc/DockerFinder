@@ -13,7 +13,7 @@ class TestSoftware(unittest.TestCase):
          print(dict)
 
 
-    @unittest.skip("ooeo")
+    @unittest.skip("ho saltato il test post")
     def test_post(self):
         d = {
             "name": "python3",
