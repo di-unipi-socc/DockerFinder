@@ -7,15 +7,18 @@ def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
     with open(file_json) as json_data:
         images = json.load(json_data)
-        print(file_json['count']+ " Images read from ")
+        print( str(file_json['count'])+ " Images read from ")
         tot_upload = 0
         for image in  file_json['images']:
-            res = requests.post(url, headers={'Content-type': 'application/json'}, json=image)
-            if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
-                print("[" + image['repo_name'] + "] added into " + res.url)
-                tot_upload += 1
-            else:
-                print(str(res.status_code) + " response: " + res.text)
+            try:
+                res = requests.post(url, headers={'Content-type': 'application/json'}, json=image)
+                if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
+                    print("[" + image['repo_name'] + "] added into " + res.url)
+                    tot_upload += 1
+                else:
+                    print(str(res.status_code) + " response: " + res.text)
+            except:
+                print ("some error in post")
         print(str(tot_upload) + " images  uploaded")
 
 
