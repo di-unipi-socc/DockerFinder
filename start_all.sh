@@ -134,8 +134,7 @@ docker service create  --network $NET  --name scanner  \
       --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock \
        $HUB_REPOSITORY:scanner run \
       --images-url=http://images_server:3000/api/images  \
-      --amqp-url=amqp://guest:guest@rabbitmq:5672  \
-      --queue=images  --key=images.scan  \
+      --amqp-url=amqp://guest:guest@131.114.88.131:5672   --queue=images  --key=images.scan  \
       --software-url=http://software_server:3001/api/software  --rmi  > /dev/null
 if [ $? -eq 0 ]
     then
@@ -145,8 +144,16 @@ if [ $? -eq 0 ]
         exit 1
 fi
 
+command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log',
+'--images-url=http://images_server:3000/api/images/', '--queue=images',
+ '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672'
+
+volumes:
+   - /dockerfinder/checker/log:/data/crawler/log
+
 #Checker service
 docker service create  --network $NET  --name checker  \
+      --constraint  $CONSTRAINT_NODE \
       --mount type=bind,source=/dockerfinder/checker/log,destination=/data/crawler/log \
        $HUB_REPOSITORY:checker run \
        --interval=30 --path-logging=/data/crawler/log/stats.log \
