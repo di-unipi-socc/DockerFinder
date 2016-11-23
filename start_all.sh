@@ -144,12 +144,6 @@ if [ $? -eq 0 ]
         exit 1
 fi
 
-command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log',
-'--images-url=http://images_server:3000/api/images/', '--queue=images',
- '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672'
-
-volumes:
-   - /dockerfinder/checker/log:/data/crawler/log
 
 #Checker service
 docker service create  --network $NET  --name checker  \
