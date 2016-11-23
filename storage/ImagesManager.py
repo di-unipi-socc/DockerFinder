@@ -7,9 +7,9 @@ def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
     with open(file_json) as json_data:
         images = json.load(json_data)
-        print(str(len(images)) + " Images read from "+file_json )
+        print(file_json['count']+ " Images read from ")
         tot_upload = 0
-        for image in images:
+        for image in  file_json['images']:
             res = requests.post(url, headers={'Content-type': 'application/json'}, json=image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
                 print("[" + image['repo_name'] + "] added into " + res.url)
