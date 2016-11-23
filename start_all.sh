@@ -97,13 +97,13 @@ fi
 #####################################################
 ###############   ANALYSIS PHASE ####################
 #####################################################
-
+#RABBITMQ_NODENAME=rabbitmq -e RABBITMQ_SERVICENAME=rabbitsv \
 # RabbitMQ service
-docker service create --network $NET --name rabbitmq \
+docker service create --network $NET --name rabbitmq  -e HOSTNAME=rabbitmq \
   --constraint  $CONSTRAINT_NODE \
-  --mount type=volume,source=rabbit-volume,destination=/var/lib/rabbitmq \
+  --mount src=rabbit-volume,dst=/var/lib/rabbitmq \
   -p  8082:15672 \
-  rabbitmq:3-management   > /dev/null
+  rabbitmq:3-management > /dev/null
 if [ $? -eq 0 ]
       then
         echo "rabbitmq: service created"
