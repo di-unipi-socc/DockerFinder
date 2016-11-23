@@ -70,7 +70,7 @@ docker service create --network $NET  --name $SOFTWARE -p 3001:3001  \
 # Images database
 docker service create --network $NET --name images_db  \
   --constraint  $CONSTRAINT_NODE \
-  --mount type=volume,source=images-volume,destination=/data/images,volume-label="color=red" \
+  --mount type=volume,source=images-volume,destination=/data/images \
   mongo:3 > /dev/null
   if [ $? -eq 0 ]
     then
@@ -134,7 +134,7 @@ docker service create  --network $NET  --name scanner  \
       --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock \
        $HUB_REPOSITORY:scanner run \
       --images-url=http://images_server:3000/api/images  \
-      --amqp-url=amqp://guest:guest@131.114.88.131:5672   --queue=images  --key=images.scan  \
+      --amqp-url=amqp://guest:guest@rabbitmq:5672   --queue=images  --key=images.scan  \
       --software-url=http://software_server:3001/api/software  --rmi  > /dev/null
 if [ $? -eq 0 ]
     then
