@@ -22,7 +22,7 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 //var env = process.env.NODE_ENV || 'production';
 //table name of the mongo database
 var table ="/images";
-var linkname_docker_compose = 'images_db' ; //link to database, resolved IP by DNS of bridge network
+var linkname_docker_compose = 'images_db' ; //link to database, resolved IP by DNS of bridge/overlay network
 
 
 //###################################################################################
@@ -103,7 +103,7 @@ var connectWithRetry = function() {
     }
   });
 };
-// 
+//
 // function load_images(){
 //   //read THE JSON software and store them into database
 //   var json = require(path.resolve(__dirname, 'images.json'));

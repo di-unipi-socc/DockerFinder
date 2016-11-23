@@ -102,7 +102,8 @@ services:
     image: mongo:3
     #container_name: images_mongo
     volumes:
-      - /data/images
+      - /data/db
+    # /data/db is the deafult directory where mogno container store the databases.
     # labels:
     #   - "constraint:node==didoUbuntu"
     # networks:

@@ -40,7 +40,7 @@ fi
 SOFTWAREDB=software_db
 docker service create --network $NET --name $SOFTWAREDB  \
   --constraint $CONSTRAINT_NODE \
-  --mount type=volume,source=software-volume,destination=/data/software,volume-label="color=red" \
+  --mount type=volume,source=software-volume,destination=/data/db,volume-label="color=red" \
   mongo:3 > /dev/null
 if [ $? -eq 0 ]
   then
@@ -66,11 +66,12 @@ docker service create --network $NET  --name $SOFTWARE -p 3001:3001  \
 ###################################################
 ###############   STORAGE PHASE ####################
 #####################################################
+#--mount type=volume,source=images-volume,destination=/data/images \
 
 # Images database
 docker service create --network $NET --name images_db  \
   --constraint  $CONSTRAINT_NODE \
-  --mount type=volume,source=images-volume,destination=/data/images \
+  --mount src=df-images,dst=/data/db \
   mongo:3 > /dev/null
   if [ $? -eq 0 ]
     then
