@@ -4,6 +4,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+var Image = require('./models/image')
 //var db_path = 'mongodb://172.17.0.2/images';
 //var port = 8081;
 
@@ -88,19 +89,6 @@ if ('production' == app.get('env')) {
 // Connect to the database before starting the application server.
 var mongo_path = 'mongodb://'+app.get('db_path') + table;
 
-// Connect to the database before starting the application server.
-// mongoose.connect(mongo_path, function (err, database) {
-//     console.log("\nTry to connect "+ mongo_path +"\n");
-//     if (err) {
-//         console.log(err);
-//         //return next(err);
-//         process.exit(1);
-//
-//     }
-//     // Save database object from the callback for reuse.
-//     console.log("Succesful Connection to database "+ mongo_path );
-// });
-
 var connectWithRetry = function() {
   return mongoose.connect(mongo_path, function (err, database) {
       console.log("\nTry to connect "+ mongo_path);
@@ -111,9 +99,29 @@ var connectWithRetry = function() {
       }else{
       // Save database object from the callback for reuse.
       console.log("Succesful Connection to database "+ mongo_path );
+      //load_images()
     }
   });
 };
+// 
+// function load_images(){
+//   //read THE JSON software and store them into database
+//   var json = require(path.resolve(__dirname, 'images.json'));
+//   Image.count({}, function( err, count){
+//     console.log( count + ": images into local database" );
+//     if(count == 0){
+//       console.log("No images, Inserting :  "+ json);
+//         Image.collection.insertMany(json, function(err,r) {
+//                  assert.equal(Object.keys(json).length, r.insertedCount);
+//                  console.log(r.insertedCount + ": image inserted into database")
+//       });
+//     }else {
+//        console.log(count + ": images already present into database")
+//     }
+//
+//   });
+//
+// }
 
 connectWithRetry();
 

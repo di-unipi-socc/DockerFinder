@@ -7,6 +7,8 @@ def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
     with open(file_json) as json_data:
         images = json.load(json_data)
+        #print(type(images))
+        #print(images)
         print( str(images['count']) + " Images read from ")
         tot_upload = 0
         for image in  images['images']:
@@ -19,14 +21,14 @@ def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
                     print(str(res.status_code) + " response: " + res.text)
             except requests.exceptions.ConnectionError as e:
                     self.logger.exception("ConnectionError: " + str(e))
-            except :
-                print ("some error in post")
+            except Exception  as e:
+                print (str(e))
         print(str(tot_upload) + " images  uploaded")
 
 
 def delete_all_images(url="http://127.0.0.1:3001/api/images"):
     list_images = get_all_images(url)
-    _delete_images(url, list_images)
+    _delete_images(url, list_images['images'])
 
 
 def get_all_images(url="http://127.0.0.1:3000/api/images"):
@@ -35,8 +37,8 @@ def get_all_images(url="http://127.0.0.1:3000/api/images"):
         if res.status_code == requests.codes.ok:
             json_response = res.json()
             print(str(json_response['count']) + " total images downloaded")
-            software_list = json_response['images']  # list of object
-            return software_list
+            #software_list = json_response['images']  # list of object
+            return json_response
     except requests.exceptions.ConnectionError:
         raise
 
@@ -44,7 +46,7 @@ def pull_images( path_file_json, url="http://127.0.0.1:3000/api/images",):
     list_json_images = get_all_images(url)
     with open(path_file_json, 'w') as f:
         json.dump(list_json_images, f, ensure_ascii=False)
-        print(str(len(list_json_images)) + " Saved into "+ path_file_json)
+        print(str(list_json_images['count']) + " Saved into "+ path_file_json)
 
 def _delete_images(url, list_images):
     deleted_im=0
@@ -55,7 +57,7 @@ def _delete_images(url, list_images):
         print("removed: " + url_delete)
     print(str(deleted_im)+" Tot deleted images")
 
-__doc__= """Crawler
+__doc__= """ImagesManager
 
 Usage:
   Tester.py pull  [--file=<images.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
