@@ -2,6 +2,7 @@ from .client_images_service import ClientImages
 from .client_dockerhub import ClientHub
 from .publisher_rabbit import PublisherRabbit
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import json
 import pika
 import time
@@ -34,17 +35,30 @@ class Checker:
         self.path_file_logging = path_file_logging
         self.file_logger = None
         if path_file_logging:
-            name_file_logger = __class__.__name__+"-stats"
+            name_file_logger = __class__.__name__+"-rotated"
             self.file_logger = logging.getLogger(name_file_logger)
+
             self.file_logger.setLevel(logging.DEBUG)
-            self.logger.info("LOGGING PATH: "+path_file_logging)
-            fh = logging.FileHandler(path_file_logging)
-            fh.setLevel(logging.DEBUG)
+
+            interval = 24
+            backupCount = 10
+            self.logger.info("LOGGING PATH: "+path_file_logging + " every hour="+ str(interval)+" with backupcount="+str(backupCount))
+
+            handler = TimedRotatingFileHandler(path_file_logging,
+                                       when="h",
+                                       interval=interval,
+                                       backupCount=backupCount)
+
+            #fh = logging.FileHandler(path_file_logging)
+            #fh.setLevel(logging.DEBUG)
             LOG_FORMAT = ('%(asctime)s %(message)s')
             formatter = logging.Formatter(LOG_FORMAT)
-            fh.setFormatter(formatter)
+            #fh.setFormatter(formatter)
             # add the file handlers handlers to the logger
-            self.file_logger.addHandler(fh)
+            #self.file_logger.addHandler(fh)
+            handler.setLevel(logging.INFO)
+            handler.setFormatter(formatter)
+            self.file_logger.addHandler(handler)
             #str(tot_hub_images)+":"+str(tot_dockerfinder_images)+":"+ str(removed)+":"+str(pending)+":"+str(uptodate)
             self.file_logger.info("hubtot:dftot:dfremoved:dfpending:dfuptodate")
 
