@@ -18,8 +18,8 @@ class TestScanner(unittest.TestCase):
 
          image = Image()
          image.name =  "diunipisocc/dockerfinder:test"
-         dicti = self.scanner.info_dofinder(image)
-         print("Out " + str(dicti))
+         self.scanner.info_dofinder(image)
+         print("Out " + str(image.softwares))
 
 
 
