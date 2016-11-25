@@ -17,6 +17,8 @@ images**  is the title of the thesis submitted for the degree of
 MSc in Computer Science and Networking
 University of Pisa and SSSUP Sant’Anna. a.a. 2015/2016
 
+h20.02 = 29 immagini già presenti, 3 scanners:
+  -  1.30 h = 130 minuti : 120 immagini in
 
 ## What is Docker Finder ?
 Docker Finder is a tool enabling a more powerful search of Docker images with

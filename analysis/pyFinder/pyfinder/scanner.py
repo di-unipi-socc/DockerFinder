@@ -189,37 +189,44 @@ class Scanner:
         if 'creator' in json_response:
             image.creator = json_response['creator']
 
+    #@classmethod
     def info_dofinder(self, image):
         """It Extracts the OS distribution and the software in the image"""
         name = image.name
         self.logger.debug('[{}] searching software ... '.format(name))
 
+
+            #create the container
         container_id = self.client_daemon.create_container(image=name,
-                                                           entrypoint="ping 127.0.0.1"#-i 10000 127.0.0.1"
-                                                     )['Id']
+                                                            entrypoint="ping 127.0.0.1"#-i 10000 127.0.0.1"
+                                                        )['Id']
+        try:
+            # start the container
+            self.client_daemon.start(container_id)
 
-        self.client_daemon.start(container_id)
+            # search distribution Operating system in the image,
+            for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
+                #distro = self.version_from_regex(name, cmd, regex)
+                distro = self.version_from_regex(container_id, cmd, regex)
+                if distro:
+                    image.distro = distro
 
-        # search distribution Operating system in the image,
-        for cmd, regex in self.client_software.get_system():  # self._get_sys(self.versionCommands):
-            #distro = self.version_from_regex(name, cmd, regex)
-            #cexec= c.exec_create(cid,cmd="python  --version")
-            distro = self.version_from_regex(container_id, cmd, regex)
-            if distro:
-                image.distro = distro
-
-        # search software distribution in the image.
-        softwares = []
-        for sw in self.client_software.get_software():
-            software = sw['name']
-            command = software + " " + sw['cmd']
-            regex = sw['regex']
-            version = self.version_from_regex(container_id, command, regex)
-            if version:
-                softwares.append({'software': software, 'ver': version})
-        image.softwares = softwares
-        # stop ping process in the container
-        self.client_daemon.stop(container_id)
+            # search software distribution in the image.
+            softwares = []
+            for sw in self.client_software.get_software():
+                software = sw['name']
+                command = software + " " + sw['cmd']
+                regex = sw['regex']
+                version = self.version_from_regex(container_id, command, regex)
+                if version:
+                    softwares.append({'software': software, 'ver': version})
+            image.softwares = softwares
+            # stop ping process in the container
+            self.client_daemon.stop(container_id)
+        except :
+            self.client_daemon.remove_container(container_id,force=True, v=True)
+            raise
+        # remove the contatiner
         self.client_daemon.remove_container(container_id,force=True, v=True)
         self.logger.info('[{}] : found {} softwares [{}] '.format(image.name, len(softwares), softwares))
 

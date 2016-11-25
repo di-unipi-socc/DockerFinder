@@ -1,0 +1,44 @@
+FROM alpine
+
+# RUN apk --no-cache add curl
+# That will install curl running first apk update and
+# then rm -rf /var/cache/apk/*
+
+RUN apk add --no-cache python \
+    python-dev \
+    py-pip \
+    build-base \
+    openjdk8-jre \
+    perl  \
+    curl  \
+    nano  \
+    php5   \
+    ruby   \
+    apache2 \
+    nginx  \
+    wget \
+    nodejs 
+
+RUN  pip install gunicorn \
+
+
+
+# httpd  -v  (instead of apache2 version)
+#{
+#  "name": "apache2",
+#  "cmd": "-version",
+# "regex": "[0-9]*[.][0-9]*[a-zA-Z0-9_.-]*"
+# },
+
+# missing packages:
+#   scala
+#   groovy
+#{
+#  "name": "scala",
+#  "cmd": "-version",
+#  "regex": "[0-9]*[.][0-9]*[.0-9]*"
+#}, {
+#  "name": "groovy",
+#  "cmd": "-version",
+#  "regex": "[0-9]*[.][0-9]*[.0-9]*"
+#},
