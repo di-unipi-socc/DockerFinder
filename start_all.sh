@@ -10,16 +10,16 @@
 NET="docker-finder"
 HUB_REPOSITORY=diunipisocc/docker-finder
 
-#"${NODE_SCANNERS?Set Manger node:  $ export NODE_SCANNERS=<nodeofscanners>}"
+"${NODE_SCANNERS?Set Manger node:  $ export NODE_SCANNERS=<nodeofscanners>}"
 
-#if [ -z "$NODE_SCANNERS" ]; then
-#    echo "not setted NODE_SCANNERS"
-#else
-#    NODE=$NODE_SCANNERS
-#    CONSTRAINT_NODE_SCANNER="node.hostname==$NODE"
-#    CONSTRAINT_NODE_SCANNER=""
-#    echo "Using Scanners Constraint: " $CONSTRAINT_NODE_SCANNER
-#fi
+if [ -z "$NODE_SCANNERS" ]; then
+    echo "not setted NODE_SCANNERS"
+else
+    NODE=$NODE_SCANNERS
+    CONSTRAINT_NODE_SCANNER="node.hostname==$NODE"
+  #  CONSTRAINT_NODE_SCANNER=""
+    echo "Using Scanners Constraint: " $CONSTRAINT_NODE_SCANNER
+fi
 
 if [ -z "$NODE_MANAGER" ]; then
     echo "NODE_MANAGER environment variable is not set"
@@ -133,6 +133,7 @@ docker service create  --network $NET  --name crawler \
 # Scanner service
 # #--constraint $CONSTRAINT_NODE_SCANNER \
 docker service create  --network $NET  --name scanner  \
+    --constraint $CONSTRAINT_NODE_SCANNER \
       --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock \
        $HUB_REPOSITORY:scanner run \
       --images-url=http://images_server:3000/api/images  \

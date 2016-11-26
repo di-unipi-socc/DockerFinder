@@ -41,7 +41,7 @@ class Checker:
             self.file_logger.setLevel(logging.DEBUG)
 
             interval = 24
-            backupCount = 10
+            backupCount = 10  # 10 giorni di backup
             self.logger.info("LOGGING PATH: "+path_file_logging + " every hour="+ str(interval)+" with backupcount="+str(backupCount))
 
             handler = TimedRotatingFileHandler(path_file_logging,
