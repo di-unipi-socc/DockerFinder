@@ -153,7 +153,7 @@ docker service create  --network $NET  --name checker  \
       --constraint  $CONSTRAINT_NODE \
       --mount type=bind,source=/dockerfinder/checker/log,destination=/data/checker/log \
        $HUB_REPOSITORY:checker run \
-       --interval=30 --path-logging=/data/checker/log/stats.log \
+       --interval=300 --path-logging=/data/checker/log/stats.log \
        --images-url=http://images_server:3000/api/images/ \
        --queue=images --key=images.scan \
        --amqp-url=amqp://guest:guest@rabbitmq:5672    > /dev/null

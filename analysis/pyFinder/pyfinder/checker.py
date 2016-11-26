@@ -139,5 +139,5 @@ class Checker:
                 time.sleep(interval_next_check)
             except  Exception as e:
                 self.logger.error(str(e))
-                self.file_logger.info("Waiting 5s and restarting.")
+                self.logger.info("Waiting 5s and restarting.")
                 time.sleep(5)
