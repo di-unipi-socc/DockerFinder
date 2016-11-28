@@ -10,7 +10,7 @@ MAX_SCANNERS=8
 
 for i in `seq 1 $MAX_SCANNERS`;
 do
-  docker run -v /var/run/docker.sock:/var/run/docker.sock --name scanner$i \
+  docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name scanner$i \
           diunipisocc/docker-finder:scanner run \
           --images-url=http://$IP_MANAGER:3000/api/images/  \
           --amqp-url=amqp://guest:guest@$IP_MANAGER:5672 --queue=images --key=images.scan \
