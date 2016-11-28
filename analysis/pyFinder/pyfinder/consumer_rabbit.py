@@ -339,7 +339,8 @@ class ConsumerRabbit(object):
                 break
             except:
                 interval = 10
-                time.sleep("Retry after" + str(10)+ " seconds")
+                time.sleep(interval)
+                self.logger.debug("Retry after" + str(10)+ " seconds")
                 pass
         self._connection.ioloop.start()
 
