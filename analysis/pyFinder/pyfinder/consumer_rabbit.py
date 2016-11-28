@@ -2,6 +2,7 @@
 import logging
 import pika
 import json
+import time
 from pyfinder import utils
 
 class ConsumerRabbit(object):
@@ -329,13 +330,16 @@ class ConsumerRabbit(object):
         starting the IOLoop to block and allow the SelectConnection to operate.
 
         """
-        self.logger.info('Connecting to %s ...', self._url)
+
         while True:
+            self.logger.info('Connecting to %s ...', self._url)
             try:
                 self._connection = self.connect()
                 self.logger.info('Succesful connected to %s', self._url)
                 break
             except:
+                interval = 10
+                time.sleep("Retry after" + str(10)+ " seconds")
                 pass
         self._connection.ioloop.start()
 

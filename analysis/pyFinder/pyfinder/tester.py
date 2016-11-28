@@ -17,7 +17,7 @@ class Tester:
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger  initialized")
         # the client hub interacts with the docker Hub registry
-        self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url,path_last_url=None )
         self.client_daemon = docker.Client(base_url='unix://var/run/docker.sock')
 
     def build_test(self, num_images_test=100, from_page=1, page_size=10,):

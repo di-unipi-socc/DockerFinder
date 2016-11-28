@@ -100,11 +100,11 @@ fi
 #####################################################
 #RABBITMQ_NODENAME=rabbitmq -e RABBITMQ_SERVICENAME=rabbitsv \
 # RabbitMQ service
-docker service create --network $NET --name rabbitmq  -e HOSTNAME=rabbitmq \
+docker service create --network $NET --name rabbitmq  -e HOSTNAME=rabbitmq  -e NODE_IP_ADDRESS=0.0.0.0 \
   --constraint  $CONSTRAINT_NODE \
   --mount src=rabbit-volume,dst=/var/lib/rabbitmq \
   -p  8082:15672 \
-  rabbitmq:3-management > /dev/null
+  -p  5672:5672  rabbitmq:3-management > /dev/null
 if [ $? -eq 0 ]
       then
         echo "rabbitmq: service created"
