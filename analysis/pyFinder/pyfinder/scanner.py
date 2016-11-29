@@ -80,8 +80,8 @@ class Scanner:
             #     self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
             #     attempt +=1
 
-        #if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
-        #return processed
+        if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
+        return processed
 
 
 
