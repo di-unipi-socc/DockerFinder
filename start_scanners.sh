@@ -6,8 +6,6 @@ IP_MANAGER=131.114.106.31
 #for SERVICE in  ;do
 MAX_SCANNERS=8
 
-
-
 for i in `seq 1 $MAX_SCANNERS`;
 do
   docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name scanner$i \

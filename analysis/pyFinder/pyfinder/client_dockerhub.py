@@ -121,8 +121,10 @@ class ClientHub:
 
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
+            raise
         except:
             self.logger.exception("Unexpected error:")
+            raise
 
     def save_last_url(self, path, url):
         try:
@@ -131,6 +133,7 @@ class ClientHub:
                 self.logger.debug(url + " saved into "+ path)
         except FileNotFoundError as e:
             self.logger.error(str(e))
+            raise
 
     def get_last_url(self,path):
         ##return an array of two position:[0] page; [1] page-size
