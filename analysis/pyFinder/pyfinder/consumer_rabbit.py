@@ -283,7 +283,7 @@ class ConsumerRabbit(object):
         """(dido) Purge the message in the queue.
         :param int delivery_tag: The delivery tag from the Basic.Deliver frame
         """
-        self.logger.info('Purge message %s', delivery_tag)
+        self.logger.warning('Purge message %s', delivery_tag)
         self._channel.basic_reject(delivery_tag, requeue=False)
 
     def acknowledge_message(self, delivery_tag):

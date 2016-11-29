@@ -76,11 +76,12 @@ class Scanner:
                 self.logger.error(str(e) +": retry number "+ str(attempt))
                 attempt +=1
 
-            #     self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
-            #     self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
-            #     attempt +=1
+            # self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
+            # self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
+            # attempt +=1
 
-        if not processed: self.logger.info("["+json_message['name']+"] PURGED from the queue")
+        if not processed:
+            self.logger.warning("["+json_message['name']+"] PURGED from the queue")
         return processed
 
 
