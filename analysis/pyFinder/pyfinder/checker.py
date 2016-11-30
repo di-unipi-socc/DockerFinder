@@ -10,7 +10,7 @@ import time
 
 class Checker:
 
-    def __init__(self,  images_url="http://127.0.0.1:3000/api/images/",
+    def __init__(self,  images_url="http://127.0.0.1:3000/api/images",
                         hub_url="https://hub.docker.com/",
                         amqp_url='amqp://guest:guest@127.0.0.1:5672',
                         exchange="dofinder",
@@ -139,5 +139,5 @@ class Checker:
                 time.sleep(interval_next_check)
             except  Exception as e:
                 self.logger.error(str(e))
-                self.logger.info("Waiting 5s and restarting.")
+                self.logger.error("Waiting 5s and restarting.")
                 time.sleep(5)
