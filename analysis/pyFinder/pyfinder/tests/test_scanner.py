@@ -50,16 +50,6 @@ class TestScanner(unittest.TestCase):
         #     {'ver': '1.18', 'software': 'wget'}
         # ]
 
-         #print("Out " + str(image.softwares))
-         # for sw in image.softwares:  # list of object
-         #self.assertDictEqual(self.D1, self.D2)
-
-
-         #image.name =  "busybox:latest"
-         # httpd
-
-         #self.scanner.info_dofinder(image)
-         #print("Out " + str(image.softwares))
 
 
 
