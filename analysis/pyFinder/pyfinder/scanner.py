@@ -84,8 +84,6 @@ class Scanner:
             self.logger.warning("["+json_message['name']+"] PURGED from the queue")
         return processed
 
-
-
     def process_repo_name(self, repo_name):
         """Process a single image. It checks if an image must Scanned or it is already updated."""
 
@@ -198,8 +196,9 @@ class Scanner:
 
 
             #create the container
-        container_id = self.client_daemon.create_container(image=name,
-                                                            entrypoint="ping 127.0.0.1"#-i 10000 127.0.0.1"
+        container_id = self.client_daemon.create_container(
+                                                        image=name,
+                                                        entrypoint="ping 127.0.0.1"#-i 10000 127.0.0.1"
                                                         )['Id']
         try:
             # start the container
@@ -260,7 +259,7 @@ class Scanner:
 
     def run_command(self, container_id, command):
         """Just like 'docker run CMD'.
-        Return the output of the command.
+            Return the output of the command.i
         """
 
         self.logger.debug("[{0}] running command {1}".format(container_id, command))
