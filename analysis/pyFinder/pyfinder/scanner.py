@@ -76,9 +76,9 @@ class Scanner:
                 self.logger.error(str(e) +": retry number "+ str(attempt))
                 attempt +=1
 
-            # self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
-            # self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
-            # attempt +=1
+        # self.logger.error("Unexpected error: "+str(sys.exc_info()[0]))
+        # self.logger.error("["+json_message['name']+"] processing attempt number: "+ str(attempt))
+        # attempt +=1
 
         if not processed:
             self.logger.warning("["+json_message['name']+"] PURGED from the queue")
@@ -105,6 +105,9 @@ class Scanner:
                 self.client_images.put_image(dict_image)  # PUT the new image description of the image
             else:
                 self.logger.info("[" + repo_name + "] already up to date.")
+        #         self.client_daemon.remove_image(image.name, force=True)
+        #         self.logger.info('[{0}] removed image'.format(image.name))
+
 
     #@classmethod
     def scan(self, repo_name, tag="latest"):
@@ -138,7 +141,6 @@ class Scanner:
         image.last_scan = str(datetime.datetime.now())
 
         image.set_updated()
-
         if self.rmi:
             try:
                 self.client_daemon.remove_image(image.name, force=True)
@@ -147,6 +149,7 @@ class Scanner:
                 self.logger.error(str(e))
             except docker.errors.NotFound as e:
                 self.logger.error(str(e))
+
         return image
 
     def info_docker_hub(self,image):
@@ -195,10 +198,12 @@ class Scanner:
         self.logger.debug('[{}] searching software ... '.format(name))
 
 
-            #create the container
+        #create the container
+        entrypoint = "sleep 1000000000" # "ping 127.0.0.1" | ping -i 10000 127.0.0.1"
+        self.logger.debug("[{}] creating container with entrypoint ={}".format(name, entrypoint))
         container_id = self.client_daemon.create_container(
                                                         image=name,
-                                                        entrypoint="ping 127.0.0.1"#-i 10000 127.0.0.1"
+                                                        entrypoint=entrypoint
                                                         )['Id']
         try:
             # start the container
