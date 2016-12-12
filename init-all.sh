@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 
+# create folder for checker log 
+mkdir -p /dockerfinder/checker/log
+
 #docker network create --driver overlay dockercoins
 NET="docker-finder"
 

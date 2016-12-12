@@ -55,7 +55,12 @@ class ClientImages:
         try:
             #id_image = self.get_id_image(dict_image['name'])
             dict_status = { "status": status }
-            res = self.session.put(self.url_api+id_image, headers={'Content-type': 'application/json'}, json=dict_status)
+            url
+            if  self.url_api[len(self.url_api)-1] == "/":
+                url = self.url_api+id_image
+            else
+                url = self.url_api+"/"+id_image
+            res = self.session.put(url, headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
