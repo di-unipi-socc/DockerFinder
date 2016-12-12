@@ -4,7 +4,8 @@
 MAX_SCANNERS=8
 
 if [ -z "$IP_MANAGER" ]; then
-    echo "not setted IP_MANAGER; $ export IP_MANAGER=<ipaddress>"
+    echo "IP_MANAGER environment variable is not set"
+    echo "$ export IP_MANAGER=<ipaddress>"
 else
     #IP_MANAGER=$IP_MANAGER
     echo "Manager node: " $IP_MANAGER
