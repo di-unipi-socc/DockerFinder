@@ -13,10 +13,16 @@ HUB_REPOSITORY=diunipisocc/docker-finder
 #"${NODE_SCANNERS?Set Manger node:  $ export NODE_SCANNERS=<nodeofscanners>}"
 
 if [ -z "$NODE_SCANNERS" ]; then
-    echo "NODE_SCANNERS environment variable is not setted; export NODE_SCANNERS=<ip>"
-    THISHOST=$(hostname)
-    CONSTRAINT_NODE_SCANNER="node.hostname==$THISHOST"
-    echo "Using Scanners Constraint: " $CONSTRAINT_NODE_SCANNER
+    echo "NODE_SCANNERS environment variable is not setted"
+    read -p "You want deploy scanners on $(hostname) ? y/n [ENTER] " answer
+    if [ "$answer" = "y" ]; then
+      THISHOST=$(hostname)
+      CONSTRAINT_NODE_SCANNER="node.hostname==$THISHOST"
+      echo "Using Scanners Constraint: " $CONSTRAINT_NODE_SCANNER
+    else
+      echo "$ export NODE_SCANNERS=<ip>"
+      exit 0
+    fi
 else
     NODE=$NODE_SCANNERS
     CONSTRAINT_NODE_SCANNER="node.hostname==$NODE"
