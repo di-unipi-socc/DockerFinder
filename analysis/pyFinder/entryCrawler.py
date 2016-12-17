@@ -41,7 +41,8 @@ if __name__ == '__main__':
                           exchange=args['--ex'],
                           route_key=args['--key'],
                           path_last_url=args['--save-url'])
-        crawler.run(max_images=None if args['--mi'] == "None" else int(args['--mi']),
+        crawler.run(num_samples = 100,
+                    max_images=None if args['--mi'] == "None" else int(args['--mi']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
                     from_page=None if args['--fp'] == "None"  else int(args['--fp']))
 

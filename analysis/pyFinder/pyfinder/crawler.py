@@ -34,7 +34,7 @@ class Crawler:
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
 
-    def run(self, from_page, page_size, max_images=100):
+    def run(self, from_page, page_size, num_samples=0, max_images=100):
         """
         Starts the publisher of the RabbitMQ server, and send to the images crawled with the crawl() method.
         :param from_page:  the starting page into the Docker Hub.
@@ -43,12 +43,13 @@ class Crawler:
         :return:
         """
         try:
-            self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
+            #self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
+            self.publisher.run(images_generator_function=self.crawl_random_samples(num_samples, from_page=from_page, page_size=page_size))#, max_images=max_images))
         except KeyboardInterrupt:
             self.publisher.stop()
 
 
-    def crawl_random_sample(self, m_samples,  from_page, page_size, max_images=None):
+    def crawl_random_samples(self, m_samples,  from_page, page_size, max_images=None):
             """
             The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
             IT return a JSON of the image .
@@ -78,7 +79,7 @@ class Crawler:
 
                 for image in list_images:
                     j += 1
-                    p = random.random.uniform(0,1) # 0 <= p <= 1
+                    p = random.uniform(0,1) # 0 <= p <= 1
                     if p  <= (m_samples - sent_images)/ (num_images - j +1):      #if (p <= (m-s)/ n-j+1):
                         repo_name = image['repo_name']
                         sent_images += 1
