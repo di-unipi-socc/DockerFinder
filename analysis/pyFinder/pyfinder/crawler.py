@@ -4,6 +4,7 @@ from .publisher_rabbit import PublisherRabbit
 from .client_images_service import ClientImages
 from .client_dockerhub import ClientHub
 import logging
+import random
 
 """The module contains the *Crawler* implementation."""
 
@@ -30,7 +31,7 @@ class Crawler:
         # Client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url, path_last_url=path_last_url)
 
-        # client of Images Service:  in order to add and update the image description.
+        # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
 
     def run(self, from_page, page_size, max_images=100):
@@ -45,6 +46,48 @@ class Crawler:
             self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
         except KeyboardInterrupt:
             self.publisher.stop()
+
+
+    def crawl_random_sample(self, m_samples,  from_page, page_size, max_images=None):
+            """
+            The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
+            IT return a JSON of the image .
+
+                 s = 0
+                 for (j=1 ; j <= n; j++)
+                   p = Rand(0,1)
+                   if (p <= (m-s)/ n-j+1):
+                      select S[j];
+                      s++
+            :param samples: number of sampled images,
+            :param from_page:  the starting page into the Docker Hub.
+            :param page_size:  is the number of images per image that Docker Hub return.
+            :param max_images:  the number of images to download.
+            :return: generator of JSON images description
+            """
+            sent_images = 0
+            j = 0
+            num_images =  self.client_hub.count_all_images() # total number of images stored within Docker Hub
+
+            for list_images in self.client_hub.crawl_images(from_page=from_page,
+                                                            page_size=page_size,
+                                                            max_images=max_images # crawl all the images
+                                                            ):
+                                                            #max_images=max_images,
+                                                            #filter_images=self.filter_tag_latest):
+
+                for image in list_images:
+                    j += 1
+                    p = random.random.uniform(0,1) # 0 <= p <= 1
+                    if p  <= (m_samples - sent_images)/ (num_images - j +1):      #if (p <= (m-s)/ n-j+1):
+                        repo_name = image['repo_name']
+                        sent_images += 1
+                        yield json.dumps({"name": repo_name})
+                    else:
+                        self.logger.debug("discarded")
+                self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+            self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+
     def crawl(self, from_page, page_size, max_images=None):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
@@ -54,8 +97,6 @@ class Crawler:
         :param max_images:  the number of images to download.
         :return: generator of JSON images description
         """
-
-        #self.logger.info("Crawling the images from the docker Hub...")
         sent_images = 0
 
         for list_images in self.client_hub.crawl_images(from_page=from_page,
@@ -64,6 +105,7 @@ class Crawler:
                                                         filter_images=self.filter_tag_latest):
 
             for image in list_images:
+
                 repo_name = image['repo_name']
                 sent_images += 1
                 yield json.dumps({"name": repo_name})
@@ -74,6 +116,8 @@ class Crawler:
     def filter_tag_latest(self, repo_name):
         """
         Filters the images with the *latest* tag.
+        An image is sento to the rabbitMQ only of it is new into the local database, otherwise it is
+        discarded (The checker is in charge to requeue the images that are not updated)
         :param repo_name: the name of a repository
         :return: True if the image must be downloaded, Flase if must be discarded
         """
