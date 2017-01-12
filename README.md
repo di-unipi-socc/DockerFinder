@@ -12,13 +12,14 @@
 - [ServerApi](#serverapi)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-**Enhanced discovery of Docker
-images**  is the title of the thesis submitted for the degree of
+**Enhanced discovery of Docker images**
+
 MSc in Computer Science and Networking
 University of Pisa and SSSUP Sant’Anna. a.a. 2015/2016
 
-h20.02 = 29 immagini già presenti, 3 scanners:
-  -  1.30 h = 130 minuti : 120 immagini in
+`http://black.di.unipi.it/dockerfinder'  => URL per la GUI di Docker finder
+
+`http://black.di.unipi.it/dockerfinder/search`   => search API di Docker finder
 
 ## What is Docker Finder ?
 Docker Finder is a tool enabling a more powerful search of Docker images with
