@@ -76,6 +76,12 @@ services:
     #   - "constraint:node==didoUbuntu"
     # networks:
     #   - docker-finder
+  webapp:
+    build: discovery/webapp/
+    ports:
+      - 80:80
+    volumes:
+      - /home/dido/github/DockerFinder/discovery/webapp:/code
 
 #####################################################
 ###############   STORAGE PHASE ####################
