@@ -81,7 +81,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - /home/dido/github/DockerFinder/discovery/webapp:/code
+      - /home/dido/DockerFinder/discovery/webapp:/code
 
 #####################################################
 ###############   STORAGE PHASE ####################
