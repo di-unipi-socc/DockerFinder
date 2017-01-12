@@ -61,21 +61,15 @@ services:
     build: discovery/softwareService/software_server
     ports:
       - "3001:3001"
-    labels:
-      - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+    depends_on:
+      - software_db
 
   # Software database
   software_db:
     image: mongo:3
-    #container_name: software_mongo
     volumes:
-      - /data/db
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+      - /data/db  # /data/db is the deafult directory where mogno stores the databases.
+
 
 #####################################################
 ###############   STORAGE PHASE ####################
@@ -90,12 +84,8 @@ services:
     restart: on-failure:3
     ports:
       - "3000:3000"
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    #depends_on:
-    # - images_db
-    # networks:
-    #   - docker-finder
+    depends_on:
+    - images_db
 
   # Images database
   images_db:
@@ -104,10 +94,7 @@ services:
     volumes:
       - /data/db
     # /data/db is the deafult directory where mogno container store the databases.
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+
 
 #####################################################
 ###############   MANAGEMENT PHASE ####################

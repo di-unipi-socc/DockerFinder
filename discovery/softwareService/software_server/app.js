@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var fs = require("fs")
 var assert = require('assert')
 
-var Software = require('./models/software')
+var Software = require('./models/software')  // return the model of the Run
 
 
 var app = express();
@@ -93,50 +93,35 @@ var connectWithRetry = function() {
 
 function load_softwares(){
   //read THE JSON software and store them into database
-  var json = require(path.resolve(__dirname, 'softwares.json'));
+  //var json = require(path.resolve(__dirname, 'softwares.json'));
+  var json = require(path.resolve(__dirname, 'command.json'));
   Software.count({}, function( err, count){
-    console.log(  count + ": read softwares" );
+    console.log( count + ": read softwares" );
     if(count == 0){
-        Software.collection.insertMany(json, function(err,r) {
-                 assert.equal(Object.keys(json).length, r.insertedCount);
-                 console.log(r.insertedCount + ": software inserted into database")
+      console.log(json)
+      //   var cmd = new Software ({
+      //     run : json.run
+      //   })
+      //   cmd.save( function(err, document) {
+      //     if (err) console.log(err)
+      //     console.log(document)
+      //
+      //   }
+      // )
+      Software.collection.insertMany(json, function(err,r) {
+          //assert.equal(Object.keys(json).length, r.insertedCount);
+          console.log(r)
+        console.log(r.getInsertedIds())// + ": software inserted into database")
+          //console.log(r.insertedCount + ": software inserted into database")
+
       });
     }else {
-       console.log(count + ": software already present into database")
+       console.log(count + ": run already present into database")
     }
-
   });
-
 }
+
 connectWithRetry();
-//
-// mongoose.connect(mongo_path, function (err, database) {
-//     if (err) {
-//         console.log(err);
-//         process.exit(1);
-//
-//     }
-//
-//     // Save database object from the callback for reuse.
-//     console.log("Database connection ready");
-//
-//     //read THE JSON software and store them into database
-//     var json = require(path.resolve(__dirname, 'softwares.json'));
-//
-//     Software.count({}, function( err, count){
-//       console.log(  count + ": read softwares" );
-//       if(count == 0){
-//           Software.collection.insertMany(json, function(err,r) {
-//                    assert.equal(Object.keys(json).length, r.insertedCount);
-//                    console.log(r.insertedCount + ": software inserted into database")
-//         });
-//       }else {
-//          console.log(count + ": software already present into database")
-//       }
-//
-//     });
-//
-// });
 
 
 // Start server

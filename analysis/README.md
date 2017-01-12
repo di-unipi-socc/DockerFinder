@@ -54,3 +54,47 @@ resolutions:
   ```
 problems
   - crawler sends R to the queue only at the and (not an image at the time)
+
+
+
+## LambdaExecutor
+```
+def handler_name(event, context):
+    ...
+    return some_value
+```
+
+Example of searching Softwares
+
+```
+def handler_softwares(event, context):
+
+    name = event.get('name')        # dockerfinder:scanner
+    regex = event.get('regex')      # []
+    command = event.get("command")  # python --version
+    tag = event.get("tag")          # python
+
+    client_daemon =  docker.Client(base_url='unix://var/run/docker.sock')
+
+    container_id = client_daemon.create_container(image=name,
+                                                        entrypoint="ping 127.0.0.1"
+                                                        )['Id']
+    try:
+      client_daemon.start(container_id)
+      
+      created_exec = client_daemon.exec_create(container_id, cmd=command)
+      output = client_daemon.exec_start(created_exec['Id'])
+
+      version = None
+      p = re.compile(regex)
+        match = p.search(output)
+        if match:
+            version = match.group(0)
+            return version
+        client_daemon.stop(container_id)
+    except :
+        client_daemon.remove_container(container_id,force=True, v=True)
+
+    client_daemon.remove_container(container_id, force=True, v=True)
+    return version
+```

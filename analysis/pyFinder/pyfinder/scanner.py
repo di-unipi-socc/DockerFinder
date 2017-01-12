@@ -85,7 +85,10 @@ class Scanner:
         return processed
 
     def process_repo_name(self, repo_name):
-        """Process a single image. It checks if an image must Scanned or it is already updated."""
+        """
+        Process a single image.
+        It checks if an image must Scanned or it is already updated.
+        """
 
         tags = self.client_hub.get_all_tags(repo_name)
 
@@ -111,8 +114,8 @@ class Scanner:
 
     #@classmethod
     def scan(self, repo_name, tag="latest"):
-        """It scans an image and create the new Docker finder description. \n
-
+        """
+        It scans an image and create the new Docker finder description.
         """
         self.logger.info("[" + repo_name + "] pulling the image ...")
         for line in self.client_daemon.pull(repo_name, tag, stream=True):
@@ -193,7 +196,9 @@ class Scanner:
 
     #@classmethod
     def info_dofinder(self, image):
-        """It Extracts the OS distribution and the software in the image"""
+        """
+         Extracts the OS distribution and the software versions in the image
+        """
         name = image.name
         self.logger.debug('[{}] searching software ... '.format(name))
 
@@ -218,6 +223,7 @@ class Scanner:
 
             # search software distribution in the image.
             softwares = []
+
             for sw in self.client_software.get_software():
                 software = sw['name']
                 command = software + " " + sw['cmd']
@@ -226,6 +232,7 @@ class Scanner:
                 if version:
                     softwares.append({'software': software, 'ver': version})
             image.softwares = softwares
+
             # stop ping process in the container
             self.client_daemon.stop(container_id)
         except :

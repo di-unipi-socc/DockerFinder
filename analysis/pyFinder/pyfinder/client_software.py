@@ -20,8 +20,10 @@ class ClientSoftware(requests.Session):
             res = self.get(self._url)
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-                self.logger.info(str(json_response['count'])+ " softwares received")
-                software_list = json_response['software'] # list of object
+
+                self.logger.info(str(json_response)+ " softwares received")
+                #software_list = json_response['software'] # list of object
+                software_list = json_response['run'] # list of object
                 return software_list
         except requests.exceptions.ConnectionError:
             self.logger.exception("ConnectionError: ")
