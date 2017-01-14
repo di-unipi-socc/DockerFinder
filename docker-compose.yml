@@ -82,7 +82,7 @@ services:
       - 80:80
     volumes:
       - /home/dido/github/DockerFinder/discovery/webapp:/code
-      
+
 
 #####################################################
 ###############   STORAGE PHASE ####################
@@ -99,8 +99,8 @@ services:
       - "3000:3000"
     # labels:
     #   - "constraint:node==didoUbuntu"
-    #depends_on:
-    # - images_db
+    depends_on:
+      - images_db
     # networks:
     #   - docker-finder
 

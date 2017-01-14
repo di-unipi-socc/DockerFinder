@@ -11,6 +11,7 @@ import {ImagesSearchComponent } from './images-search.component'
 import {ImageService} from "../services/image.service";
 import {Configuration} from "../app.constants";
 import {ImagesComponent} from "./images.component";
+import {ToMegabytes } from '../filters/to-megabytes.pipe';
 
 import { routing } from '../routes/app.routes';
 import {DashboardComponent} from "./dashboard.component";
@@ -25,12 +26,13 @@ import {SoftwareService} from "../services/software.service";
         HttpModule,
         routing
 ],
-  declarations: [ 
+  declarations: [
       AppComponent,
       DashboardComponent,
       ImagesSearchComponent,
-      ImagesComponent
-  ], 
+      ImagesComponent,
+      ToMegabytes
+  ],
   providers: [
      ImageService,
       SoftwareService,
