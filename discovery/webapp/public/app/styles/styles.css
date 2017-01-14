@@ -1,4 +1,9 @@
 /* Master Styles */
+
+body {
+    background-color: #c4cdda;
+}
+
 h1 {
   color: #369;
   font-family: Arial, Helvetica, sans-serif;
@@ -13,9 +18,14 @@ body {
   margin: 2em;
 }
 
-h4 .reponame {
+.reponame {
   color: #22b8eb
 }
+
+.language {
+  color: #216880
+}
+
 
 .my-form-row{
   margin-bottom: 10px;

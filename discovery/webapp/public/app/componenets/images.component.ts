@@ -25,8 +25,8 @@ import {ImageService} from "../services/image.service";
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span>  {{image.pulls}}  Pulls
                     <span class="glyphicon glyphicon-save" aria-hidden="true"> </span>  {{image.size | toMegabytes }}MB
                   </div>
-                  <span *ngFor="let sw of image.softwares" >
-                       {{sw.software}} {{sw.ver}}
+                  <span class="language" *ngFor="let sw of image.softwares" >
+                       {{sw.software}} {{sw.ver}}, 
                   </span>
                 </div>
 
