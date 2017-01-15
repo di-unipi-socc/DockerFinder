@@ -4,18 +4,38 @@
 
 University of Pisa.
 
-## What is Docker Finder ?
+## Why DockerFinder ?
 
-The current support for searching Docker images is limited, as Docker registries only permit looking for images “by name”, i.e. by specifying a term, which is then exploited to return all images where such term occurs
+Docker only permits looking for images by specifying a term *java*,
+which is then exploited to return all images where such term occurs
 in the name, in the description or in the name of the user
-that built the image. As a consequence, users cannot specify
-more complex queries
-.
+that built the image.
 
-DockerFinder is a **microservice-based** prototype that permits searching for images based on multiple attributes, e.g., *software distributions* they support, *image name*, *image size*, or *image pull*.
+```
+$ docker seach java
+```
+Result of the query:
+```
+NAME                   DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+java                   Java is a concurrent, class-based, and obj...   1264      [OK]       
+anapsix/alpine-java    Oracle Java 8 (and 7) with GLIBC 2.23 over...   177                  [OK]
+develar/java                                                           52                   [OK]
+isuper/java-oracle     This repository contains all java releases...   48                   [OK]
 
+```
 
+## What is DockerFinder ?
 
+```
+DockerFinder is a **microservice-based** prototype that permits searching for images
+based on multiple attributes.
+```
+
+The attributes for which is possible to search an image are:
+1. **Software versions** supported (e.g. python 2.7 or java 1.8).
+2. **Size**.
+3. **Stars**.
+4. **Pulls**.
 
 
 ## Docker Finder main steps
