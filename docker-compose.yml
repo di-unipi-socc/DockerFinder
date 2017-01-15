@@ -1,5 +1,16 @@
 version: "2"
+
+# The docker-compose.yml file defines eigth services forming
+# the multi-container Docker  application of DockerFinder
+# The services are divided in three groups:
+#               1) analysis: crawler, scanner, rabbitmq
+#               2) discovery: webapp, software-server, sotware_db
+#               3) storage::  images_server, images_db
+
+
+
 services:
+
 #####################################################
 ###############   ANALYSIS PHASE ####################
 #####################################################
@@ -7,42 +18,33 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_crawler
-    command: [crawl, '--save-url=/data/crawler/lasturl.txt', '--amqp-url=amqp://guest:guest@rabbitmq:5672', '--images-url=http://images_server:3000/api/images/', '--queue=images'] #,'--mi=100'] #, '--fp=100', '--ps=10']
+    command: [crawl,'--save-url=/data/crawler/lasturl.txt',
+                    '--amqp-url=amqp://guest:guest@rabbitmq:5672',
+                    '--images-url=http://images_server:3000/api/images/',
+                    '--queue=images']
+    #,'--mi=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
-
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
-    # Schedule containers on a specific node
-    # environment:
-    #   - "constraint:node==node-1"
 
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq
-    #restart: on-failure:3
-    restart: always
-    #container_name: rabbitmq
+    restart: on-failure:3
     ports:
       - 8082:15672
     volumes:
       - /var/lib/rabbitmq
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #    - docker-finder
 
   scanner:
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
-    command: [run, '--images-url=http://images_server:3000/api/images/', '--queue=images', '--key=images.scan', '--software-url=http://software_server:3001/api/software', '--rmi']
+    command: [run, '--images-url=http://images_server:3000/api/images/',
+                  '--queue=images',
+                  '--key=images.scan',
+                  '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    # networks:
-    #     - docker-finder
 
   checker:
       build:
@@ -56,28 +58,21 @@ services:
 ###############   DISCOVERY PHASE ####################
 #####################################################
 
-  # Web Software
   software_server:
     build: discovery/softwareService/software_server
     ports:
       - "3001:3001"
-    labels:
-      - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+    depends_on:
+      - software_db
 
-  # Software database
   software_db:
     image: mongo:3
-    #container_name: software_mongo
     volumes:
       - /data/db
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+
   webapp:
     build: discovery/webapp/
+    restart: on-failure:3
     ports:
       - 80:80
     volumes:
@@ -88,47 +83,27 @@ services:
 ###############   STORAGE PHASE ####################
 #####################################################
 
-  # Web images
   images_server:
     build: storage/images_server
-    #image: dofinder/imagesserver:latest
-    #container_name: images_server
-    #restart: always
     restart: on-failure:3
     ports:
       - "3000:3000"
-    # labels:
-    #   - "constraint:node==didoUbuntu"
     depends_on:
       - images_db
-    # networks:
-    #   - docker-finder
 
-  # Images database
   images_db:
     image: mongo:3
-    #container_name: images_mongo
+    restart: on-failure:3
     volumes:
       - /data/db
-    # /data/db is the deafult directory where mogno container store the databases.
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-    # networks:
-    #   - docker-finder
+
 
 #####################################################
 ###############   MANAGEMENT PHASE ####################
 #####################################################
-
-  monitor:
-    #container_name: monitor
-    build: management
-    ports:
-      - "3002:3002"
-    # labels:
-    #   - "constraint:node==didoUbuntu"
-
-
-# networks:
-#    docker-finder:
-#      external: true
+##
+#  monitor:
+#    #container_name: monitor
+#    build: management
+#    ports:
+#      - "3002:3002"

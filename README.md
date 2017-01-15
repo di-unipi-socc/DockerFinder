@@ -1,38 +1,29 @@
 
 
-# DockerFinder
+#  DockerFinder: Multi-attribute search of Docker images
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Thesis](#What is Docker Finder ?)
-  - [regex](#regex)
-- [PyFinder](#pyfinder)
-- [ServerApi](#serverapi)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-**Enhanced discovery of Docker images**
-
-MSc in Computer Science and Networking
-University of Pisa and SSSUP Sant’Anna. a.a. 2015/2016
-
-`http://black.di.unipi.it/dockerfinder'  => URL per la GUI di Docker finder
-
-`http://black.di.unipi.it/dockerfinder/search`   => search API di Docker finder
+University of Pisa.
 
 ## What is Docker Finder ?
-Docker Finder is a tool enabling a more powerful search of Docker images with
-respect to the tools currently provided by the Docker platform (**docker search**, **Docker Hub**).
+
+The current support for searching Docker images is limited, as Docker registries only permit looking for images “by name”, i.e. by specifying a term, which is then exploited to return all images where such term occurs
+in the name, in the description or in the name of the user
+that built the image. As a consequence, users cannot specify
+more complex queries
+.
+
+DockerFinder is a **microservice-based** prototype that permits searching for images based on multiple attributes, e.g., *software distributions* they support, *image name*, *image size*, or *image pull*.
 
 
-## Docker Finder steps
-The main steps performed by Docker Finder are the following:
 
-1. *Download* Docker images from a Docker registry (e.g. Docker Hub),
-2. *generate* a descriptions of the images into a local storage,
-and
-3. users can search the images via APIs and a GUI.
+
+
+## Docker Finder main steps
+
+1. DockerFinder crawls images from a remote Docker registry,
+2. It automatically analyses such images to produce multi-attribute descriptions to be stored in a local repository,
+3. It permits searching for images by querying the local repository through a GUI or a RESTful API.
+
 
 <div align="center">
 <img src="./docs/df_discovery.png" width="500">
@@ -40,32 +31,75 @@ and
 
 
 ## GUI of Docker Finder
-The GUI of Docker Finder.
+
+The GUI of DockerFinder is running on [**http://black.di.unipi.it/dockerfinder**](http://black.di.unipi.it/dockerfinder)
+
+An example of a multi-attribute query submitted to DockerFinder is shown in the gif below.  It search the images that support:
+- *Java 1.8*,
+- *Python 2.7*,
+- *pulls >= 20*.
+
 <div  align="center">
 <img src="./docs/df_gif.gif" width="500">
 </div>
 
 
+## The microservice-based architecture DockerFinder
 
-## Docker Finder-in-Docker
-The figure represents the architecture of Docker Finder deployed in the Docker platform. Each compoenet is shippend inside a Docker image.
+The figure below details the microservice-based architecture of Docker Finder. The microservice (represented as rectangles) are divided in the three three main functionalities carried out by Docker Finder:
+  1. **Analysy**: the analysis of each image consists in retrieving all the metadata already available in the registry, and in running a container to au-
+tomatically extract its runtime features (e.g., the software distributions it support).
+  2. **Storage**:  DockerFinder stores all produced image
+descriptions in a local repository.
+  3. **discovery**: DokcerFinder allows users to search for
+images by  submit multi-attribute queries thorugh a GUI or a RESTful API.
+
+<div align="center">
+<img src="./docs/architecture.png" width="500">
+</div>
+
+## DockerFinder deployments
+The microservice-based architecture of Docker Finder is
+deployed as a multi-container Docker application (figure)  Each service is shippend within a Docker image (represented as boxes) and the protocol communications are represented as dashed lines (e.g. HTTP, AMQP, mongodb).
 
 <div align="center">
 <img src="./docs/architecture_docker.png" width="500">
 </div>
 
+Docker Finder can be deployedwithin the Docker infrastructure.
 
-### How to run Docker Finder
-**Docker Finder**  architecture can be runned with *Docker-compose* or using the swarm mode of *Docker 1.12*.
+### Docker Compose - Single-host deployment
 
-#### Docker-compose mode
+**DockerFinder** is deloyed in a single host using the **Docker compose** tool.
 
-In order to run all the microservices of the architecture, you should launch the following commmand from within the main folder of the project.
+The guide assumes you have installed [Docker Engine](https://docs.docker.com/engine/installation/) and  [*Docker Compose*](https://docs.docker.com/compose/install/) in your local machine
+
+
+
+In order to run **DockerFinder** into your local host, copy, paste, and tun  the following command.
+
 ```
-$ docker-compose up
+$ git clone https://github.com/di-unipi-socc/DockerFinder.git && cd DockerFinder &&
+docker-compose up -d
+
 ```
 
-### Docker 1.12 swarm mode
+It starts al the services of **DockerFinder**.
+
+- [GUI](http://127.0.0.0.1/dockerfinder)
+- [API of the images service](http://127.0.0.1:3000/api/images)
+- [RabbitMQ managment](http://127.0.0.1:8082)
+- [API of the Software service](http://127.0.0.1:3001/api/software)
+
+
+In order to stop all the containers:
+
+```
+$ docker-compose stop
+```
+
+### Docker Swarm - Multiple-host deployment
+
 
 The initializarion script `init-all.sh` does:
 
