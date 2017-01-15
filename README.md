@@ -47,12 +47,12 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 ## The microservice-based architecture DockerFinder
 
 The figure below details the microservice-based architecture of Docker Finder. The microservice (represented as rectangles) are divided in the three three main functionalities carried out by Docker Finder:
-  1. **Analysy**: the analysis of each image consists in retrieving all the metadata already available in the registry, and in running a container to au-
+  1. **Analysis**: the analysis of each image consists in retrieving all the metadata already available in the registry, and in running a container to au-
 tomatically extract its runtime features (e.g., the software distributions it support).
   2. **Storage**:  DockerFinder stores all produced image
 descriptions in a local repository.
   3. **discovery**: DokcerFinder allows users to search for
-images by  submit multi-attribute queries thorugh a GUI or a RESTful API.
+images by  submit multi-attribute queries thorugh a GUI or RESTful APIs (*Search API*, *Software service API*).
 
 <div align="center">
 <img src="./docs/architecture.png" width="500">
@@ -66,14 +66,9 @@ deployed as a multi-container Docker application (figure)  Each service is shipp
 <img src="./docs/architecture_docker.png" width="500">
 </div>
 
-Docker Finder can be deployedwithin the Docker infrastructure.
-
 ### Docker Compose - Single-host deployment
 
-**DockerFinder** is deloyed in a single host using the **Docker compose** tool.
-
-The guide assumes you have installed [Docker Engine](https://docs.docker.com/engine/installation/) and  [*Docker Compose*](https://docs.docker.com/compose/install/) in your local machine
-
+The guide assumes you have the  [Docker Engine](https://docs.docker.com/engine/installation/) and  [*Docker Compose*](https://docs.docker.com/compose/install/) installed in your local machine
 
 
 In order to run **DockerFinder** into your local host, copy, paste, and tun  the following command.
@@ -84,7 +79,7 @@ docker-compose up -d
 
 ```
 
-It starts al the services of **DockerFinder**.
+It starts all the services of **DockerFinder** into your local host *127.0.0.1*.
 
 - [GUI](http://127.0.0.0.1/dockerfinder)
 - [API of the images service](http://127.0.0.1:3000/api/images)
@@ -103,11 +98,11 @@ $ docker-compose stop
 
 The initializarion script `init-all.sh` does:
 
-- initialize am overlay network (if it does not exist).
-- *Build* and *push* the images into Docker HUb.
+- initialize an overlay network (if it does not exist).
+- *Build* and *push* the images into [Docker Hub- diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/) (must be looged-in).
 
 The `start_all.sh` script:
-- *create* the services by downloading the images from Docker Hub.
+- *create* the services by downloading the images from [Docker Hub-diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/)
 - *run* the services:
     - **Crawler**, **RabbiMQ**, **images_server**, **images_db**,**software_server**,**software_db**  ,**monitor**: run in the same host with a constraint  label.
-    - **scanner** can run in a ny host that are partecipating in the swarm.
+    - **scanner** can run in a any host that are partecipating in the swarm.
