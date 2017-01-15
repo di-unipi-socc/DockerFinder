@@ -8,7 +8,7 @@ Storage
 |   |   |___image.js: defines the model of an image's description
 |   |___routes
 |        |___api.js : the RESTful  API for the mansing the images
-|        |___search.js: the search API for seearching the images.
+|        |___search.js: the search API for searching the images.
 |
 |____imagesManager.py: python script for PULL, UPLOAD or RM the imagee stored into the db
 |

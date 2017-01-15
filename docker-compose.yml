@@ -107,3 +107,8 @@ services:
 #    build: management
 #    ports:
 #      - "3002:3002"
+
+
+# volumes:
+#   df-software:
+#     external: true
