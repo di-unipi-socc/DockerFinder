@@ -47,11 +47,11 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 ## The microservice-based architecture DockerFinder
 
 The figure below details the microservice-based architecture of Docker Finder. The microservice (represented as rectangles) are divided in the three three main functionalities carried out by Docker Finder:
-  1. **Analysis**: the analysis of each image consists in retrieving all the metadata already available in the registry, and in running a container to au-
+  1. ** [Analysis](https://github.com/di-unipi-socc/DockerFinder/tree/master/analysis)**: the analysis of each image consists in retrieving all the metadata already available in the registry, and in running a container to au-
 tomatically extract its runtime features (e.g., the software distributions it support).
-  2. **Storage**:  DockerFinder stores all produced image
+  2. **[Storage](https://github.com/di-unipi-socc/DockerFinder/tree/master/storage)**:  DockerFinder stores all produced image
 descriptions in a local repository.
-  3. **discovery**: DokcerFinder allows users to search for
+  3. **[discovery](https://github.com/di-unipi-socc/DockerFinder/tree/master/discovery)**: DokcerFinder allows users to search for
 images by  submit multi-attribute queries thorugh a GUI or RESTful APIs (*Search API*, *Software service API*).
 
 <div align="center">
