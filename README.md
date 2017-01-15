@@ -81,10 +81,11 @@ docker-compose up -d
 
 It starts all the services of **DockerFinder** into your local host *127.0.0.1*.
 
-- [GUI](http://127.0.0.0.1/dockerfinder)
-- [API of the images service](http://127.0.0.1:3000/api/images)
-- [RabbitMQ managment](http://127.0.0.1:8082)
-- [API of the Software service](http://127.0.0.1:3001/api/software)
+- [GUI  (port 80)](http://127.0.0.0.1/dockerfinder)
+- [Images API (port 3000)](http://127.0.0.1:3000/api/images)
+- [Software API (port 3001)](http://127.0.0.1:3001/api/software)
+- [RabbitMQ managment (port 8082)](http://127.0.0.1:8082)
+
 
 
 In order to stop all the containers:
