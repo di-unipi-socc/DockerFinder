@@ -19,11 +19,22 @@ body {
 }
 
 .reponame {
-  color: #22b8eb
+  color: #22b8eb;
 }
 
-.language {
-  color: #216880
+.my-software{
+  color: #216880;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 1px;
+}
+
+.group-softwares {
+  padding: 8px
+}
+
+details-image{
+  border: 5px
 }
 
 

@@ -14,54 +14,37 @@ import {ImageService} from "../services/image.service";
     //pipes:     [toMegabytes],
     template: `
         <button class="btn btn-primary"  (click)="goBack()">Back</button>
+
         <div class="container">
-          <div class="row align-items-center">
+
+          <div class="row">  <!--inti row-->
             <div class="col-sm-6 col-md-4" *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)">
               <div class="thumbnail">
+                <img src="app/images/docker.png" style="width:70px" alt="">
+
                 <div class="caption">
-                  <h4 class="reponame" (click)="onSelect(image)">{{image.name}} </h4>
-                  <div>
+                  <p class="reponame" (click)="onSelect(image)"> {{image.name}} </p>
+                  <!--h4 class="reponame" (click)="onSelect(image)">{{image.name}} </h4-->
+                  <div class="details-image">
                     <span class="glyphicon glyphicon-star" aria-hidden="true"> </span> {{image.stars}} Star
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span>  {{image.pulls}}  Pulls
                     <span class="glyphicon glyphicon-save" aria-hidden="true"> </span>  {{image.size | toMegabytes }}MB
                   </div>
-                  <span class="language" *ngFor="let sw of image.softwares" >
-                       {{sw.software}} {{sw.ver}}, 
-                  </span>
-                </div>
 
+                  <div class="group-softwares">
+                    <div class="row">  <!--nested row-->
+                        <div class="col-md-4 col-sm-3 my-software"  *ngFor="let sw of image.softwares">
+                           {{sw.software}} {{sw.ver}}
+                        </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <!--table>
-              <template ngFor #image [ngForOf]="images" #i="index">
-                <template ngFor #sw [ngForOf]="image.softwares" #j="index">
-                  <tr>{{sw.software}}</tr>
-                </template>
-              </template>
-            </table-->
-          </div>
+          </div>  <!--end row-->
         </div>
-    <!--<h1>DoFinder Images</h1>
-     <div *ngIf="images && images.length > 0">
-       <p> Found images : {{images.length}} </p>
-        <ul class="images">
-            <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)">
-               <span class="badge"> {{image.stars}}</span> {{image.name}}
-            </li>
-        </ul>
-        <div *ngIf="selectedImage">
-          <h2>
-            {{selectedImage.name | uppercase}} : {{selectedImage.description}}
-          </h2>
-          <button (click)="gotoDetail()">View Details</button>
-        </div>
-    </div>
-    <div *ngIf="images && images.length == 0">
-        Images not found
-    </div>-->
     `,
-    // styleUrls: ['app/styles/images.component.css'],
+
 
 })
 export class ImagesComponent implements OnInit {
