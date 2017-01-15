@@ -6,15 +6,17 @@ University of Pisa.
 
 ## Why DockerFinder ?
 
-Docker only permits looking for images by specifying a term *java*,
+Docker only permits looking for images by specifying a term ,
 which is then exploited to return all images where such term occurs
 in the name, in the description or in the name of the user
 that built the image.
 
+For example, if we submit the query with the term *java*
+
 ```
-$ docker seach java
+$ docker search java
 ```
-Result of the query:
+the result is:
 ```
 NAME                   DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
 java                   Java is a concurrent, class-based, and obj...   1264      [OK]       
@@ -24,18 +26,35 @@ isuper/java-oracle     This repository contains all java releases...   48       
 
 ```
 
+As a consequence, users cannot specify more complex queries, e.g., by imposing requirements on the
+software distributions an image must support
+
 ## What is DockerFinder ?
 
 ```
-DockerFinder is a **microservice-based** prototype that permits searching for images
+DockerFinder is a microservice-based prototype that permits searching for images
 based on multiple attributes.
 ```
 
 The attributes for which is possible to search an image are:
-1. **Software versions** supported (e.g. python 2.7 or java 1.8).
-2. **Size**.
-3. **Stars**.
-4. **Pulls**.
+  1. **Software versions** supported (e.g. python 2.7 or java 1.8).
+  2. **Size**.
+  3. **Stars**.
+  4. **Pulls**.
+  
+  
+## GUI of Docker Finder
+
+The GUI of DockerFinder is running on [**http://black.di.unipi.it/dockerfinder**](http://black.di.unipi.it/dockerfinder)
+
+An example of a multi-attribute query submitted to DockerFinder is shown in the gif below.  It search the images that support:
+- *Java 1.8*,
+- *Python 2.7*,
+- *pulls >= 20*.
+
+<div  align="center">
+<img src="./docs/df_gif.gif" width="500">
+</div>
 
 
 ## Docker Finder main steps
@@ -50,18 +69,6 @@ The attributes for which is possible to search an image are:
 </div>
 
 
-## GUI of Docker Finder
-
-The GUI of DockerFinder is running on [**http://black.di.unipi.it/dockerfinder**](http://black.di.unipi.it/dockerfinder)
-
-An example of a multi-attribute query submitted to DockerFinder is shown in the gif below.  It search the images that support:
-- *Java 1.8*,
-- *Python 2.7*,
-- *pulls >= 20*.
-
-<div  align="center">
-<img src="./docs/df_gif.gif" width="500">
-</div>
 
 
 ## The microservice-based architecture DockerFinder
