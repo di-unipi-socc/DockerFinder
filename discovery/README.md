@@ -1,7 +1,12 @@
 # Discovery
+The sub-functionalities of the microservices in the discovery
+group are twofold:
+- They permit configuring the list of **software distributions** to be searched (by Scanners)
+within images.
+- They permit searching for **images** by submitting queries to DockerFinder
 
 ```
-Disvovery
+Discovery
 |
 |___softwareService:
 |   |
@@ -49,7 +54,7 @@ regex: String           //regular expression
 
 ```
 
-## Retrieving the list of software distribution
+### Retrieving the list of software distribution
 
 The GET method is used
 to retrieve all the software distributions
@@ -72,7 +77,7 @@ It returns a JSON object with all the software
   }
 ```
 
-## Adding a new software distribution
+### Adding a new software distribution
 The POST method is used to add a new software distribution to the database.
 
 ```
@@ -116,7 +121,7 @@ For deleting the software *java*  (of the previous example)
 ```
 DELETE /api/images/57b16eb21d3ee62000fcc74b
 ```
-## Updating a software distribution
+### Updating a software distribution
 The method PUT is used to update an existing software identified by id.
 
 ```
@@ -133,7 +138,7 @@ PUT /api/images/57b16eb21d3ee62000fcc74b
 }
 ```
 
-## GUI web application
+# GUI web application
 
 <div  align="center">
 <img src="../docs/df_gif.gif" width="500">

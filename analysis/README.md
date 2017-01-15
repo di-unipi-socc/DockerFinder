@@ -1,4 +1,9 @@
 # Analysis
+The analysis of each image consists in retrieving all the metadata already
+available in the registry, and in running a container to au-
+tomatically extract its runtime features (e.g., the software
+distributions it support). All collected information are used
+to build the multi-attribute description of an image.
 ```
 Analysis
 |
