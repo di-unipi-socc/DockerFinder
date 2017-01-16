@@ -19,6 +19,10 @@ body {
   margin: 2em;
 }
 
+.my-footer{
+  text-align:center;
+  padding: 10px;
+}
 
 .my-title {
     text-align: center;

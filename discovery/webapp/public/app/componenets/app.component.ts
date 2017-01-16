@@ -12,12 +12,27 @@ import {ImageService} from "../services/image.service";
       <div class="my-title">
         <h1 >{{title}} </h1>
         <h3>{{subtitle}} </h3>
+
       </div>
         <!--nav>
             <a [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a>
             <a [routerLink]="['/images']" routerLinkActive="active">Images</a>
          </nav-->
-         <router-outlet></router-outlet>
+      <router-outlet></router-outlet>
+
+    <footer>
+    <div class="my-footer">
+     <!--address><a href="mailto:davide.neri@di.unipi.it">Davide Neri</a></address-->
+      <a href="https://github.com/di-unipi-socc/DockerFinder" target="_blank">
+     <img alt="DockerFinder GitHub Repository" src="app/images/github-mark.png" width="70px">
+     </a>
+
+      <a href="https://github.com/di-unipi-socc" target="_blank">
+      <img alt="GitHubRepository" src="app/images/socc.png" width="40px">
+      </a>
+     </div>
+    </footer>
+
 `,
 })
 export class AppComponent {
