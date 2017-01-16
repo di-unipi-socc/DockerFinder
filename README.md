@@ -4,9 +4,7 @@
 
 Department of Computer Science, University of Pisa.
 
-Davide Neri
-
-davide.neri@di.unipi.it
+Davide Neri,  davide.neri@di.unipi.it
 
 ## Why DockerFinder ?
 
