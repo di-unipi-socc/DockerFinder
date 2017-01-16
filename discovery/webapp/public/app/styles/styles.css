@@ -20,13 +20,37 @@ body {
 
 .reponame {
   color: #22b8eb;
+  font-size: large;
+  vertical-align: top;
 }
 
+.container-fluid {
+    background-color: #c9d8ef;
+}
+
+.row-image {
+ background-color: white;
+ margin: 10px;
+ padding: 10px;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+
+
+}
+
+.row-image-group{
+  background-color: white;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 10px;
+}
 .my-software{
-  color: #216880;
-  border: 1px solid #ccc;
+  background-color: #cedbef;
+  border: 1px solid #6b9ae5;
   border-radius: 4px;
-  margin: 1px;
+  padding: 5px;
+    margin: 2px;
+  font-size: small;
 }
 
 .group-softwares {
