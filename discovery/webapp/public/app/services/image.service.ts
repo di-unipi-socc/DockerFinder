@@ -42,7 +42,7 @@ export class ImageService {
   searchImages(queryString: string): Promise<Image[]>{
       return this.http.get(this.searchUrl+queryString)
           .toPromise()
-          .then(response => response.json().images)
+          .then(response => response.json())
           .catch(this.handleError)
 
   }

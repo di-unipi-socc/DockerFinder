@@ -7,7 +7,8 @@ body {
 h1 {
   color: #369;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 250%;
+  font-size: 400%;
+
 }
 h2, h3 {
   color: #444;
@@ -16,6 +17,17 @@ h2, h3 {
 }
 body {
   margin: 2em;
+}
+
+
+.my-title {
+    text-align: center;
+    background-color: #22354c;
+    color: white;
+    padding: 10px;
+    border-color: white;
+    border-bottom-style: solid;
+    border-width: 5px;
 }
 
 .reponame {
@@ -31,7 +43,7 @@ body {
 .row-image {
  background-color: white;
  margin: 10px;
- padding: 10px;
+ padding: 2px;
  border: 1px solid #ccc;
  border-radius: 5px;
 
@@ -45,11 +57,11 @@ body {
   padding: 10px;
 }
 .my-software{
-  background-color: #cedbef;
-  border: 1px solid #6b9ae5;
+  background-color: rgba(242, 222, 222, 0.62);
+  border: 1px solid rgba(242, 222, 222, 0.62);
   border-radius: 4px;
-  padding: 5px;
-    margin: 2px;
+  padding: 2px 4px 2px 4px;
+  margin: 2px;
   font-size: small;
 }
 
@@ -64,4 +76,28 @@ details-image{
 
 .my-form-row{
   margin-bottom: 10px;
+}
+
+.loading {
+    opacity: 0;
+    transition: opacity .8s ease-in-out;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: -1;
+}
+my-app:empty + .loading {
+    opacity: 1;
+    z-index: 100;
+}
+my-app:empty + .loading h1 {
+    color: #EEE;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    transform: translate(0, -50%);
 }
