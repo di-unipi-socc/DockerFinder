@@ -17,7 +17,7 @@ import {ImageService} from "../services/image.service";
     <button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button>
 
     <div  class="container-fluid">
-        <div style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found</div>
+        <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found</div>
 
         <div class="row-image" *ngFor="let image of images"  (click)="onSelect(image)">
 
@@ -48,6 +48,7 @@ import {ImageService} from "../services/image.service";
 export class ImagesComponent implements OnInit {
     errorMessage: string;
     selectedImage: Image;
+    hideCount: boolean = true;
 
     @Input()
     images: Image[];
@@ -71,6 +72,7 @@ export class ImagesComponent implements OnInit {
                     if (resImages.count > 0) {
                         this.images = resImages.images;
                         this.count = resImages.count;
+                        this.hideCount = false;
                         console.log(resImages);
                     }
                 });
