@@ -150,7 +150,7 @@ class Checker:
                     image['is_private']  =  json_response['is_private']
 
             self.client_images.put_image(image)  # PUT the new image description of the image
-            self.logger.info("PUT ["+name+"] "+ str(image))
+            self.logger.info("UPDATED ["+name+"] " )
 
     def run(self, interval_next_check):
         self.logger.info("Starting the checker module...")
