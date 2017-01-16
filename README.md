@@ -3,7 +3,9 @@
 #  DockerFinder: Multi-attribute search of Docker images
 
 Department of Computer Science, University of Pisa.
+
 Davide Neri
+
 davide.neri@di.unipi.it
 
 ## Why DockerFinder ?
