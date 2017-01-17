@@ -91,3 +91,26 @@ problems
 
 
 ## checker
+
+#### Verify the iamges within the local databse
+It is possible that the scanner does not add the Dokcer Hub information of a repository: `is_updated` and `is-automated` field when it scan an image, and so these fields remains `null`.
+
+In order to erifyand updated these two fields follow the instructions below.
+```
+$ docker build checker
+```
+
+Change the `docker-compose.yml` file in order to have
+```
+ services:
+     ...
+     checker:
+          ....
+          command: verify
+
+````
+
+In order to verufy the images, the 'images_server` must running.
+```
+$ docker up images_server checker
+```
