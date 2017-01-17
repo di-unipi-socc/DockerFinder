@@ -11,7 +11,6 @@ import {ImageService} from "../services/image.service";
 
 @Component({
     selector: 'my-images',
-    //pipes:     [toMegabytes],
     template: `
 
     <button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button>
@@ -49,6 +48,7 @@ export class ImagesComponent implements OnInit {
     errorMessage: string;
     selectedImage: Image;
     hideCount: boolean = true;
+    searchApi: string;
 
     @Input()
     images: Image[];
@@ -61,19 +61,22 @@ export class ImagesComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let searchApi;
-        console.log(this.route.params);
+
         this.route.params.forEach((params: Params) => {
-            console.log(params);
-            searchApi = params['parm'];
+            //console.log(params);
+            this.searchApi = params['parm'];
             // let search= +params['id'];
-            this.imageService.searchImages(searchApi)
+            this.imageService.searchImages(this.searchApi)
                 .then(resImages => {
                     if (resImages.count > 0) {
                         this.images = resImages.images;
                         this.count = resImages.count;
                         this.hideCount = false;
                         console.log(resImages);
+                    }
+                    else{
+                        this.count = 0
+                        this.hideCount = false;
                     }
                 });
 
@@ -98,7 +101,11 @@ export class ImagesComponent implements OnInit {
     gotoDetail() {
         //this.router.navigate(['/detail', this.selectedImage._id]);
     }
+
     goBack(): void {
         window.history.back();
+        console.log("going back with", this.searchApi )
+      //  let link = ['/dockerfinder', this.constructSearchUrl()];
+        //this.router.navigate(link);
     }
 }

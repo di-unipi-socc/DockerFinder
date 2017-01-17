@@ -39,5 +39,4 @@ export class AppComponent {
   title = 'DockerFinder';
   subtitle = "Multi-attribute search of Docker images"
 
-
 }

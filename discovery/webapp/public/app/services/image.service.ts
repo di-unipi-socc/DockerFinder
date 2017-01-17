@@ -15,6 +15,7 @@ import {Observable} from "rxjs/Rx";
 export class ImageService {
   private imagesUrl :string; //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
   private searchUrl = '/search?';// 'http://127.0.0.1:8000/search?';
+  private searchQueryString:string  ""; // the query string used ti restore the same view inthe dashboard view
   private headers: Headers;
 
 
@@ -40,11 +41,18 @@ export class ImageService {
   }
 
   searchImages(queryString: string): Promise<Image[]>{
+      this.searchQueryString =  queryString
       return this.http.get(this.searchUrl+queryString)
           .toPromise()
           .then(response => response.json())
           .catch(this.handleError)
 
+  }
+
+  getSearchQueryParameters(): URLSearchParams{
+    let params = new URLSearchParams(this.searchQueryString);
+    //console.log(params.get('sort') +" ::::");
+    return  params //this.searchQueryString
   }
 
     private extractData(res: Response) {
