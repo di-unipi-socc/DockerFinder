@@ -34,7 +34,7 @@ class Crawler:
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
 
-    def run(self, from_page, page_size, max_images=100):
+    def run(self, from_page, page_size, num_samples=0, max_images=None):
         """
         Starts the publisher of the RabbitMQ server, and send to the images crawled with the crawl() method.
         :param from_page:  the starting page into the Docker Hub.
@@ -43,23 +43,24 @@ class Crawler:
         :return:
         """
         try:
-            self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
+            #self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
+            self.publisher.run(images_generator_function=self.crawl_random_samples(num_samples, from_page=from_page, page_size=page_size))#, max_images=max_images))
         except KeyboardInterrupt:
             self.publisher.stop()
 
 
-    def crawl_random_sample(self, m_samples,  from_page, page_size, max_images=None):
+    def crawl_random_samples(self, m_samples,  from_page, page_size, max_images=None):
             """
-            The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
-            IT return a JSON of the image .
+            This is a generator function that crawls docker images name at random name the Docker HUb.
+            The following random sampling of a kNOWN STREAM is used.
 
-                 s = 0
+                s = 0                //number of item selected
                  for (j=1 ; j <= n; j++)
                    p = Rand(0,1)
                    if (p <= (m-s)/ n-j+1):
                       select S[j];
                       s++
-            :param samples: number of sampled images,
+            :param m_samples: number of sampled images,
             :param from_page:  the starting page into the Docker Hub.
             :param page_size:  is the number of images per image that Docker Hub return.
             :param max_images:  the number of images to download.
@@ -78,13 +79,11 @@ class Crawler:
 
                 for image in list_images:
                     j += 1
-                    p = random.random.uniform(0,1) # 0 <= p <= 1
+                    p = random.uniform(0,1) # 0 <= p <= 1
                     if p  <= (m_samples - sent_images)/ (num_images - j +1):      #if (p <= (m-s)/ n-j+1):
                         repo_name = image['repo_name']
                         sent_images += 1
                         yield json.dumps({"name": repo_name})
-                    else:
-                        self.logger.debug("discarded")
                 self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
             self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
 

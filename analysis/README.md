@@ -84,7 +84,7 @@ resolutions:
   return array R
   ```
 problems
-  - crawler sends R to the queue only at the and (not an image at the time) -->
+  - crawler sends R to the queue only at the and (not an image at the time)
 
 
 ## scanner
@@ -113,4 +113,5 @@ Change the `docker-compose.yml` file in order to have
 In order to verufy the images, the 'images_server` must running.
 ```
 $ docker up images_server checker
+
 ```

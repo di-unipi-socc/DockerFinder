@@ -4,32 +4,29 @@
 var restful = require('node-restful')
 var mongoose = restful.mongoose;
 
-// // Schema
+
+// Schema of Software
 // var softwareSchema =  new mongoose.Schema({
 //     name: {
-//         type: String,
-//         unique: true,
-//         required :[true, 'The name of the software cannot be empty']
+//         type: String,               // python    | python2    | python3
+//         //required :[true, 'The name of the software cannot be empty'],
+//         unique: true
 //     },
-//     alias: [{
-//         _id: false,
-//         software: String,             // python    | python2    | python3
-//         cmd: String,                  // --version | --version  | --version
-//         regex: String,                // regex     | regex      | regex
-//     }]
+//     cmd: String,                  // --version
+//     regex: String                // regex: regular expression for parsing the result
 // });
 
-// Schema
+
+// schema of command
 var softwareSchema =  new mongoose.Schema({
-    name: {
-        type: String,               // python    | python2    | python3
-        //required :[true, 'The name of the software cannot be empty'],
-        unique: true
-    },
-    cmd: String,                  // --version
-    regex: String                // regex: regular expression for parsing the result
-});
+       cmd: String,      //python --version
+       regex: String,    //[0-9]+[0-9]
+       tag : {type: String, unique:true},      //python
+       type : String   ,   // run, inspect,....
+     }
+);
 
 // Return a model
 module.exports = restful.model("Software",softwareSchema);
+//module.exports = restful.model("Run",runSchema);
 // Return router

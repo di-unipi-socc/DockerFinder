@@ -69,6 +69,8 @@ services:
   software_db:
     image: mongo:3
     volumes:
+
+      - /data/db  # /data/db is the deafult directory where mogno stores the databases.
       - /data/db
 
   webapp:
@@ -90,13 +92,15 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - images_db
+    - images_db
 
   images_db:
     image: mongo:3
     restart: on-failure:3
     volumes:
       - /data/db
+
+    # /data/db is the deafult directory where mogno container store the databases.
 
 
 #####################################################

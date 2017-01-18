@@ -8,7 +8,7 @@ var Software = require('../models/software')
 Software.methods(['get','put','post','delete']);//.updateOptions({ new: true });
 
 Software.after('get', function(req, res, next) {
-
+    console.log(res.locals.bundle)
     var count = res.locals.bundle.length;
     var data = res.locals.bundle;
     res.locals.bundle = {"count": count, "software": data};
