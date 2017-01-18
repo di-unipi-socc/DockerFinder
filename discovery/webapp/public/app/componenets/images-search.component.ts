@@ -25,11 +25,11 @@ export class ImagesSearchComponent implements  OnInit {
 
     comparisons = [{name:">=", val:"_gt"},{name:"<",val:"_lt"},{name:"=",val:""}];
 
+    //list  software and version used to construct the search URL
+    softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
+    msg: string = '';
 
-     softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
-     msg: string = '';
 
-    
      selectedSort = {name:"sort", val:"stars"}; //default selection od sorting (Descreaing order)
 
      sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};  //size_gt=x, size_lt=y, size=z
@@ -44,19 +44,85 @@ export class ImagesSearchComponent implements  OnInit {
     //
      constructor( private imageService: ImageService,
                   private router: Router){
+
+                //    sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};
+
                  // private softwareService: SoftwareService){
     //      //this.softwares.push(new Software("", ""));
     //       this.selectedSort.val = this.sorting[0].val;
      }
-    
+
     ngOnInit(): void {
         //availableSoftwre
-            
+
     }
     remove(id: number) {
         this.softwares.splice(id, 1);
     }
-    
+
+    ngAfterViewInit(): void{
+      console.log("CALLED NGAFTERVIEW INIT")
+      let param = this.imageService.getSearchQueryParameters()
+      console.log(param.toString())
+
+      this.availableSoftware.forEach(name => {
+          if (param.has(name)){
+            console.log(this.softwares[0]['name'])
+            if(this.softwares[0]['name']){
+              console.log(param.get(name));
+              this.softwares.push(new Software(name,param.get(name), false));
+            }
+            else{
+              this.softwares[0] = new Software(name,param.get(name), false)
+            }
+          }
+      });
+      //java=1.8&python=2.7&sort=stars&size_lt=0&pulls_gt=0&stars_gt=0
+
+      //set the selected sort
+      this.selectedSort.val=  param.get(this.selectedSort.name)
+
+      //size_lt, size_gt, size
+      //pulls_gt, pulls_gt, pulls
+      //stars_gt, stars_gt, stars
+      if (param.has("stars")){
+        this.starsCmpValue.cmp = this.comparisons[2].val;
+        this.starsCmpValue.val = param.get("stars");
+      }
+      if (param.has("stars_lt")){
+        this.starsCmpValue.cmp = this.comparisons[1].val;
+        this.starsCmpValue.val = param.get("stars_lt");
+      }
+      if (param.has("stars_gt")){
+        this.starsCmpValue.cmp = this.comparisons[0].val;
+        this.starsCmpValue.val = param.get("stars_gt");
+      }
+      if (param.has("pulls")){
+        this.pullsCmpValue.cmp = this.comparisons[2].val;
+        this.pullsCmpValue.val = param.get("pulls");
+      }
+      if (param.has("pulls_lt")){
+        this.pullsCmpValue.cmp = this.comparisons[1].val;
+        this.pullsCmpValue.val = param.get("pulls_lt");
+      }
+      if (param.has("pulls_gt")){
+        this.pullsCmpValue.cmp = this.comparisons[0].val;
+        this.pullsCmpValue.val = param.get("pulls_gt");
+      }
+      if (param.has("size")){
+        this.sizeCmpValue.cmp = this.comparisons[2].val;
+        this.sizeCmpValue.val = param.get("size");
+      }
+      if (param.has("size_lt")){
+        this.sizeCmpValue.cmp = this.comparisons[1].val;
+        this.sizeCmpValue.val = param.get("size_lt");
+      }
+      if (param.has("size_gt")){
+        this.sizeCmpValue.cmp = this.comparisons[0].val;
+        this.sizeCmpValue.val = param.get("size_gt");
+      }
+    }
+
     add(id){
         this.softwares.push(new Software("", "", false));
     }
@@ -73,7 +139,6 @@ export class ImagesSearchComponent implements  OnInit {
       }
 
     diagnostic() {
-
         return this.constructSearchUrl()
     }
 
@@ -95,16 +160,15 @@ export class ImagesSearchComponent implements  OnInit {
         var url_search ="";
         for(var sw of this.softwares){
             url_search +=sw.name+"="+sw.version+"&";
-            console.log("VERSION:"+sw.version+"########")
+            //console.log("Versione: "+sw.version)
         }
         url_search += "sort="+this.selectedSort.val;
         url_search += "&"+this.sizeCmpValue.name+this.sizeCmpValue.cmp+"="+this.sizeCmpValue.val;
         url_search += "&"+this.pullsCmpValue.name+this.pullsCmpValue.cmp+"="+this.pullsCmpValue.val;
         url_search += "&"+this.starsCmpValue.name+this.starsCmpValue.cmp+"="+this.starsCmpValue.val;
-
+        console.log("Search: "+url_search)
         return url_search;
     }
 
 
 }
-

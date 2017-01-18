@@ -10,90 +10,102 @@ import {ImageService} from "../services/image.service";
 
 
 @Component({
-  selector: 'my-images',
-  template: `
-        <button class="btn btn-primary"  (click)="goBack()">Back</button>
-        <div class="row">
-          <div class="col-sm-6 col-md-4" *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)">
-            <div class="thumbnail">
-              <div class="caption">
-                <h4 (click)="onSelect(image)">{{image.repo_name}}</h4>
-                <p><span class="badge">{{image.stars}}</span> Stars</p>
-                <p><span class="badge">{{image.pulls}}</span> Pulls</p>
-                <p><span class="badge">{{image.size}}</span> Size</p>
-                 
-                <!--<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>-->
-              </div>
+    selector: 'my-images',
+    template: `
+
+    <button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button>
+
+    <div  class="container-fluid">
+        <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found</div>
+
+        <div class="row-image" *ngFor="let image of images"  (click)="onSelect(image)">
+
+            <img src="app/images/docker.png" style="width:70px" class="row-image-group" alt="">
+
+            <div class="row-image-group">
+              <h1 class="reponame"  (click)="onSelect(image)"> {{image.name}} </h1>
+              <span class="glyphicon glyphicon-star" aria-hidden="true"> </span> {{image.stars}} Star
+              <span class="glyphicon glyphicon-download" aria-hidden="true"></span>  {{image.pulls}}  Pulls
+              <span class="glyphicon glyphicon-save" aria-hidden="true"> </span>  {{image.size | toMegabytes }}MB
+              <!--div [hidden]="image.is_automated">automated build</div-->
+              <div> </div>
+              <!--div ng-show="image.is_automated">Is automated</div-->
+              <!--span [hidden]="!image.is_private">Public</span-->
+
+            <div class="my-software row-image-group"  *ngFor="let sw of image.softwares">
+                   {{sw.software}} {{sw.ver}}
             </div>
           </div>
-        </div>
-    <!--<h1>DoFinder Images</h1>
-     <div *ngIf="images && images.length > 0">
-       <p> Found images : {{images.length}} </p>
-        <ul class="images">
-            <li *ngFor="let image of images"  [class.selected]="image === selectedImage" (click)="onSelect(image)"> 
-               <span class="badge"> {{image.stars}}</span> {{image.repo_name}}
-            </li>
-        </ul>
-        <div *ngIf="selectedImage">
-          <h2>
-            {{selectedImage.repo_name | uppercase}} : {{selectedImage.description}}
-          </h2>
-          <button (click)="gotoDetail()">View Details</button>
+
         </div>
     </div>
-    <div *ngIf="images && images.length == 0">
-        Images not found
-    </div>-->
+
     `,
- // styleUrls: ['app/styles/images.component.css'],
+
 
 })
-export class ImagesComponent implements OnInit{
-    errorMessage:string;
-    selectedImage:Image;
+export class ImagesComponent implements OnInit {
+    errorMessage: string;
+    selectedImage: Image;
+    hideCount: boolean = true;
+    searchApi: string;
 
     @Input()
-    images: Image [];
-    count =0;
+    images: Image[];
+    count = 0;
 
 
     constructor(
-      private imageService: ImageService,
-      private route: ActivatedRoute) {
+        private imageService: ImageService,
+        private route: ActivatedRoute) {
     }
 
-     ngOnInit():void {
-         let searchApi;
-           console.log(this.route.params);
-        this.route.params.forEach((params: Params) => {
-            console.log(params);
-            searchApi = params['parm'];
-        // let search= +params['id'];
-         this.imageService.searchImages(searchApi)
-            .then(resImages=>{
-                if(resImages.length > 0 ) {
-                    this.images= resImages;
-                    this.count = resImages.length;
-                    console.log(resImages);
-                }
-          });
+    ngOnInit(): void {
 
-  });
+        this.route.params.forEach((params: Params) => {
+            //console.log(params);
+            this.searchApi = params['parm'];
+            // let search= +params['id'];
+            this.imageService.searchImages(this.searchApi)
+                .then(resImages => {
+                    if (resImages.count > 0) {
+                        this.images = resImages.images;
+                        this.count = resImages.count;
+                        this.hideCount = false;
+                        console.log(resImages);
+                    }
+                    else{
+                        this.count = 0
+                        this.hideCount = false;
+                    }
+                });
+
+        });
     }
     //
     // getImages() {
     //     this.imageService.getImages().then(images => this.images = images)
     // }
 
-    onSelect(image:Image) {
-        this.selectedImage = image;
+    onSelect(image: Image) {
+        //this.selectedImage = image;
+      //  name =
+        var values = image.name.split(':');
+        var repository = values[0];
+        var tag = values[1];
+        //console.log(repository)
+        var url = "https://hub.docker.com/r/"+repository
+        window.open(url)
     }
 
     gotoDetail() {
         //this.router.navigate(['/detail', this.selectedImage._id]);
     }
+
     goBack(): void {
-      window.history.back();
+        window.history.back();
+        console.log("going back with", this.searchApi )
+      //  let link = ['/dockerfinder', this.constructSearchUrl()];
+        //this.router.navigate(link);
     }
 }

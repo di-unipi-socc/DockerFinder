@@ -3,36 +3,10 @@ var restful = require('node-restful')
 var mongoose = restful.mongoose;
 
 
-// Schema
-// var imageSchema =  new mongoose.Schema({
-//     repo_name:      {
-//         type:       String,
-//         unique:     true,
-//         required    :[true, 'The name of the image cannot be empty']
-//     },
-//     tag : String,
-//     last_scan:      Date,
-//     last_updated:   Date,  // time of the last updated of the repo in the docker hub
-//     size:      Number,
-//     stars:     {
-//         type:       Number,
-//         min:        [0, 'stars must be positive number']
-//     },
-//     pulls:     Number,
-//     description:    String,
-//     distro:     String,
-//     softwares:       [{
-//         _id: false,
-//         software: String,
-//         ver: String
-//     }]
-//
-// });
-
 var imageSchema =  new mongoose.Schema({
 
-    // Docker tag information
-    name:      { // <repo:tag>
+    // Information  only of the Taggged Images
+    name:      { // <repo:tag> the name id composed by: repository name : tag
         type:       String,
         unique:     true,
         required    :[true, 'The name of the image cannot be empty']
@@ -55,7 +29,7 @@ var imageSchema =  new mongoose.Schema({
     is_automated: Boolean,
     is_private: Boolean,
 
-    //Docker Finedr added info
+    //Docker Finder informations
     distro:     String,
     softwares:       [{
         _id: false,
@@ -63,9 +37,9 @@ var imageSchema =  new mongoose.Schema({
         ver: String
     }],
 
-    status: String, // "pending" | "updated"
+    status: String, // "pending" | "updated": if pending the image description must be updated.
 
-    inspect_info:  mongoose.Schema.Types.Mixed
+    inspect_info:  mongoose.Schema.Types.Mixed  // docker run inpect <name> 
 
 });
 

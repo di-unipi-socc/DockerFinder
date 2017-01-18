@@ -16,9 +16,11 @@ nav a {
   background-color: #eee;
   border-radius: 4px;
 }
-nav a:visited, a:link {
-  color: #607D8B;
+
+.thumbnail {
+    padding: 10px;
 }
+
 nav a:hover {
   color: #039be5;
   background-color: #CFD8DC;

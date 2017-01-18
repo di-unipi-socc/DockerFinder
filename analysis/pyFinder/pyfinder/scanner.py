@@ -165,14 +165,23 @@ class Scanner:
         json_response = self.client_hub.get_json_repo(repo_name)
 
         if json_response:
-            if 'description' in json_response:
-                image.description = json_response['description']
+            if 'user' in json_response:
+                image.user = json_response['user']
 
             if 'star_count' in json_response:
                 image.stars = json_response['star_count']
 
             if 'pull_count' in json_response:
                 image.pulls =  json_response['pull_count']
+
+            if 'description' in json_response:
+                image.description = json_response['description']
+
+            if "is_automated" in json_response:
+                image.is_automated =  json_response['is_automated']
+
+            if "is_private" in json_response:
+                image.is_private =  json_response['is_private']
 
         json_response = self.client_hub.get_json_tag(repo_name, tag)
 

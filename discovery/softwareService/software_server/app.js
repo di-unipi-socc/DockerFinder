@@ -93,8 +93,13 @@ var connectWithRetry = function() {
 
 function load_softwares(){
   //read THE JSON software and store them into database
+
   //var json = require(path.resolve(__dirname, 'softwares.json'));
   var json = require(path.resolve(__dirname, 'command.json'));
+/
+ // console.log( "Read json file: " +  path.resolve(__dirname, 'softwares.json'))
+  //var json = require(path.resolve(__dirname, 'softwares.json'));
+/
   Software.count({}, function( err, count){
     console.log( count + ": read softwares" );
     if(count == 0){
@@ -116,7 +121,9 @@ function load_softwares(){
 
       });
     }else {
-       console.log(count + ": run already present into database")
+
+       console.log(count + ": software are already present into database")
+
     }
   });
 }

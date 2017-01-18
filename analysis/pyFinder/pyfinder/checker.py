@@ -10,7 +10,7 @@ import time
 
 class Checker:
 
-    def __init__(self,  images_url="http://127.0.0.1:3000/api/images",
+    def __init__(self,  images_url="http://127.0.0.1:3000/api/images/",
                         hub_url="https://hub.docker.com/",
                         amqp_url='amqp://guest:guest@127.0.0.1:5672',
                         exchange="dofinder",
@@ -130,6 +130,27 @@ class Checker:
         assert tot_dockerfinder_images == (pending+uptodate+removed)
         self.logger.info("Removed=" + str(removed)+ "; pending="+ str(pending)+ " up-to-date="+str(uptodate))
 
+    def verify_images(self):
+
+        json_res = self.client_images.get_images()
+        tot_dockerfinder_images = json_res ['count']
+        self.logger.info(str(tot_dockerfinder_images) + " images present into local database")
+        images = json_res['images']
+        for image in images:
+            name  =  image['name']
+            splitname = image['name'].split(":")
+            repo = splitname[0]
+            tag = splitname[1]
+            json_response = self.client_hub.get_json_repo(repo)
+            if json_response:
+                if "is_automated" in json_response:
+                    image['is_automated'] =  json_response['is_automated']
+
+                if "is_private" in json_response:
+                    image['is_private']  =  json_response['is_private']
+
+            self.client_images.put_image(image)  # PUT the new image description of the image
+            self.logger.info("UPDATED ["+name+"] " )
 
     def run(self, interval_next_check):
         self.logger.info("Starting the checker module...")
