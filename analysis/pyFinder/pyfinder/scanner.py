@@ -8,6 +8,7 @@ from .client_dockerhub import ClientHub
 from .client_software import ClientSoftware
 from .consumer_rabbit import ConsumerRabbit
 from pyfinder.model.image import Image
+from pyfinder.analysis import handler_analysis
 import logging
 import datetime
 import sys
@@ -21,6 +22,8 @@ class Scanner:
                  rmi=True):
 
 
+
+
         self.rmi = rmi  # remove an image after it is scanned
 
         self.logger = logging.getLogger(__class__.__name__)
@@ -28,6 +31,8 @@ class Scanner:
 
         # client of Software service: the service that return the software to search in the images.
         self.client_software = ClientSoftware(api_url=software_url)
+
+
 
         # client of Docker daemon running on the local host
         #self.client_daemon = ClientDaemon(base_url='unix://var/run/docker.sock')
@@ -43,6 +48,8 @@ class Scanner:
 
         # client of Images Service:  in order to add and update the image description.
         self.client_images = ClientImages(images_url=images_url)
+
+        handler_analysis("ciao",   self.client_images)
 
         # client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url)
