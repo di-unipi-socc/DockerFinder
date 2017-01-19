@@ -15,7 +15,7 @@ import {Observable} from "rxjs/Rx";
 export class ImageService {
   private imagesUrl :string; //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
   private searchUrl = '/search?';// 'http://127.0.0.1:8000/search?';
-  private searchQueryString:string  ""; // the query string used ti restore the same view inthe dashboard view
+  private searchQueryString:string = ""; // the query string used ti restore the same view inthe dashboard view
   private headers: Headers;
 
 
