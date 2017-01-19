@@ -21,8 +21,14 @@ services:
     command: [crawl,'--save-url=/data/crawler/lasturl.txt',
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
-                    '--queue=images']
-    #,'--mi=100'] #, '--fp=100', '--ps=10']
+                    '--queue=images',
+                    '--si=10000',
+                    '--random=True',
+                    '--fp=1',
+                    '--ps=100',
+                    '--force-page=True'
+                    ]
+    #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
 
@@ -69,9 +75,7 @@ services:
   software_db:
     image: mongo:3
     volumes:
-
       - /data/db  # /data/db is the deafult directory where mogno stores the databases.
-      - /data/db
 
   webapp:
     build: discovery/webapp/

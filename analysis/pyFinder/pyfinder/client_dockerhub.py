@@ -76,18 +76,19 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-
-    def crawl_images(self, from_page=1, page_size=100, max_images=None, filter_images= lambda repo_name: True):
+    def crawl_images(self, max_images, from_page=1, page_size=100, force_from_page=False, filter_images= lambda repo_name: True):
 
         """
-        This is a generator function that crawls and yield the images' name crawled from Docker Hub .
+        This is a generator function that crawls and yield the images' name crawled from Docker Hub.
         :param from_page: page number for starting crawling images. If
         :param page_size: the number of images in a single page.
         :param max_images: the  number of images to be crawled from Docker hub.
          If *None* all the images  of Docker Hub will be crawled [default: None]
         :return:
         """
-        if (self.next_url):
+        if force_from_page:
+            self.next_url = self.build_search_url(from_page, page_size)
+        elif self.next_url:  # if exist a previous stored url
             self.next_url=  self.get_last_url(self.path_file_url)
         else:
             self.next_url = self.build_search_url(from_page, page_size)
@@ -96,16 +97,16 @@ class ClientHub:
         #    #self.build_search_url(page=from_page, page_size=page_size)
         self.logger.info("Next URL="+self.next_url)
 
-        count = self.count_all_images()
-        max_images = count if not max_images else max_images  # download all images if max_images=None
+        #count = self.count_all_images()
+        #max_images = count if not max_images else max_images  # download all images if max_images=None
         crawled_images = 0
-        self.logger.info("Total images to crawl: " + str(max_images))
+        #self.logger.debug("Total images into Docker Hub: " + str(max_images))
         try:
             while self.next_url and crawled_images < max_images: # max_images > 0
 
                 self.save_last_url(self.path_file_url, self.next_url) # save last url
 
-                self.logger.info("URL="+ self.next_url)
+                self.logger.debug("URL="+ self.next_url)
                 res = requests.get(self.next_url)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()

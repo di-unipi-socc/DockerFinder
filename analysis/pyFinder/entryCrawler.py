@@ -6,7 +6,7 @@ import logging.config
 __doc__= """Crawler
 
 Usage:
-  Crawler.py crawl  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>]  [--fp=<1>] [--ps=<10>]  [--si=<100>]
+  Crawler.py crawl  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>] [--random=<False>] [--force-page=<False>] [--fp=<1>] [--ps=<10>]  [--si=<100>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -21,7 +21,9 @@ Options:
   --key=KEY            Key routing for the rabbitMQ.                [default: images.scan]
   --fp=FROM_PAGE      From Page: starting page crawled from the docker hub [default: 1].
   --ps=PAGE_SIZE      number of images in a single page                    [default: 100].
-  --si=SAMPLED_IMAGES Number of images sampled from Docker hub [default: None].
+  --si=SAMPLED_IMAGES Number of images sampled from Docker hub      [default: None].
+  --random=RANDOM     If True the sampled images are random dampled [default: True]
+  --force-page=FORCE PAGE   If True the crawler start from the from_image, otherwise take the last url [default: False]
   --version     Show version.
 """
 
@@ -43,7 +45,10 @@ if __name__ == '__main__':
                           path_last_url=args['--save-url'])
         crawler.run(num_samples = None if args['--si'] == "None" else int(args['--si']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
-                    from_page=None if args['--fp'] == "None"  else int(args['--fp']))
+                    from_page=None if args['--fp'] == "None"  else int(args['--fp']),
+                    at_random=True if args['--random'] =="True" else False,
+                    force_from_page= True if args['--force-page'] =="True" else False
+                    )
 
     if args['test']:
         tester = Tester(path_file_images=args['--pf'])

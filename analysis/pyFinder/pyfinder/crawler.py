@@ -34,22 +34,36 @@ class Crawler:
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
 
-    def run(self, from_page, page_size, num_samples=0, max_images=None):
+    def run(self, from_page, page_size, num_samples=None, at_random=False, force_from_page=False):#, max_images=None):
         """
         Starts the publisher of the RabbitMQ server, and send to the images crawled with the crawl() method.
+        If num_sample != None:
+            if at_random:
+                crawls num_samples images using the random sampling method.
+            else:
+                crawl num_samples images in order
+        else :
+            crawls all the images from the Docker Hub.,
+
         :param from_page:  the starting page into the Docker Hub.
-        :param page_size:  is the number of images per image that Docker Hub return.
-        :param max_images:  the number of images  name to downloads.
+        :param page_size:  the number of images in a single page.
+        :param max_images:  the number of images name to downloads.
         :return:
         """
         try:
-            #self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
-            self.publisher.run(images_generator_function=self.crawl_random_samples(num_samples, from_page=from_page, page_size=page_size))#, max_images=max_images))
+            if num_samples != None:
+                if at_random:
+                    #self.publisher.run(images_generator_function=self.crawl(from_page=from_page, page_size=page_size, max_images=max_images))
+                    self.publisher.run(images_generator_function=self.crawl_random_samples(num_samples, force_from_page, from_page=from_page, page_size=page_size))#, max_images=max_images))
+                else:
+                    self.publisher.run(images_generator_function=self.crawl(force_from_page=force_from_page,from_page=from_page, page_size=page_size, max_images=num_samples))#, max_images=max_images))
+            else:
+                self.publisher.run(images_generator_function=self.crawl(force_from_page=force_from_page, from_page=from_page, page_size=page_size, max_images=None))
         except KeyboardInterrupt:
             self.publisher.stop()
 
 
-    def crawl_random_samples(self, m_samples,  from_page, page_size, max_images=None):
+    def crawl_random_samples(self, m_samples,force_from_page, from_page, page_size):
             """
             This is a generator function that crawls docker images name at random name the Docker HUb.
             The following random sampling of a kNOWN STREAM is used.
@@ -66,28 +80,39 @@ class Crawler:
             :param max_images:  the number of images to download.
             :return: generator of JSON images description
             """
-            sent_images = 0
-            j = 0
-            num_images =  self.client_hub.count_all_images() # total number of images stored within Docker Hub
 
+            # TODO : max_images and num_samples are different . Max _images tell to Docker Hub CLient the max number of images to be dowlodes
+            # num_samples is the number of images to be sampled into Docker Hub.
+
+            sent_images = 0
+            max_images = None
+            previous_num_sampled = 0 # only for logging the sampled images when the number cheange
+            j = 0       # number of total imags passed thorugh the stream
+            num_images =  self.client_hub.count_all_images() # total number of images stored within Docker Hub
+            # TODO: not all the images into the Dokcer Hub are downaloded if the filter functioi is executed
+            self.logger.info("Random sampling activated. \n\t\tTarget samples:" +str(m_samples)+ ", Total number of images: "+ str(num_images) +"\n\t\tPercentage:" +str(m_samples/num_images))
             for list_images in self.client_hub.crawl_images(from_page=from_page,
                                                             page_size=page_size,
-                                                            max_images=max_images # crawl all the images
+                                                            max_images=num_images,
+                                                            force_from_page = force_from_page
                                                             ):
-                                                            #max_images=max_images,
                                                             #filter_images=self.filter_tag_latest):
-
+                previous_num_sampled =  sent_images   # set the previous sent images
                 for image in list_images:
+                    # Random sampling over a stream of images
                     j += 1
+                    #if j <= num_images : # otherwise division by zero
                     p = random.uniform(0,1) # 0 <= p <= 1
                     if p  <= (m_samples - sent_images)/ (num_images - j +1):      #if (p <= (m-s)/ n-j+1):
                         repo_name = image['repo_name']
                         sent_images += 1
                         yield json.dumps({"name": repo_name})
-                self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
-            self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+                if sent_images > previous_num_sampled:
+                    self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(m_samples)))
 
-    def crawl(self, from_page, page_size, max_images=None):
+            self.logger.info("Total sampled images: {0}".format(str(sent_images)))
+
+    def crawl(self, force_from_page, from_page,page_size, max_images=None):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
         IT return a JSON of the image .
@@ -97,19 +122,27 @@ class Crawler:
         :return: generator of JSON images description
         """
         sent_images = 0
-
+        #count = self.client_hub.count_all_images()
+        #max_images = count if not max_images else max_images
+        count =   self.client_hub.count_all_images()
+        if max_images is None:
+            max_images = count
+            self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ", Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
+        else:
+            self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         for list_images in self.client_hub.crawl_images(from_page=from_page,
                                                         page_size=page_size,
                                                         max_images=max_images,
-                                                        filter_images=self.filter_tag_latest):
+                                                        force_from_page = force_from_page):
+                                                        #filter_images=self.filter_tag_latest):
 
             for image in list_images:
-
                 repo_name = image['repo_name']
                 sent_images += 1
                 yield json.dumps({"name": repo_name})
-            self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
-        self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+            self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
+            #self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
+        self.logger.info("Total num of images sent to queue: {0}".format(str(sent_images)))
 
 
     def filter_tag_latest(self, repo_name):
