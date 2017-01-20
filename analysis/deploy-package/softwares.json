@@ -1,0 +1,67 @@
+[{
+		"name": "python",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "java",
+		"cmd": "-version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "perl",
+		"cmd": "-version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "curl",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "nano",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "php",
+		"cmd": "-v",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	},{
+		"name": "ruby",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "scala",
+		"cmd": "-version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "groovy",
+		"cmd": "-version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	},{
+		"name": "httpd",
+		"cmd": "-V",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "nginx",
+		"cmd": "-v",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "pip",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "node",
+		"cmd": "-v",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "npm",
+		"cmd": "-v",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}, {
+		"name": "gunicorn",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	},
+	{
+		"name": "wget",
+		"cmd": "--version",
+		"regex": "[0-9]+[.][0-9]*[.0-9]*"
+	}
+]

@@ -1,4 +1,4 @@
-from pyfinder import Checker
+from pyfinder.checker import Checker
 from docopt import docopt
 import time
 from os import path

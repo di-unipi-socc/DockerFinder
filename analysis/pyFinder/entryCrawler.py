@@ -1,5 +1,8 @@
-from pyfinder import Crawler
-from pyfinder import Tester
+from pyfinder.crawler import Crawler
+
+
+#from pyfinder.tester import Tester
+
 from docopt import docopt
 from os import path
 import logging.config
@@ -50,11 +53,11 @@ if __name__ == '__main__':
                     force_from_page= True if args['--force-page'] =="True" else False
                     )
 
-    if args['test']:
-        tester = Tester(path_file_images=args['--pf'])
-        if args['build']:
-            tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))
-
-        if args['send']:
-            tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
-                             route_key=args['--key'])
+    # if args['test']:
+    #     tester = Tester(path_file_images=args['--pf'])
+    #     if args['build']:
+    #         tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))
+    #
+    #     if args['send']:
+    #         tester.push_test(amqp_url=args['--amqp-url'], exchange=args['--ex'], queue=args['--queue'],
+    #                          route_key=args['--key'])

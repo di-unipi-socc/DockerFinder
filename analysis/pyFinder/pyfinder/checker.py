@@ -1,6 +1,6 @@
-from .client_images_service import ClientImages
-from .client_dockerhub import ClientHub
-from .publisher_rabbit import PublisherRabbit
+
+from pyfinder.core import ClientImages, PublisherRabbit, ClientHub
+
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import json

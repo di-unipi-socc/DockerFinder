@@ -47,8 +47,7 @@ services:
       dockerfile: ./Dockerfile_scanner
     command: [run, '--images-url=http://images_server:3000/api/images/',
                   '--queue=images',
-                  '--key=images.scan',
-                  '--software-url=http://software_server:3001/api/software', '--rmi']
+                  '--key=images.scan']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

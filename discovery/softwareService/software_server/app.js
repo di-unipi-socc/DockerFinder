@@ -96,10 +96,10 @@ function load_softwares(){
 
   //var json = require(path.resolve(__dirname, 'softwares.json'));
   var json = require(path.resolve(__dirname, 'command.json'));
-/
+
  // console.log( "Read json file: " +  path.resolve(__dirname, 'softwares.json'))
   //var json = require(path.resolve(__dirname, 'softwares.json'));
-/
+
   Software.count({}, function( err, count){
     console.log( count + ": read softwares" );
     if(count == 0){

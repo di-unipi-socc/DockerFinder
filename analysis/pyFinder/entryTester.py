@@ -1,5 +1,4 @@
-from pyfinder import Tester
-from pyfinder import ClientSoftware
+from pyfinder.tester import Tester
 
 from docopt import docopt
 
@@ -27,7 +26,6 @@ Options:
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Tester 0.0.1')
-    sw = ClientSoftware(api_url="http://127.0.0.1:3001/api/software")
     tester = Tester(path_file_images=args['--pf'])
     if args['build']:
         tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))

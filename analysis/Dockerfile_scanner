@@ -14,7 +14,8 @@ RUN pip install -r requirements.txt
 
 COPY pyFinder/ /code
 
-COPY deploy-package/analysis.py /code/pyfinder
+#deploy-packe is the folder given by an user with the  custom analysis function
+COPY deploy-package /code/pyfinder/deploy
 
 ENTRYPOINT ["python","/code/entryScanner.py"]
 CMD ["--help"]

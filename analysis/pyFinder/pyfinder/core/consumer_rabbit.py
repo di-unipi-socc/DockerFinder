@@ -3,7 +3,6 @@ import logging
 import pika
 import json
 import time
-from pyfinder import utils
 
 class ConsumerRabbit(object):
     """This is an example consumer that will handle unexpected interactions
