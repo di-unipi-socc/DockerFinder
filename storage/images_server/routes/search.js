@@ -108,7 +108,7 @@ router.get('/', function (req, res, next) {
             queryBuild.sort(ordering);
             break;
 }
-    
+
     //execution of the query
     queryBuild.exec(function (err, results) {
         if (err) {
@@ -117,7 +117,7 @@ router.get('/', function (req, res, next) {
         }
 
         // console.log(JSON.stringify(img, null, 4));
-        res.json({"count": results.length, "images": results});
+        res.json({"count": /*number of images that sadisfy the query*/results.length, "images": results});
         console.log("Results " + results.length)
 
     });
@@ -127,4 +127,3 @@ router.get('/', function (req, res, next) {
 
 // Return router
 module.exports = router;
-
