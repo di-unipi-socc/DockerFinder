@@ -2,6 +2,8 @@
 
 #  DockerFinder: Multi-attribute search of Docker images
 
+[![Join the chat at https://gitter.im/di-unipi-socc/DockerFinder](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Department of Computer Science, University of Pisa.
 
 Davide Neri,  davide.neri@di.unipi.it
