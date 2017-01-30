@@ -131,11 +131,19 @@ class Checker:
         self.logger.info("Removed=" + str(removed)+ "; pending="+ str(pending)+ " up-to-date="+str(uptodate))
 
     def verify_images(self):
+        """
+        Resolve the problem to have :
+            is_private = null,
+            is_automated = nul
+        by updating the boolean value from Doker Hub.
+
+        """
 
         json_res = self.client_images.get_images()
         tot_dockerfinder_images = json_res ['count']
         self.logger.info(str(tot_dockerfinder_images) + " images present into local database")
         images = json_res['images']
+        updated = 0
         for image in images:
             name  =  image['name']
             splitname = image['name'].split(":")
@@ -148,9 +156,22 @@ class Checker:
 
                 if "is_private" in json_response:
                     image['is_private']  =  json_response['is_private']
+                softwares =   image['softwares']
+                self.logger.info("before: {0}".format(softwares))
+                # [0-9]+[.][0-9]*[.0-9]
+
+                softwares = [sw for sw in softwares if sw['ver'] != '.']
+                softwares = [sw for sw in softwares if sw['ver'] != ".go"]
+                #for sw in softwares:
+                #    if ".go" in sw['ver'] or sw['ver'] == ".":
+                #        self.logger.info("removing {0}:{1}".format(sw['software'], sw['ver']))
+                #        softwares.remove(sw)
+                self.logger.info("after: {0}".format(softwares))
+                image['softwares']  = softwares
 
             self.client_images.put_image(image)  # PUT the new image description of the image
-            self.logger.info("UPDATED ["+name+"] " )
+            updated += 1
+            self.logger.info("UPDATED ["+name+"]. {0}/{1}".format(updated, tot_dockerfinder_images) )
 
     def run(self, interval_next_check):
         self.logger.info("Starting the checker module...")

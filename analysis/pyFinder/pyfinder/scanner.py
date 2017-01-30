@@ -265,8 +265,11 @@ class Scanner:
             match = p.search(output)
             if match:
                 version = match.group(0)
-                self.logger.debug("[{0}] found in {1}".format(command, container_id))
-                return version
+                if version != "." or version != ".go":
+                    self.logger.debug("[{0}] found in {1}".format(command, container_id))
+                    return version
+                else:
+                    return None
             else:
                 self.logger.debug("[{0}] NOT found in {1}".format(command, container_id))
                 return None
