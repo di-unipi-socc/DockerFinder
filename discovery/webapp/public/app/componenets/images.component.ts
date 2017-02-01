@@ -23,7 +23,7 @@ import {ImageService} from "../services/image.service";
 
 
     <div  class="container-fluid">
-        <div style="text-align:center">
+        <div [hidden]="!hideCount" style="text-align:center">
           <img src="app/images/loader.gif" width="70px">
         </div>
 
