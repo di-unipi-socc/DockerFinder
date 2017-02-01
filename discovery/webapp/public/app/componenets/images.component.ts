@@ -13,7 +13,7 @@ import {ImageService} from "../services/image.service";
     selector: 'my-images',
     template: `
 
-    <button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button>
+    <!--button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button-->
 
 
     <!--div [hidden]="!hideCount" >
