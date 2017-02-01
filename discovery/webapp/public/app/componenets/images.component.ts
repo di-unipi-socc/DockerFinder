@@ -23,8 +23,8 @@ import {ImageService} from "../services/image.service";
 
 
     <div  class="container-fluid">
-        <div [hidden]="!hideCount" style="text-align:center">
-          <img src="app/images/loader.gif" width="500px">
+        <div style="text-align:center">
+          <img src="app/images/loader.gif" width="70px">
         </div>
 
         <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found</div>
