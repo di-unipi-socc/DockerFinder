@@ -80,10 +80,7 @@ router.get('/', function (req, res, next) {
         queryBuild.where('stars').gte(req.query['stars_gt']);
         console.log("Stars greater than or equal" + req.query['stars_gt']);
     }
-      if(req.query.limit) {
-        console.log("Limit " + req.query.limit);
-        queryBuild.limit(Number(req.query.limit));
-    }
+
 
     switch(req.query.sort){
         case 'stars':
@@ -107,7 +104,25 @@ router.get('/', function (req, res, next) {
             console.log("DEFAULT ordering "+ordering);
             queryBuild.sort(ordering);
             break;
-}
+      }
+
+    count = 0
+
+    // execute the query (before the limit execution) for the total number of images tht satisfy the query
+    queryBuild.exec( function(err, results){
+      if (err) {
+          console.log(err);
+          return next(err);
+      }
+      console.log(count);
+      count = results.length
+    });
+
+    //limit: return onnly from the limit to the end
+    if(req.query.limit) {
+          console.log("Limit " + req.query.limit);
+          queryBuild.limit(Number(req.query.limit));
+    }
 
     //execution of the query
     queryBuild.exec(function (err, results) {
@@ -116,8 +131,10 @@ router.get('/', function (req, res, next) {
             return next(err);
         }
 
-        // console.log(JSON.stringify(img, null, 4));
-        res.json({"count": /*number of images that sadisfy the query*/results.length, "images": results});
+        //console.log(JSON.stringify(img, null, 4));
+        console.log("After limit:" + count);
+        //res.json({"count": /*number of images that sadisfy the query*/results.length, "images": results});
+        res.json({"count": count, "images": results});
         console.log("Results " + results.length)
 
     });

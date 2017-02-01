@@ -15,6 +15,9 @@ import {ImageService} from "../services/image.service";
 
     <button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button>
 
+    <div >
+    </div>
+
     <div  class="container-fluid">
         <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found</div>
 
