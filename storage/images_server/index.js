@@ -9,6 +9,10 @@ var Image = require('./models/image')
 //var port = 8081;
 
 var app = express();
+var readline = require('readline'); //read the input from the users
+var path = require('path');
+
+
 
 // Environment configurations
 app.set('port', process.env.PORT || 3000);
@@ -23,6 +27,7 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 //table name of the mongo database
 var table ="/images";
 var linkname_docker_compose = 'images_db' ; //link to database, resolved IP by DNS of bridge/overlay network
+
 
 
 //###################################################################################
@@ -99,7 +104,7 @@ var connectWithRetry = function() {
       }else{
       // Save database object from the callback for reuse.
       console.log("Succesful Connection to database "+ mongo_path );
-      //load_images()
+    //  load_images()
     }
   });
 };
@@ -109,15 +114,27 @@ var connectWithRetry = function() {
 //   var json = require(path.resolve(__dirname, 'images.json'));
 //   Image.count({}, function( err, count){
 //     console.log( count + ": images into local database" );
-//     if(count == 0){
-//       console.log("No images, Inserting :  "+ json);
-//         Image.collection.insertMany(json, function(err,r) {
-//                  assert.equal(Object.keys(json).length, r.insertedCount);
-//                  console.log(r.insertedCount + ": image inserted into database")
+//     var rl = readline.createInterface({
+//       input: process.stdin,
+//       output: process.stdout
+//     });
+//     //if(count == 0){
+//     rl.question("What do you think of node.js? ", function(answer) {
+//          if(answer=="y"){
+//              console.log("Thank you for your valuable feedback:", answer);
+//          }
+//
+//
+//         rl.close();
 //       });
-//     }else {
-//        console.log(count + ": images already present into database")
-//     }
+//     // console.log("No images, Inserting :  "+ json);
+//     //     Image.collection.insertMany(json, function(err,r) {
+//     //              assert.equal(Object.keys(json).length, r.insertedCount);
+//     //              console.log(r.insertedCount + ": image inserted into database")
+//     //   });
+//     // }else {
+//     //    console.log(count + ": images already present into database")
+//     // }
 //
 //   });
 //
@@ -135,6 +152,7 @@ app.get('/', function (req, res) {
 
 
 app.use('/search', require('./routes/search'))
+//app.use('/search', require('./routes/search-paginated'))
 app.use('/api', require('./routes/api'));
 
 // development error handler
@@ -151,12 +169,13 @@ if (app.get('env') === 'development') {
 
 // production error handler
 
-    // no stacktraces leaked to user
-    app.use(function(err, req, res, next) {
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
       res.status(err.status || 500);
-        res.json({"message": err.message,
-          "error": err
-    });
+        res.json({
+              "message": err.message,
+              "error": err
+          });
 });
 
 // Start server

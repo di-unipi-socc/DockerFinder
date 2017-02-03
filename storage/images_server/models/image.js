@@ -1,6 +1,7 @@
 "use strict"
 var restful = require('node-restful')
 var mongoose = restful.mongoose;
+var mongoosePaginate = require('mongoose-paginate');
 
 
 var imageSchema =  new mongoose.Schema({
@@ -39,10 +40,11 @@ var imageSchema =  new mongoose.Schema({
 
     status: String, // "pending" | "updated": if pending the image description must be updated.
 
-    inspect_info:  mongoose.Schema.Types.Mixed  // docker run inpect <name> 
+    inspect_info:  mongoose.Schema.Types.Mixed  // docker run inpect <name>
 
 });
 
+imageSchema.plugin(mongoosePaginate);
 
 // Return a model
 module.exports = restful.model("Images",imageSchema);

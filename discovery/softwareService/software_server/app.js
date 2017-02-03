@@ -77,15 +77,15 @@ var mongo_path = 'mongodb://'+app.get('db_path') + table;
 
 var connectWithRetry = function() {
   return mongoose.connect(mongo_path, function (err, database) {
-      console.log("\nTry to connect "+ mongo_path);
+      console.log("\nTry to connect to: "+ mongo_path);
       if (err) {
         console.error(err.message+ '- retrying in 5 sec' );
         setTimeout(connectWithRetry, 5000);
 
       }else{
-      // Save database object from the callback for reuse.
-      console.log("Succesful Connection to database "+ mongo_path );
-      load_softwares()
+        // Save database object from the callback for reuse.
+        console.log("Succesful Connection to database "+ mongo_path );
+        load_softwares()
 
     }
   });
@@ -95,15 +95,16 @@ function load_softwares(){
   //read THE JSON software and store them into database
 
   //var json = require(path.resolve(__dirname, 'softwares.json'));
-  var json = require(path.resolve(__dirname, 'command.json'));
-/
- // console.log( "Read json file: " +  path.resolve(__dirname, 'softwares.json'))
   //var json = require(path.resolve(__dirname, 'softwares.json'));
-/
+
+  console.log( "Read json file: " +  path.resolve(__dirname, 'softwares.json'))
+  var json = require(path.resolve(__dirname, 'softwares.json'));
+
   Software.count({}, function( err, count){
-    console.log( count + ": read softwares" );
+    console.log( count + ": softwares present in the local database" );
     if(count == 0){
-      console.log(json)
+      console.log( "The database of softwares is empty" );
+      //console.log(json)
       //   var cmd = new Software ({
       //     run : json.run
       //   })
@@ -113,17 +114,22 @@ function load_softwares(){
       //
       //   }
       // )
-      Software.collection.insertMany(json, function(err,r) {
-          //assert.equal(Object.keys(json).length, r.insertedCount);
-          console.log(r)
-        console.log(r.getInsertedIds())// + ": software inserted into database")
-          //console.log(r.insertedCount + ": software inserted into database")
-
+      json.forEach( function(item){
+        console.log(item)
+        Software.collection.insertOne(item)
       });
-    }else {
-
+      // Software.collection.insertMany(json, function(err,r) {
+      //   //assert.equal(Object.keys(json).length, r.insertedCount);
+      //   console.log(r)
+      //   assert.equal(Object.keys(json).length, r.nInserted);
+      //   console.log(r)
+      //   console.log(r.getInsertedIds())// + ": software inserted into database")
+      //     //console.log(r.insertedCount + ": software inserted into database")
+      //
+      // });
+    }
+    else { // thre are already stored softwares inside the db
        console.log(count + ": software are already present into database")
-
     }
   });
 }

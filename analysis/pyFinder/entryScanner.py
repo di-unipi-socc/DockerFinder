@@ -6,11 +6,11 @@ import logging.config
 __doc__= """Scanner.
 
 Usage:
-  entryScanner.py run [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--key=<images.scan>] [--images-url=<http://images_server:3000/api/images>] [--software-url=<http://software_server:3001/api/software>] [--hub-url=<https://hub.docker.com/>] [--rmi]
-  entryScanner.py scan <name> [--tag=<latest>] [--software-url=<http://127.0.0.1:3001/api/software>]
-  entryScanner.py exec <name> --p=<program>  --opt=<option>  --regex=<regex>
-  entryScanner.py (-h | --help)
-  entryScanner.py --version
+    Scanner.py run [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--key=<images.scan>] [--images-url=<http://images_server:3000/api/images>] [--software-url=<http://software_server:3001/api/software>] [--hub-url=<https://hub.docker.com/>] [--rmi]
+    Scanner.py scan <name> [--tag=<latest>] [--software-url=<http://127.0.0.1:3001/api/software>]
+    Scanner.py exec <name> --p=<program>  --opt=<option>  --regex=<regex>
+    Scanner.py (-h | --help)
+    Scanner.py --version
 
 Options:
   -h --help             Show this screen.

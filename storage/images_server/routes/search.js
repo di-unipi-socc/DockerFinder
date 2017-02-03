@@ -6,13 +6,14 @@ var express = require('express');
 var router = express.Router();
 var Image = require('../models/image');
 
+
 //method for looking if a string is in a list
 String.prototype.inList = function (list) {
     return ( list.indexOf(this.toString()) != -1)
 };
 
 //al the parameters that are note a binary versions
-var listParameters=['sort', 'limit', 'size', 'size_lt', 'size_gt', 'pulls', 'pulls_lt','pulls_gt', 'stars', 'stars_lt','stars_gt'];
+var listParameters=['sort', 'limit', 'size', 'size_lt', 'size_gt', 'pulls', 'pulls_lt','pulls_gt', 'stars', 'stars_lt','stars_gt', 'page'];
 
 // GET /search
 router.get('/', function (req, res, next) {
@@ -28,19 +29,15 @@ router.get('/', function (req, res, next) {
             //elementMatch = {$elemMatch: {bin: key, ver: {$regex: '^' + req.query[key]}}};
             findMatch.softwares.$all.push({$elemMatch: {software: key, ver: {$regex: '^' + req.query[key]}}});
             numberBins +=1;
+            console.log("deleting : "+ req.query[key])
             delete req.query.key;
         }
     }
-    //var query
-    var queryBuild = Image.find(findMatch);
-    // if(numberBins > 0)
-    //     query = Image.find(findMatch);
-    // else
-    //     query = Image.find()
+
 
     if(req.query['size']) {
         queryBuild.where('size', req.query['size']);
-        console.log("Size equal " + req.query['size_lt']);
+        console.log("Size equal " + req.query['size']);
     }
     else if(req.query['size_lt']) {
         queryBuild.where('size').lt(req.query['size_lt']);
@@ -81,22 +78,28 @@ router.get('/', function (req, res, next) {
         console.log("Stars greater than or equal" + req.query['stars_gt']);
     }
 
+    if(req.query['page']) {
+          console.log("Page " + req.query.page);
+    }
+
+    //before the sort
+    queryBuild.limit(2);
 
     switch(req.query.sort){
         case 'stars':
-            console.log("Sorting  by ascending stars");
+            console.log("Sorting  by ascending stars.");
             queryBuild.sort({'stars': -1});
             break;
         case '-stars':
-            console.log("Sorting  by descending stars");
+            console.log("Sorting  by descending stars.");
             queryBuild.sort({'stars': 1});
             break;
         case 'pulls':
-            console.log("Sorting  by ascending pull");
+            console.log("Sorting  by ascending pull.");
             queryBuild.sort({ 'pulls': -1});
             break;
          case '-pulls':
-            console.log("Sorting  by descending pull");
+            console.log("Sorting  by descending pull.");
             queryBuild.sort({ 'pulls': 1});
             break;
         default:
@@ -106,25 +109,8 @@ router.get('/', function (req, res, next) {
             break;
       }
 
-    count = 0
 
-    // execute the query (before the limit execution) for the total number of images tht satisfy the query
-    queryBuild.exec( function(err, results){
-      if (err) {
-          console.log(err);
-          return next(err);
-      }
-      console.log(count);
-      count = results.length
-    });
-
-    //limit: return onnly from the limit to the end
-    if(req.query.limit) {
-          console.log("Limit " + req.query.limit);
-          queryBuild.limit(Number(req.query.limit));
-    }
-
-    //execution of the query
+  //  execution of the query
     queryBuild.exec(function (err, results) {
         if (err) {
             console.log(err);
@@ -132,9 +118,9 @@ router.get('/', function (req, res, next) {
         }
 
         //console.log(JSON.stringify(img, null, 4));
-        console.log("After limit:" + count);
+        //console.log("After limit:" + count);
         //res.json({"count": /*number of images that sadisfy the query*/results.length, "images": results});
-        res.json({"count": count, "images": results});
+        res.json({"count": results.length, "images": results});
         console.log("Results " + results.length)
 
     });

@@ -6,10 +6,10 @@ import logging.config
 __doc__= """Checker.
 
 Usage:
-  entryChecker.py run [--interval=<10>] [--path-logging=</data/crawler/log/stats.log>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
-  entryChecker.py verify
-  entryChecker.py (-h | --help)
-  entryChecker.py --version
+  Checker.py run [--interval=<10>] [--path-logging=</data/crawler/log/stats.log>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
+  Checker.py verify
+  Checker.py (-h | --help)
+  Checker.py --version
 
 Options:
   -h --help             Show this screen.

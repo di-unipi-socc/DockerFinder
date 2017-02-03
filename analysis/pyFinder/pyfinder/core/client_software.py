@@ -15,15 +15,15 @@ class ClientSoftware(requests.Session):
     def get_software(self):
         """Get the list of software. \n
         A software is described by: the name, the version command, and the regex. \n
-        E.g. "python", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' """
+        E.g. ["python", "--version", '[0-9]*\.[0-9]*[a-zA-Z0-9_\.-]*' ]
+        """
         try:
             res = self.get(self._url)
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
-
-                self.logger.info(str(json_response)+ " softwares received")
+                self.logger.info(str(json_response['count'])+ " softwares received")
                 #software_list = json_response['software'] # list of object
-                software_list = json_response['run'] # list of object
+                software_list = json_response['software'] # list of object
                 return software_list
         except requests.exceptions.ConnectionError:
             self.logger.exception("ConnectionError: ")

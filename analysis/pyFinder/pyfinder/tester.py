@@ -1,7 +1,6 @@
 import pickle
 from .crawler import Crawler
-from .client_dockerhub import ClientHub
-from .publisher_rabbit import PublisherRabbit
+from pyfinder.core import  ClientHub, PublisherRabbit
 import logging
 import docker
 import json
