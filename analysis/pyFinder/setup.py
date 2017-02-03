@@ -11,12 +11,11 @@ with open('LICENSE') as f:
 setup(
     name='pyfinder',
     version='0.0.1',
-    description='Crawler and scanner definition of docker finder project',
+    description='DockerFinder SDK',
     long_description=readme,
     author='Davide neri',
-    author_email='davideneri18@gmail.com',
-    url='',
+    author_email='davide.neri@di.unipi.it',
+    url='https://github.com/di-unipi-socc/DockerFinder',
     license=license,
     packages=find_packages(exclude=('docs'))
 )
-status

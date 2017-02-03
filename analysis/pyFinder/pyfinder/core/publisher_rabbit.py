@@ -1,5 +1,4 @@
 import pika
-from pyfinder import utils
 import logging
 
 

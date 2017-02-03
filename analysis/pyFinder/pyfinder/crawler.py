@@ -1,12 +1,11 @@
-import json
-import pickle
-from .publisher_rabbit import PublisherRabbit
-from .client_images_service import ClientImages
-from .client_dockerhub import ClientHub
 import logging
 import random
+import json
+import pickle
+from pyfinder.core import ClientImages, PublisherRabbit, ClientHub
 
-"""The module contains the *Crawler* implementation."""
+
+"""The module contains the source code of the *Crawler*."""
 
 
 class Crawler:

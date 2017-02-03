@@ -1,17 +1,16 @@
 import docker
 import json
 import docker.errors
-from subprocess import Popen, PIPE, STDOUT
 import re
-from .client_images_service import ClientImages
-from .client_dockerhub import ClientHub
-from .client_software import ClientSoftware
-from .consumer_rabbit import ConsumerRabbit
-from pyfinder.model.image import Image
 import logging
 import datetime
 import sys
-"""This module contains the *Scanner* implementation."""
+
+from pyfinder.core import ClientImages, ClientHub, ConsumerRabbit, ClientSoftware
+from pyfinder.model.image import Image
+
+
+"""This module contains the source code of the  *Scanner*."""
 
 class Scanner:
     def __init__(self, amqp_url='amqp://guest:guest@127.0.0.1:5672', exchange=None, queue=None, route_key=None,
