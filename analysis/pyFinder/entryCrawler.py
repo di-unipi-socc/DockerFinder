@@ -46,7 +46,7 @@ if __name__ == '__main__':
         crawler.run(num_samples = None if args['--si'] == "None" else int(args['--si']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
                     from_page=None if args['--fp'] == "None"  else int(args['--fp']),
-                    at_random=True if args['--random'] =="True" else False,
+                    at_random=True if args['--random'] == "True" else False,
                     force_from_page= True if args['--force-page'] =="True" else False
                     )
 
