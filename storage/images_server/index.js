@@ -151,8 +151,8 @@ app.get('/', function (req, res) {
 });
 
 
-app.use('/search', require('./routes/search'))
-//app.use('/search', require('./routes/search-paginated'))
+//app.use('/search', require('./routes/search'))
+app.use('/search', require('./routes/search-paginated'))
 app.use('/api', require('./routes/api'));
 
 // development error handler
