@@ -257,9 +257,7 @@ class Scanner:
 
     def version_from_regex(self, container_id, command, regex):
         try:
-
             output = self.run_command(container_id, command)
-
             p = re.compile(regex)
             match = p.search(output)
             if match:

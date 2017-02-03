@@ -210,6 +210,30 @@ and *bash 4.3* installed, the query submitted can be the following:
 ```
 GET /search?python=3.4&bash=4.3
 ```
+
+The response is a JSON of the form:
+```
+{
+  "count": {Number},  // total number of documnets matching the query
+  "page":{number},    // the page number submitted
+  "limit":{Number},   // number of results per page submitted
+  "pages":{pages},    // the total pages for retrieving all the results
+  "images":           // list of images satisfying the query
+    [
+      {Image},
+      {Image}
+    ]  
+}
+```
+### filter the results
+
+| Example             | Description                                                                                       |
+|-------------------------|---------------------------------------------------------------------------------------------------|
+| GET /search?page=<x>    | Returns the page number X            |
+| GET /search?limit=<Y>   | Limit as Y the number returned in a single page |
+| GET /search?sort=<pulls | -pulls | stars | -stars >   | Sorts the results by pull or stars |
+
+
 User can filter the results of the previous query example by adding
 additional parameters.
 
