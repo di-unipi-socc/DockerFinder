@@ -61,7 +61,7 @@ export class ImagesSearchComponent implements  OnInit {
     }
 
     ngAfterViewInit(): void{
-      console.log("CALLED NGAFTERVIEW INIT")
+    //  console.log("CALLED NGAFTERVIEW INIT")
       let param = this.imageService.getSearchQueryParameters()
       console.log(param.toString())
 

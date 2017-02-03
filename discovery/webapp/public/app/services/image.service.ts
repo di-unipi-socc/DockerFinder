@@ -26,12 +26,18 @@ export class ImageService {
         this.headers.append('Accept', 'application/json');
   }
 
-  getImages(): Promise<Image[]>{
-    return this.http.get(this.imagesUrl)
+//  getImages(): Promise<Image[]>{
+  getImages(page:number = 1): Promise<>{
+       return this.http.get(this.imagesUrl+"&page="+page)
                     . toPromise()
-                    .then(response => response.json())// as Image[])
+                    .then(response => response.json())
+                    // count: total number od images taht match the result
+                    // pages: totalnumber of pages
+                    // page:  the number
+                    // limit: number of images per size
+                    // images: array of images (currently)
                      //.then(response => response.json())//.data) as Image[])
-                     .catch(this.handleError);
+                    .catch(this.handleError);
   }
 
   getImage(id:string){
@@ -48,6 +54,7 @@ export class ImageService {
           .catch(this.handleError)
 
   }
+
 
   getSearchQueryParameters(): URLSearchParams{
     let params = new URLSearchParams(this.searchQueryString);
