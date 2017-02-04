@@ -8,7 +8,7 @@ import { Image } from '../models/image';
 import { Configuration } from '../app.constants';
 
 
-import {Http,Response, Headers} from "@angular/http";
+import {Http,Response, URLSearchParams,Headers} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 
 @Injectable()
@@ -27,28 +27,28 @@ export class ImageService {
   }
 
 //  getImages(): Promise<Image[]>{
-  getImages(page:number = 1): Promise<>{
-       return this.http.get(this.imagesUrl+"&page="+page)
-                    . toPromise()
-                    .then(response => response.json())
-                    // count: total number od images taht match the result
-                    // pages: totalnumber of pages
-                    // page:  the number
-                    // limit: number of images per size
-                    // images: array of images (currently)
-                     //.then(response => response.json())//.data) as Image[])
-                    .catch(this.handleError);
-  }
+  // getImages(page:number = 1): Promise<>{
+  //      return this.http.get(this.imagesUrl+"&page="+page)
+  //                   . toPromise()
+  //                   .then(response => response.json())
+  //                   // count: total number od images taht match the result
+  //                   // pages: totalnumber of pages
+  //                   // page:  the number
+  //                   // limit: number of images per size
+  //                   // images: array of images (currently)
+  //                    //.then(response => response.json())//.data) as Image[])
+  //                   .catch(this.handleError);
+  // }
 
-  getImage(id:string){
-        return this.getImages()
-            .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
+  // getImage(id:string){
+  //       return this.getImages()
+  //           .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
+  //
+  // }
 
-  }
-
-  searchImages(queryString: string): Promise<Image[]>{
+  searchImages(queryString: string): Promise<any>{
       this.searchQueryString =  queryString
-      return this.http.get(this.searchUrl+queryString)
+      return this.http.get(this.searchUrl + queryString)
           .toPromise()
           .then(response => response.json())
           .catch(this.handleError)
@@ -56,10 +56,9 @@ export class ImageService {
   }
 
 
-  getSearchQueryParameters(): URLSearchParams{
+  getSearchQueryParameters(): URLSearchParams {
     let params = new URLSearchParams(this.searchQueryString);
-    //console.log(params.get('sort') +" ::::");
-    return  params //this.searchQueryString
+    return params;
   }
 
     private extractData(res: Response) {

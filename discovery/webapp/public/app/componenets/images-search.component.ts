@@ -1,7 +1,7 @@
 /**
  * Created by dido on 7/10/16.
  */
-import { Component, Input } from '@angular/core';
+import {Component, OnInit, Input}      from '@angular/core';
 
 import {ImageService} from '../services/image.service'
 import {SoftwareService} from '../services/software.service'

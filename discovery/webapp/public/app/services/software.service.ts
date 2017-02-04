@@ -25,26 +25,26 @@ export class SoftwareService {
         this.headers.append('Accept', 'application/json');
   }
 
-  getSoftware(): Promise<Image[]>{
+  getSoftware(): Promise<Image[]> {
     return this.http.get(this.imagesUrl)
                     . toPromise()
                      .then(response => response.json())//.data)
                      .catch(this.handleError);
   }
 
-  getImage(id:string){
-        return this.getImages()
-            .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
+  // getImage(id:string){
+  //       return this.getImages()
+  //           .then(images => images.filter(image =>image._id === id)[0]);//[0]);===id
+  //
+  // }
 
-  }
-
-  searchImages(queryString: string): Promise<Image[]>{
-      return this.http.get(this.searchUrl+queryString)
-          .toPromise()
-          .then(response => response.json().images)
-          .catch(this.handleError)
-
-  }
+  // searchImages(queryString: string): Promise<Image[]>{
+  //     return this.http.get(this.searchUrl+queryString)
+  //         .toPromise()
+  //         .then(response => response.json().images)
+  //         .catch(this.handleError)
+  //
+  // }
 
     private extractData(res: Response) {
         let body = res.json();

@@ -16,7 +16,6 @@ import {ToMegabytes } from '../filters/to-megabytes.pipe';
 import { routing } from '../routes/app.routes';
 import {DashboardComponent} from "./dashboard.component";
 import {SoftwareService} from "../services/software.service";
-import {PagerService} from "../services/pager.service";
 
 
 @NgModule({
@@ -36,7 +35,6 @@ import {PagerService} from "../services/pager.service";
   providers: [
      ImageService,
       SoftwareService,
-      PagerService,
       Configuration,
   ],
   bootstrap:    [ AppComponent ]

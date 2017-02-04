@@ -7,7 +7,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Image } from '../models/image';
 import {ImageService} from "../services/image.service";
 
-import {PagerService } from '../services/pager.service';
 
 @Component({
     selector: 'my-images',
@@ -102,8 +101,7 @@ export class ImagesComponent implements OnInit {
 
     constructor(
         private imageService: ImageService,
-        private route: ActivatedRoute,
-        private pagerService: PagerService  ) {
+        private route: ActivatedRoute ) {
     }
 
     ngOnInit(): void {
