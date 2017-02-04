@@ -1,16 +1,17 @@
 {
   "name": "webapp",
   "version": "1.0.0",
-   "main": "server.js",
+  "main": "server.js",
   "scripts": {
     "postinstall": "cd public && npm install",
     "start": "concurrently \"npm --prefix ./public run tsc:w\" \"nodemon .\""
-
   },
   "license": "ISC",
   "dependencies": {
+    "@types/lodash": "^4.14.52",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "lodash": "^4.17.4",
     "mongoose": "^4.5.4",
     "node-restful": "^0.2.5"
   },

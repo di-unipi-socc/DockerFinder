@@ -9,9 +9,6 @@ import {ImageService} from "../services/image.service";
 
 import {PagerService } from '../services/pager.service';
 
-
-//import * as _ from 'underscore';
-
 @Component({
     selector: 'my-images',
     template: `
@@ -30,28 +27,31 @@ import {PagerService } from '../services/pager.service';
           <img src="app/images/loader.gif" width="70px">
         </div>
 
-        <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt"> {{count}} images found !!!</div>
+        <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt">
+
+         <div>{{pager.count}} images found </div>
 
         <!-- pager-->
-        <ul [hidden]="hideCount" class="pagination">
+        <ul [hidden]="hideCount" style="font-size:14" class="pagination">
                 <li [ngClass]="{disabled:pager.currentPage === 1}">
-                    <a (click)="setPage(1)">First</a>
+                    <a (click)="getPageImages(1)">First</a>
                 </li>
                 <li [ngClass]="{disabled:pager.currentPage === 1}">
-                    <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+                    <a (click)="getPageImages(pager.currentPage - 1)">Previous</a>
                 </li>
                 <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
-                    <a (click)="setPage(page)">{{page}}</a>
+                    <a (click)="getPageImages(page)">{{page}}</a>
                 </li>
                 <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
-                    <a (click)="setPage(pager.currentPage + 1)">Next</a>
+                    <a (click)="getPageImages(pager.currentPage + 1)">Next</a>
                 </li>
                 <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
-                    <a (click)="setPage(pager.totalPages)">Last</a>
+                    <a (click)="getPageImages(pager.totalPages)">Last</a>
                 </li>
           </ul>
+        </div>
 
-        <div class="row-image" *ngFor="let image of pagedImages"  (click)="onSelect(image)">
+        <div class="row-image" *ngFor="let image of pager.pagedImages"  (click)="onSelect(image)">
 
             <img src="app/images/docker.png" style="width:70px" class="row-image-group" alt="">
 
@@ -84,18 +84,16 @@ export class ImagesComponent implements OnInit {
     searchApi: string;
     //showLoading:boolean =  True;
 
-    @Input()
-    pagedImages: Image[];
-
-    count = 0;
+    //count = 0;
 
     // array of all items to be paged
     //private allItems: any[];
 
     // pager object
     pager: any = {
+      count :0,
+      pagedimages: []
       currentPage : 1,
-      pageSize: 10
     };
 
     // paged items
@@ -109,57 +107,36 @@ export class ImagesComponent implements OnInit {
     }
 
     ngOnInit(): void {
+      console.log (this.route.params)
         this.route.params.forEach((params: Params) => {
             //console.log(params);
             this.searchApi = params['parm'];
-
-        //    this.searchApi + "&page="+ 1;
-            // let search= +params['id'];
-            this.imageService.searchImages(this.searchApi+ "&page="+ 1)
-                .then(resImages => {
-                    //console.log(resImages);
-                    //count,pages,page, limit, images =[list of images]
-                    if (resImages.count > 0) {
-                        this.pagedImages = resImages.images;
-
-                        this.count = resImages.count;
-
-                        this.pager.totalPages = resImages.pages
-                        this.pager.pages = this.getIntermediatePages(resImages.pages, this.pager.currentPage)
-
-                        this.hideCount = false;
-                        console.log(resImages);
-                    }
-                    else{
-                        this.count = resImages.count;
-                        this.hideCount = false;
-                    }
-                });
-
+            this.getPageImages(1):
         });
     }
 
-    setPage(page: number){
+    getPageImages(page: number){
       console.log("submitted page: "+ page)
       if (page < 1 || page > this.pager.totalPages) {
             return;
       }
-      //this.searchApi + "&page="+page;
-      // let search= +params['id'];
       this.imageService.searchImages(this.searchApi + "&page="+page)
           .then(resImages => {
-              if (resImages.count > 0) {
-                  this.pagedImages = resImages.images;
-                    this.pager.totalPages = resImages.pages;
-                    this.pager.currentPage = page;
-                      this.pager.pages = this.getIntermediatePages(resImages.pages, page);
 
+              if (resImages.count > 0) {
+                  //this.pagedImages = resImages.images;
+
+                  this.pager.count = resImages.count;
+                  this.pager.pagedImages =  resImages.images
+                  this.pager.totalPages = resImages.pages;
+                  this.pager.currentPage = page;
+                  this.pager.pages = this.getIntermediatePages(resImages.pages, page);
 
                   this.hideCount = false;
                   console.log(resImages);
               }
               else{
-                  this.count = resImages.count;
+                  this.pager.count = resImages.count;
                   this.hideCount = false;
               }
           });
@@ -199,12 +176,16 @@ export class ImagesComponent implements OnInit {
       return this.range(startPage, endPage + 1)
     }
 
-    range(start, count) {
-         return Array.apply(0, Array(count))
-           .map(function (element, index) {
-             return index + start;
-         });
-       };
+    range(start, end) {
+      return Array(end - start + 1).fill().map((_, idx) => start + idx)
+    }
+
+    // range(start, count) {
+    //      return Array.apply(0, Array(count))
+    //        .map(function (element, index) {
+    //          return index + start;
+    //      });
+    //    };
 
 
 }
