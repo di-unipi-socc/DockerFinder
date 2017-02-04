@@ -55,7 +55,7 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 - *pulls >= 20*.
 
 <div  align="center">
-<img src="./docs/df2.gif" width="500">
+<img src="./docs/df2.gif" width="700">
 </div>
 
 
