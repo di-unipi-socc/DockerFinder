@@ -92,7 +92,7 @@ export class ImagesComponent implements OnInit {
     // pager object
     pager: any = {
       count :0,
-      pagedimages: []
+      pagedimages: [],
       currentPage : 1,
     };
 
@@ -111,7 +111,7 @@ export class ImagesComponent implements OnInit {
         this.route.params.forEach((params: Params) => {
             //console.log(params);
             this.searchApi = params['parm'];
-            this.getPageImages(1):
+            this.getPageImages(1);
         });
     }
 
