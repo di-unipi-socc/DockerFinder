@@ -94,18 +94,23 @@ images by  submit multi-attribute queries thorugh a GUI or RESTful APIs (*Search
 <img src="./docs/architecture.png" width="500">
 </div>
 
-## DockerFinder deployments
-The microservice-based architecture of Docker Finder is
-deployed as a multi-container Docker application (figure)  Each service is shippend within a Docker image (represented as boxes) and the protocol communications are represented as dashed lines (e.g. HTTP, AMQP, mongodb).
+# Getting started
+Docker Finder can be deployed as a multi-container Docker application. The microservice-based architecture of Docker Finder is
+deployed as a multi-container Docker application (figure).
+
+In order to deploy Docker Finder (locally) the requirements are the following:
+
+ - [**Docker engine >= 1.12**](https://docs.docker.com/engine/installation/) 
+ - [**Docker Compose >= 1.9.0 **](https://docs.docker.com/compose/install/)
+
+Each service is shippend within a Docker image (represented as boxes) and the protocol communications are represented as dashed lines (e.g. HTTP, AMQP, mongodb).
 
 <div align="center">
 <img src="./docs/architecture_docker.png" width="500">
 </div>
 
 ### Docker Compose - Single-host deployment
-
-The guide assumes you have the  [Docker Engine](https://docs.docker.com/engine/installation/) and  [*Docker Compose*](https://docs.docker.com/compose/install/) installed in your local machine
-
+Docker Finder can be runned locally as a multi-container Docker application using *Docker Compose*.
 
 In order to run **DockerFinder** into your local host, copy, paste, and tun  the following command.
 
@@ -117,6 +122,7 @@ docker-compose up -d
 
 It starts all the services of **DockerFinder** into your local host *127.0.0.1*.
 
+Every service can be reached:
 - [GUI  (port 80)](http://127.0.0.0.1/dockerfinder)
 - [Images API (port 3000)](http://127.0.0.1:3000/api/images)
 - [Software API (port 3001)](http://127.0.0.1:3001/api/software)
