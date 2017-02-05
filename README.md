@@ -2,9 +2,13 @@
 
 #  DockerFinder: Multi-attribute search of Docker images
 
+[![Join the chat at https://gitter.im/di-unipi-socc/DockerFinder](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Department of Computer Science, University of Pisa.
 
 Davide Neri,  davide.neri@di.unipi.it
+
+[![Gitter](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Why DockerFinder ?
 
@@ -55,7 +59,7 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 - *pulls >= 20*.
 
 <div  align="center">
-<img src="./docs/df_gif.gif" width="500">
+<img src="./docs/df2.gif" width="700">
 </div>
 
 
