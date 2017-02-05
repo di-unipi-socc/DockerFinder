@@ -8,8 +8,6 @@ Department of Computer Science, University of Pisa.
 
 Davide Neri,  davide.neri@di.unipi.it
 
-[![Gitter](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Why DockerFinder ?
 
 Docker only permits looking for images by specifying a term ,
