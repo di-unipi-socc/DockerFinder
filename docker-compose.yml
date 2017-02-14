@@ -1,23 +1,19 @@
-version: "2"
+version: "3"
 
-# The docker-compose.yml file defines eigth services forming
-# the multi-container Docker  application of DockerFinder
+# The docker-compose.yml file defines 8 services of DockerFinder
 # The services are divided in three groups:
-#               1) analysis: crawler, scanner, rabbitmq
-#               2) discovery: webapp, software-server, sotware_db
-#               3) storage::  images_server, images_db
-
-
+#    1) analysis: crawler, scanner, rabbitmq
+#    2) discovery: webapp, software-server, sotware_db
+#    3) storage:: images_server, images_db
 
 services:
 
-#####################################################
 ###############   ANALYSIS PHASE ####################
-#####################################################
   crawler:
+    image: diunipisocc/docker-finder:crawler
     build:
-      context: analysis
-      dockerfile: ./Dockerfile_crawler
+     context: analysis
+     dockerfile: ./Dockerfile_crawler
     command: [crawl,'--save-url=/data/crawler/lasturl.txt',
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
@@ -31,6 +27,10 @@ services:
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
+    deploy:
+      placement:
+        constraints:
+            - node.hostname==swarm-manager
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -40,8 +40,13 @@ services:
       - 8082:15672
     volumes:
       - /var/lib/rabbitmq
+    deploy:
+      placement:
+        constraints:
+            - node.hostname==swarm-manager
 
   scanner:
+    image: diunipisocc/docker-finder:scanner
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
@@ -52,57 +57,99 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  checker:
-      build:
-        context: analysis
-        dockerfile: ./Dockerfile_checker
-      #command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log','--images-url=http://images_server:3000/api/images/', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
-      command: verify
-      volumes:
-         - /dockerfinder/checker/log:/data/crawler/log
+    deploy:
+      mode: replicated
+      replicas: 10
+      placement:
+        constraints:
+            - node.hostname != swarm-manager
+      restart_policy:
+          condition: on-failure
 
-#####################################################
-###############   DISCOVERY PHASE ####################
-#####################################################
+      # update_config:
+      #   parallelism: 2
+      #   delay: 10s
+      # restart_policy:
+      #   condition: on-failure
 
+
+#   checker:
+#       build:
+#         context: analysis
+#         dockerfile: ./Dockerfile_checker
+#       #command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log','--images-url=http://images_server:3000/api/images/', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
+#       command: verify
+#       volumes:
+#          - /dockerfinder/checker/log:/data/crawler/log
+#
+# #####################################################
+# ###############   DISCOVERY PHASE ####################
+# #####################################################
+#
   software_server:
     build: discovery/softwareService/software_server
+    image: diunipisocc/docker-finder:software_server
+    hostname: software_server
     ports:
       - "3001:3001"
     depends_on:
       - software_db
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==swarm-manager
 
   software_db:
     image: mongo:3
+    hostname: software_db
     volumes:
       - /data/db  # /data/db is the deafult directory where mogno stores the databases.
+    deploy:
+       placement:
+          constraints:
+             - node.hostname == swarm-manager
 
   webapp:
-    build: discovery/webapp/
-    restart: on-failure:3
-    ports:
-      - 80:80
-    volumes:
-      - /home/dido/github/DockerFinder/discovery/webapp:/code
+     build: discovery/webapp/
+     image: diunipisocc/docker-finder:webapp
+     restart: on-failure:3
+     ports:
+       - 80:80
+     volumes:
+       - /home/dido/github/DockerFinder/discovery/webapp:/code
+     deploy:
+        placement:
+            constraints:
+              - node.hostname == swarm-manager
 
 
-#####################################################
-###############   STORAGE PHASE ####################
-#####################################################
-
+  # #####################################################
+  # ###############   STORAGE PHASE ####################
+  # #####################################################
   images_server:
-    build: storage/images_server
-    restart: on-failure:3
-    ports:
-      - "3000:3000"
-    depends_on:
-      - images_db
+      build: storage/images_server
+      image: diunipisocc/docker-finder:images_server
+      hostname: images_server
+      restart: on-failure:3
+      ports:
+        - "3000:3000"
+      depends_on:
+        - images_db
+      deploy:
+         placement:
+            constraints:
+               - node.hostname == swarm-manager
 
   images_db:
-    image: mongo:3
-    restart: on-failure:3
-    volumes:
-      - /data/db
+      image: mongo:3
+      restart: on-failure:3
+      hostname: images_db
+      volumes:
+        - /data/db
+      deploy:
+         placement:
+            constraints:
+               - node.hostname == swarm-manager
 
     # /data/db is the deafult directory where mogno container store the databases.
 
