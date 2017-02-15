@@ -50,8 +50,8 @@ The attributes for which is possible to search an image are:
   2. **Size**.
   3. **Stars**.
   4. **Pulls**.
-  
-  
+
+
 ## GUI of Docker Finder
 
 The GUI of DockerFinder is running on [**http://black.di.unipi.it/dockerfinder**](http://black.di.unipi.it/dockerfinder)
@@ -100,7 +100,7 @@ deployed as a multi-container Docker application (figure).
 
 In order to deploy Docker Finder (locally) the requirements are the following:
 
- - [**Docker engine >= 1.12**](https://docs.docker.com/engine/installation/) 
+ - [**Docker engine >= 1.12**](https://docs.docker.com/engine/installation/)
  - [**Docker Compose >= 1.9.0 **](https://docs.docker.com/compose/install/)
 
 Each service is shippend within a Docker image (represented as boxes) and the protocol communications are represented as dashed lines (e.g. HTTP, AMQP, mongodb).
@@ -138,14 +138,30 @@ $ docker-compose stop
 
 ### Docker Swarm - Multiple-host deployment
 
+The requirements for deploying DockeFinder as a swarm are:
+- `docker >= 1.13`
+- `docker-compose >= 1.10`
+- `docker-machine >= 0.9`
+- `Virtualbox > 5`
 
-The initializarion script `init-all.sh` does:
+DockerFinder is deployed in 3 VMs using *virtualBox*, where :
+- *swarm-manger* is the Vm where the core services of Docker Finder are executed : *crawler*, *rabbitmq*,*images_server*, *images_db*, *software_server*, *software_db*,   *webapp*.
+- *worker-1*: is the VM where the *scanner* s are executed.
+- *worker-2*: is the VM here the *scanner* s are executed.
 
-- initialize an overlay network (if it does not exist).
+The script `init-all.sh`:
+- creates 3 virtualbox VMs with `docker-machine` tool and create a swarm with the `docker swarm ` command, where:
+      - `swarm-manager`: is the manager of the swarm
+      - `worker-1`: is the first owrker
+      - `worker-2`: is the second worker.
+
+
+
+<!-- - initialize an overlay network (if it does not exist).
 - *Build* and *push* the images into [Docker Hub- diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/) (must be looged-in).
 
 The `start_all.sh` script:
 - *create* the services by downloading the images from [Docker Hub-diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/)
 - *run* the services:
     - **Crawler**, **RabbiMQ**, **images_server**, **images_db**,**software_server**,**software_db**  ,**monitor**: run in the same host with a constraint  label.
-    - **scanner** can run in a any host that are partecipating in the swarm.
+    - **scanner** can run in a any host that are partecipating in the swarm. -->

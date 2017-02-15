@@ -71,7 +71,6 @@ docker-machine ls
 # initialize swarm mode and create a manager
 echo "======> Initializing first swarm manager ..."
 X=$(docker-machine ssh $MANAGER_NODE_NAME "docker swarm init --listen-addr $(docker-machine ip $MANAGER_NODE_NAME) --advertise-addr $(docker-machine ip $MANAGER_NODE_NAME)")
-echo "kkdjadk $X"
 
 
 # get manager and worker tokens
