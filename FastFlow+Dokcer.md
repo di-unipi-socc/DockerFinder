@@ -23,8 +23,15 @@ With the `update` command it is possible to change the number of CPUs at runtime
 
 IN order to test if a container detects the CPUs also with the `--cpuset-cpus` flag.
 
-`docker run -ti --cpuset-cpus=2 ubuntu grep proc cat /proc/cpuinfo`
+`docker run -ti --cpuset-cpus=2 ubuntu cat /proc/cpuinfo | grep processor`
 
+The output prints the number of processors:
+```
+processor	: 0
+processor	: 1
+processor	: 2
+processor	: 3
+```
 
 ### Conclusion
 1. *elasticity*: (resolved) with the `update` command and the `--cpuset-cpus` option the resources (e.g. number of CPUs) of a FF program executing in a Docker container can be dynamically allocated.
