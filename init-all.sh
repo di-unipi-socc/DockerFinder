@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 # create folder for checker log
 mkdir -p /dockerfinder/checker/log
 
