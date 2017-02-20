@@ -152,11 +152,27 @@ DockerFinder is deployed in 3 VMs using *virtualBox*, where :
 The script `init-all.sh`:
 - creates 3 virtualbox VMs with `docker-machine` tool and create a swarm with the `docker swarm ` command, where:
       - `swarm-manager`: is the manager of the swarm
-      - `worker-1`: is the first owrker
+      - `worker-1`: is the first worker
       - `worker-2`: is the second worker.
 
+#### How to run
 
 
+```
+./init-all.sh
+```
+
+```
+eval $(docker-machine env swarm-manager)
+```
+
+ ```
+ docker stack deploy --compose-file=docker-compose.yml df
+ ```
+
+```
+docker stack ps df
+  ```
 <!-- - initialize an overlay network (if it does not exist).
 - *Build* and *push* the images into [Docker Hub- diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/) (must be looged-in).
 
