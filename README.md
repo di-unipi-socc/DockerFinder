@@ -78,8 +78,6 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 </div>
 
 
-
-
 ## The microservice-based architecture DockerFinder
 
 The figure below details the microservice-based architecture of Docker Finder. The microservice (represented as rectangles) are divided in the three three main functionalities carried out by Docker Finder:
@@ -150,7 +148,7 @@ DockerFinder is deployed in 3 VMs using *virtualBox*, where :
 - *worker-2*: is the VM here the *scanner* s are executed.
 
 The script `init-all.sh`:
-- creates 3 virtualbox VMs with `docker-machine` tool and create a swarm with the `docker swarm ` command, where:
+- creates 3 virtualbox VMs with the `docker-machine` tool and initialize a swarm with the `docker swarm` command, composed by three nodes:
       - `swarm-manager`: is the manager of the swarm
       - `worker-1`: is the first worker
       - `worker-2`: is the second worker.
@@ -161,18 +159,25 @@ The script `init-all.sh`:
 ```
 ./init-all.sh
 ```
-
+Enter in the `swarm-manager` machine:
 ```
 eval $(docker-machine env swarm-manager)
 ```
-
+Deploy the services:
  ```
  docker stack deploy --compose-file=docker-compose.yml df
  ```
 
+Monitor the services:
 ```
 docker stack ps df
-  ```
+```
+
+Stop the services:
+```
+docker stack rm df
+```
+
 <!-- - initialize an overlay network (if it does not exist).
 - *Build* and *push* the images into [Docker Hub- diunipisocc](https://hub.docker.com/r/diunipisocc/docker-finder/tags/) (must be looged-in).
 
