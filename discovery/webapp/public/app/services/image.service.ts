@@ -13,9 +13,9 @@ import {Observable} from "rxjs/Rx";
 
 @Injectable()
 export class ImageService {
-  private imagesUrl :string; //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
-  private searchUrl = '/search?';// 'http://127.0.0.1:8000/search?';
-  private searchQueryString:string = ""; // the query string used ti restore the same view inthe dashboard view
+  private imagesUrl :string;        //= 'http://127.0.0.1:8000/api/images'; //'app/images.json'
+  private searchUrl = '/search?';     // 'http://127.0.0.1:8000/search?';
+  private searchQueryString:string = ""; // the query string used ti restore the same view in the dashboard view
   private headers: Headers;
 
 
@@ -55,6 +55,21 @@ export class ImageService {
 
   }
 
+
+  getTotalImages(): number {
+  return this.http.get("http://images_server:3000/api/images") //this.imagesUrl+"&page="+page)
+                   . toPromise()
+                   .then(response => response.json()['count'])
+
+                   // count: total number od images taht match the result
+                   // pages: totalnumber of pages
+                   // page:  the number
+                   // limit: number of images per size
+                   // images: array of images (currently)
+                   //.then(response => response.json())//.data) as Image[])
+                   .catch(this.handleError);
+
+  }
 
   getSearchQueryParameters(): URLSearchParams {
     let params = new URLSearchParams(this.searchQueryString);

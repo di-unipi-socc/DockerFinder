@@ -28,7 +28,7 @@ import {ImageService} from "../services/image.service";
 
         <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt">
 
-         <div>{{pager.count}} images found </div>
+         <div>{{pager.count}} images found</div>
 
         <!-- pager-->
         <ul [hidden]="hideCount" style="font-size:14" class="pagination">
@@ -88,6 +88,8 @@ export class ImagesComponent implements OnInit {
     // array of all items to be paged
     //private allItems: any[];
 
+    totImages: 0 //tot images stored into the database.
+
     // pager object
     pager: any = {
       count :0,
@@ -114,6 +116,7 @@ export class ImagesComponent implements OnInit {
     }
 
     getPageImages(page: number){
+
       console.log("submitted page: "+ page)
       if (page < 1 || page > this.pager.totalPages) {
             return;
