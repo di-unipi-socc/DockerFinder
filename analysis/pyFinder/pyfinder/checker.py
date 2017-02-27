@@ -83,6 +83,9 @@ class Checker:
             connection.close()
 
     def check_images(self):
+        """
+        scan the images.
+        """
         checked = {}
         tot_dockerfinder_images = 0
         removed = 0
@@ -131,9 +134,10 @@ class Checker:
 
     def verify_images(self):
         """
-        Resolve the problem to have :
-            is_private = null,
-            is_automated = nul
+        Scan all the images in the local databse and fix the problems
+           1) having the ".go" or "." version of a software.
+           2) is_private = null,
+           3) is_automated = nul
         by updating the boolean value from Doker Hub.
 
         """
