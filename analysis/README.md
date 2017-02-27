@@ -53,7 +53,12 @@ for (j=1 ; j <= n; j++)
  ```
 
 
+## Cheker
 
+Che checker provides consistency  among the local description on the images and the remote images (within the Docker Hub).
+In particular it does the following procedure:
+ 1. if a local image is deleted from the remote registry it delete it
+ 2. If the last update of the image (within the remote registry) is less than the last scan, it queues the image to the rabbitmq (starts a new analysis of the image)
 <!--
 
 problems:

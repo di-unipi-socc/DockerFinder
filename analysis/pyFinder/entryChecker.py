@@ -6,7 +6,7 @@ import logging.config
 __doc__= """Checker.
 
 Usage:
-  Checker.py run [--interval=<10>] [--path-logging=</data/crawler/log/stats.log>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images/>][--hub-url=<https://hub.docker.com/>]
+  Checker.py run [--interval=<10>] [--path-logging=</data/crawler/log/stats.log>] [--key=<images.scan>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--ex=<dofinder>] [--queue=<images>] [--images-url=<http://images_server:3000/api/images>][--hub-url=<https://hub.docker.com/>]
   Checker.py verify
   Checker.py (-h | --help)
   Checker.py --version
@@ -19,7 +19,7 @@ Options:
   --ex=EXCHANGE         The exchange name of the rabbitMQ       [default: dofinder]
   --queue==QUEUE        Queue name of the rabbitMQ server       [default: images]
   --key==KEY            Routing key used by the rabbitMQ server [default: images.scan]
-  --images-url=IMAGES_URL      The url of the images service    [default: http://images_server:3000/api/images/]
+  --images-url=IMAGES_URL      The url of the images service    [default: http://images_server:3000/api/images]
   --hub-url=HUB-URL            The url of the DockerHub         [default: https://hub.docker.com/]
   --version             Show version.
 """

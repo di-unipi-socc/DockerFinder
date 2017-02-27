@@ -9,7 +9,7 @@ import time
 
 class Checker:
 
-    def __init__(self,  images_url="http://127.0.0.1:3000/api/images/",
+    def __init__(self,  images_url="http://127.0.0.1:3000/api/images",
                         hub_url="https://hub.docker.com/",
                         amqp_url='amqp://guest:guest@127.0.0.1:5672',
                         exchange="dofinder",
