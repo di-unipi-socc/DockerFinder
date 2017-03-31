@@ -5,9 +5,6 @@
 [![Join the chat at https://gitter.im/di-unipi-socc/DockerFinder](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License](http://img.shields.io/badge/license-APACHE-green.svg?style=flat)](https://raw.githubusercontent.com/di-unipi-socc/DockerFinder/master/LICENSE)
 
-<p align="center">
-<img src="./docs/DockerFinder-logo.png" width="300">
-</p>
 
 
 [Department of Computer Science, University of Pisa](https://www.di.unipi.it/en/)
@@ -17,6 +14,11 @@ Author: Davide Neri.
 Contact: davide.neri@di.unipi.it
 
 Try it: [Docker Finder](http://black.di.unipi.it/dockerfinder)
+
+<p align="center">
+<img src="./docs/DockerFinder-logo.png" width="300">
+</p>
+
 
 ## Why DockerFinder ?
 
