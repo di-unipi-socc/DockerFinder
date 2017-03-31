@@ -13,6 +13,11 @@ Contact: davide.neri@di.unipi.it
 
 Try it: [Docker Finder](http://black.di.unipi.it/dockerfinder)
 
+
+<div align="center">
+<img src="./docs/DockerFinder-logo.jpg" width="600">
+</div>
+
 ## Why DockerFinder ?
 
 Docker only permits looking for images by specifying a term ,
