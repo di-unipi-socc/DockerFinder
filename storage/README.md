@@ -18,6 +18,64 @@ Storage
 |____images-13gen-12250.js: set of 12250 images already analysed by DockerFinder
 ```
 
+## Search API for searching images
+The `/search` interface exposes the GET operation
+that permits looking for (description of) images.
+
+The query syntax is a list of *PAR* and *VALUE* pair separated by *&*.
+
+```
+GET /search?<PAR>=<VALUE>[&<PAR>=<VALUE>]*
+```
+The *PAR* can be:
+- a software distribution to search in the image (e.g., *python*),
+- any parameter namesdlisted in Table of the `GET /api/images`.
+
+The *VALUE* depends on the PAR field.
+- If the *PAR* is a software, the VALUE is the version of the software to search, (e.g. *python=2.7*)
+- otherwise it is the value associated with the query parameters shown Table of the `GET /api/images`.
+
+
+For example, if an user wants to retrieve all the images with *python 3.4*
+and *bash 4.3* installed, the query submitted can be the following:
+
+```
+GET /search?python=3.4&bash=4.3
+```
+
+The response is a JSON of the form:
+```
+{
+  "count": {Number},  // total number of documnets matching the query
+  "page":{number},    // the page number submitted
+  "limit":{Number},   // number of results per page submitted
+  "pages":{pages},    // the total pages for retrieving all the results
+  "images":           // list of images satisfying the query
+    [
+      {Image},
+      {Image}
+    ]  
+}
+```
+### filter the results
+
+| Example             | Description                                                                                       |
+|-------------------------|---------------------------------------------------------------------------------------------------|
+| GET /search?page=\<X\>    | Returns the page number X            |
+| GET /search?limit=\<Y\>   | Limit as Y the number returned in a single page |
+| GET /search?sort=\<pulls\> | -pulls | stars | -stars >   | Sorts the results by pull or stars |
+
+
+User can filter the results of the previous query example by adding
+additional parameters.
+
+
+| Example                                       | Description                                                                                       |
+|-----------------------------------------------|---------------------------------------------------------------------------------------------------|
+| GET /search?python=3.4&bash=4.3&stars_gt=5    | Search images that have python3.4 ans bash 4.3 with a number of stars greater than 5.             |
+| GET /search?python=3.4&bash=4.3&pulls_gte=5   | Search images that have python3.4 ans bash 4.3 with a number of pulls greater than or equal to 5. |
+| GET /search?python=3.4&bash=4.3&size_lt=10000 | Search images that have python3.4 ans bash 4.3 with size less than 10000 bytes.                   |
+
 
 # RESTful API of the images service
 The API is exposed to the port `3000` on the endpoint `/api/images`
@@ -186,60 +244,3 @@ DELETE /api/images/:id
 
 
 
-## Search images
-The `/search` interface exposes the GET operation
-that permitslooking for (description of) images.
-
-The query syntax is a list of *PAR* and *VALUE* pair separated by *&*.
-
-```
-GET /search?<PAR>=<VALUE>[&<PAR>=<VALUE>]*
-```
-The *PAR* can be:
-- a software distribution to search in the image (e.g., *python*),
-- any parameter namesdlisted in Table of the `GET /api/images`.
-
-The *VALUE* depends on the PAR field.
-- If the *PAR* is a software, the VALUE is the version of the software to search, (e.g. *python=2.7*)
-- otherwise it is the value associated with the query parameters shown Table of the `GET /api/images`.
-
-
-For example, if an user wants to retrieve all the images with *python 3.4*
-and *bash 4.3* installed, the query submitted can be the following:
-
-```
-GET /search?python=3.4&bash=4.3
-```
-
-The response is a JSON of the form:
-```
-{
-  "count": {Number},  // total number of documnets matching the query
-  "page":{number},    // the page number submitted
-  "limit":{Number},   // number of results per page submitted
-  "pages":{pages},    // the total pages for retrieving all the results
-  "images":           // list of images satisfying the query
-    [
-      {Image},
-      {Image}
-    ]  
-}
-```
-### filter the results
-
-| Example             | Description                                                                                       |
-|-------------------------|---------------------------------------------------------------------------------------------------|
-| GET /search?page=<x>    | Returns the page number X            |
-| GET /search?limit=<Y>   | Limit as Y the number returned in a single page |
-| GET /search?sort=<pulls | -pulls | stars | -stars >   | Sorts the results by pull or stars |
-
-
-User can filter the results of the previous query example by adding
-additional parameters.
-
-
-| Example                                       | Description                                                                                       |
-|-----------------------------------------------|---------------------------------------------------------------------------------------------------|
-| GET /search?python=3.4&bash=4.3&stars_gt=5    | Search images that have python3.4 ans bash 4.3 with a number of stars greater than 5.             |
-| GET /search?python=3.4&bash=4.3&pulls_gte=5   | Search images that have python3.4 ans bash 4.3 with a number of pulls greater than or equal to 5. |
-| GET /search?python=3.4&bash=4.3&size_lt=10000 | Search images that have python3.4 ans bash 4.3 with size less than 10000 bytes.                   |
