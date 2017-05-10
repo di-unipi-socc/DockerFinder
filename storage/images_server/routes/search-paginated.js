@@ -19,93 +19,94 @@ router.get('/', function(req, res, next) {
 
     // query for retrieve the images with binary name and versions
     var findMatch = {};
-    var sort = {};
-    var addMatch = (key, value, op) => {
+    var sort = {'pulls': -1, 'stars': -1};
+
+    function addMatch(key, value, op) {
         findMatch[value] = {};
         findMatch[value][op] = req.query[key];
         console.log("Size less than equal " + req.query[key]);
-    };
+    }
+    function parseSort(value) {
+        if (value[0] == '-')
+            return [value.substring(1), 1];
+        else
+            return [value, -1];
+    }
 
     for (var key in req.query) {
         switch (key) {
             case 'sort':
+                sort = {};
+                console.log('Sorting by', req.query.sort);
                 switch (req.query.sort) {
                     case 'stars':
-                        console.log("Sorting  by ascending stars.");
-                        sort = {'stars': -1};
-                        break;
                     case '-stars':
-                        console.log("Sorting  by descending stars.");
-                        sort = {'stars': 1};
-                        break;
                     case 'pulls':
-                        console.log("Sorting  by ascending pull.");
-                        sort = {'pulls': -1};
-                        break;
                     case '-pulls':
-                        console.log("Sorting  by descending pull.");
-                        sort = {'pulls': 1};
+                    case 'size':
+                    case '-size':
+                        var [value, order] = parseSort(req.query.sort);
+                        console.log('DEBUG:', value, order)
+                        sort[value] = order;
                         break;
                     default:
-                        var ordering = '-stars -pulls'; //-pull_count
-                        console.log("DEFAULT ordering " + ordering);
-                        sort = ordering;
-                        break;
+                        req.query.sort.forEach((k) => {
+                            var value, order = parseSort(req.query.sort);
+                            sort[value] = order;
+                        });
                 }
                 break;
             case 'size':
-                addMatch(key, '$eq', 'size');
+                addMatch(key, 'size', '$eq');
                 break;
             case 'size_lt':
-                addMatch(key, '$lt', 'size');
+                addMatch(key, 'size', '$lt');
                 break;
             case 'size_gt':
-                addMatch(key, '$gt', 'size');
+                addMatch(key, 'size', '$gt');
                 break;
             case 'size_lte':
-                addMatch(key, '$lte', 'size');
+                addMatch(key, 'size', '$lte');
                 break;
             case 'size_gte':
-                addMatch(key, '$gte', 'size');
+                addMatch(key, 'size', '$gte');
                 break;
             case 'pulls':
-                addMatch(key, '$eq', 'pulls');
+                addMatch(key, 'pulls', '$eq');
                 break;
             case 'pulls_lt':
-                addMatch(key, '$lt', 'pulls');
+                addMatch(key, 'pulls', '$lt');
                 break;
             case 'pulls_gt':
-                addMatch(key, '$gt', 'pulls');
+                addMatch(key, 'pulls', '$gt');
                 break;
             case 'pulls_lte':
-                addMatch(key, '$lte', 'pulls');
+                addMatch(key, 'pulls', '$lte');
                 break;
             case 'pulls_gte':
-                addMatch(key, '$gte', 'pulls');
+                addMatch(key, 'pulls', '$gte');
                 break;
             case 'stars':
-                addMatch(key, '$eq', 'stars');
+                addMatch(key, 'stars', '$eq');
                 break;
             case 'stars_lt':
-                addMatch(key, '$lt', 'stars');
+                addMatch(key, 'stars', '$lt');
                 break;
             case 'stars_gt':
-                addMatch(key, '$gt', 'stars');
+                addMatch(key, 'stars', '$gt');
                 break;
             case 'stars_lte':
-                addMatch(key, '$lte', 'stars');
+                addMatch(key, 'stars', '$lte');
                 break;
             case 'stars_gte':
-                addMatch(key, '$gte', 'stars');
+                addMatch(key, 'stars', '$gte');
                 break;
             default:
                 if (!findMatch.softwares) findMatch.softwares = {$all: []};
                 findMatch.softwares.$all.push({
                     $elemMatch: {
                         software: key,
-                        ver: {
-                            $regex: '^' + req.query[key]
-                        }
+                        ver: {$regex: '^' + req.query[key]}
                     }
                 });
                 break;
