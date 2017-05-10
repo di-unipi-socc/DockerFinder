@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 
     // query for retrieve the images with binary name and versions
     var findMatch = {};
-    var sort = {'pulls': -1, 'stars': -1};
+    var sort = {'stars': -1, 'pulls': -1};
 
     function addMatch(key, value, op) {
         if (!findMatch[value]) findMatch[value] = {};
@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
                         break;
                     default:
                         req.query.sort.forEach((k) => {
-                            var value, order = parseSort(req.query.sort);
+                            var [value, order] = parseSort(k);
                             sort[value] = order;
                         });
                 }
