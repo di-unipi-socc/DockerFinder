@@ -22,9 +22,9 @@ router.get('/', function(req, res, next) {
     var sort = {'pulls': -1, 'stars': -1};
 
     function addMatch(key, value, op) {
-        findMatch[value] = {};
+        if (!findMatch[value]) findMatch[value] = {};
         findMatch[value][op] = req.query[key];
-        console.log("Size less than equal " + req.query[key]);
+        console.log(value + " " + op + " " + req.query[key]);
     }
     function parseSort(value) {
         if (value[0] == '-')
@@ -123,7 +123,7 @@ router.get('/', function(req, res, next) {
         page: (req.query.page) ? Number(req.query.page) : 1,
         limit: (req.query.limit) ? Number(req.query.limit) : 20
     };
-
+    // console.log('DEBUG', JSON.stringify(findMatch), JSON.stringify(options));
     Image.paginate(findMatch, options, function(err, result) {
         if (err) {
             console.log(err);
