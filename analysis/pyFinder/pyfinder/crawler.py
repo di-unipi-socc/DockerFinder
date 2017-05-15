@@ -16,9 +16,20 @@ class Crawler:
                  amqp_url='amqp://guest:guest@127.0.0.1:5672',
                  images_url="http://127.0.0.1:3000/api/images",
                  hub_url="https://hub.docker.com",
-                 path_last_url="/data/crawler/lasturl.txt"
+                 path_last_url="/data/crawler/lasturl.txt",
+
+                 policy = 'stars',
+                 min_stars = 0,
+                 min_pulls = 0,
+                 only_automated = False,
+                 only_official = False
                 ):
 
+        self.policy  = policy
+        self.min_stars =  min_stars
+        self.min_pulls =  min_pulls
+        self.only_automated =  only_automated
+        self.only_official  = only_official
 
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger  initialized")
@@ -28,7 +39,11 @@ class Crawler:
         self.logger.info("RabbitMQ : exchange=" +exchange+", queue="+queue+" route key="+route_key)
 
         # Client of Docker Hub.
-        self.client_hub = ClientHub(docker_hub_endpoint=hub_url, path_last_url=path_last_url)
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url,
+                                    path_last_url=path_last_url,
+                                    policy = policy,
+
+                                     )
 
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
@@ -129,22 +144,21 @@ class Crawler:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ", Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         else:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
-        for list_images in self.client_hub.crawl_images(from_page=from_page,
+        for image in self.client_hub.crawl_images(from_page=from_page,
                                                         page_size=page_size,
                                                         max_images=max_images,
-                                                        force_from_page = force_from_page):
-                                                        #filter_images=self.filter_tag_latest):
+                                                        sort=self.policy,
+                                                        force_from_page = force_from_page,
+                                                        #filter_image_tag=self.filter_tag
+                                                        filter_image_tag=self.filter_toscker
+                                                        ):
 
-            for image in list_images:
-                repo_name = image['repo_name']
-                sent_images += 1
-                yield json.dumps({"name": repo_name})
+                yield image #json.dumps({"name": repo_name})
             self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
             #self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
         self.logger.info("Total num of images sent to queue: {0}".format(str(sent_images)))
 
-
-    def filter_tag_latest(self, repo_name):
+    def filter_latest(self, image_with_tag):
         """
         Filters the images with the *latest* tag.
         An image is sento to the rabbitMQ only of it is new into the local database, otherwise it is
@@ -153,22 +167,28 @@ class Crawler:
         :return: True if the image must be downloaded, Flase if must be discarded
         """
         process_image = False
-        self.logger.debug("[" + repo_name + "] processing image.")
-        list_tags = self.client_hub.get_all_tags(repo_name)
-        #self.logger.info(str(list_tags))
-        if list_tags and 'latest' in list_tags:
-            json_image_latest = self.client_hub.get_json_tag(repo_name, tag='latest')
-            size  =  json_image_latest['full_size']
-            if size and size > 0:
-                if self.client_images.is_new(repo_name):  # the image is totally new
-                    self.logger.debug("[" + repo_name + "]  is new into local database")
-                    process_image = True
-                    self.logger.debug("[" + repo_name + "] selected")
-                else:
-                    self.logger.debug("[" + repo_name + "] already present into local database.")
-                    process_image = False
-                    self.logger.debug("[" + repo_name + "] NOT selected")
-            else:
-                process_image = False
-                self.logger.debug("[" + repo_name + "] not selected")
-        return process_image
+        self.logger.debug("[" + repo_name + "] filtering lates tag processing image.")
+
+        return image_with_tag['tag'] =="latest"
+
+    def filter_toscker(self,image_with_tag):
+
+        # self.policy  = policy
+        # self.min_stars =  min_stars
+        # self.min_pulls =  min_pulls
+        # self.only_automated =  only_automated
+        # self.only_official  = only_official
+
+        select_image = True
+
+        if  image_with_tag['star_count'] < self.min_stars:
+            select_image = False
+        if image_with_tag['pull_count'] < self.min_pulls:
+            select_image = False
+        if self.only_automated:
+            if image_with_tag['is_automated'] != True:
+                select_image = False
+        if self.only_official:
+            if image_with_tag['is_official'] != True
+                select_image = False
+        return select_image

@@ -76,7 +76,7 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, max_images, from_page=1, page_size=100, force_from_page=False, filter_images= lambda repo_name: True):
+    def crawl_images(self, max_images, from_page=1, page_size=100, sort='star', force_from_page=False, filter_image_tag= lambda repo_name: True):
 
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub.
@@ -87,7 +87,7 @@ class ClientHub:
         :return:
         """
         if force_from_page:
-            self.next_url = self.build_search_url(from_page, page_size)
+            self.next_url = self.build_search_url(from_page, page_size, sort)
         elif self.next_url:  # if exist a previous stored url
             self.next_url=  self.get_last_url(self.path_file_url)
         else:
@@ -110,13 +110,21 @@ class ClientHub:
                 res = requests.get(self.next_url)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
-                    list_json_image = self._apply_filter(json_response['results'], filter_function=filter_images)
-                    self.next_url= json_response['next']
-                    temp_images = len(list_json_image)
-                    if temp_images + crawled_images > max_images:
-                        list_json_image = list_json_image[:max_images-crawled_images]
-                    crawled_images += len(list_json_image)
-                    yield list_json_image
+                    for image in json_response['results']:
+                        filtered_image = self._apply_filter(image, filter_function=filter_image_tag)
+                        if filtered_image is not None:
+                            yield filtered_image
+
+
+                        self.next_url= json_response['next']
+                        temp_images = len(list_json_image)
+                        if temp_images + crawled_images > max_images:
+                            list_json_image = list_json_image[:max_images-crawled_images]
+                        crawled_images += len(list_json_image)
+                        #yield list_json_image
+                        # for image in list_json_image:
+                        #     yield image
+
                 else:
                     self.logger.error(str(res.status_code) + " Error response: " + res.text)
             else:
@@ -139,9 +147,6 @@ class ClientHub:
             raise
 
     def get_last_url(self,path):
-        ##return an array of two position:[0] page; [1] page-size
-        try:
-            with open(path, 'r') as f:
                 url = f.read()
                 self.logger.debug("Read last URL from file: "+ url)
                 return url
@@ -151,22 +156,75 @@ class ClientHub:
 
 
 
-    def _apply_filter(self, list_of_json_images, filter_function):
+    def _apply_filter(self, image, ffilter):
         """Filters the *list_of_json_images* applying the *filter_function*.  \n
         The *filter_function* take as input an image name and return  \n
         ``True`` if the image must be mantained, ``False`` if the image must be discarded."""
-        filtered_images = []
-        for image in list_of_json_images:
-            repo_name = image['repo_name']
-            if filter_function(repo_name):
-                filtered_images.append(image)
-            else:
-                self.logger.debug("["+repo_name+"] negative filtered, not taken")
-        return filtered_images
+            repo_name =  image['repo_name']
+            # star_count	0
+            # pull_count	0
+            # repo_owner
+            # short_description	""
+            # is_automated	false
+            # is_official	false
+            # repo_name	"codenergic/theskeleton"
+            # tag :"tag"
+            pulls  =  image['pull_count']
+            stars  =  image['star_count']
+            list_tags = self.client_hub.get_all_tags(repo_name)
+            for tag in list_tags:
+                image_tag = self.client_hub.get_json_tag(repo_name, tag=tag)
+                # full_size	5161543948
+                # images : [
+                        # {
+                        # size	5161543948
+                        # architecture	"amd64"
+                        # variant
+                        # features
+                        # os	"linux"
+                        # os_version
+                        # os_features
+                        # }
+                        #]
+                # id	185394
+                # repository	178608
+                # creator	222338
+                # last_updater	1300638
+                # last_updated	"2017-05-08T04:14:58.422174Z"
+                # image_id
+                # v2:	true
+                size  =  image_tag['full_size']
 
-    def build_search_url(self, page, page_size=10):
+                if size and size > 0 and \
+                   pulls and pulls >= 0 and \
+                   stars and stars >= 0:
+                    image_tag['name'] = "{}:{}".format(repo_name, tag) # name is eault to the tag
+                    image_with_tag = {**image, 'tag':tag, **image_tag} # dictionary with the name info end the tag information
+
+                    if ffilter(image_with_tag)
+                        return image_with_tag
+                    else:
+                        self.logger.debug("Negative filtered, not taken {0} ".format(image_with_tag))
+                        return None
+
+            #filter_function(image)
+            # repo_name = image['repo_name']
+            # if filter_function(repo_name):
+            #     filtered_images.append(image)
+            # else:
+            #     self.logger.debug("["+repo_name+"] negative filtered, not taken")
+
+
+    def build_search_url(self, page, page_size=10, sort="stars"):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
-        params = (('query', '*'), ('page', page), ('page_size', page_size))
+        # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1&ordering=-pull_count
+
+        ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
+        assert (sort in ordering.keys()),"Sort parameter allowed {0}".format(list(ordering.keys()))
+
+        params = (('query', '*'), ('page', page), ('ordering', ordering[sort])('page_size', page_size))
+        # ordering=-star_count TODO : continua da qui.
+
         url_encode = urllib.parse.urlencode(params)
         url_images = self.docker_hub+"/v2/search/repositories/?"+url_encode
         return url_images

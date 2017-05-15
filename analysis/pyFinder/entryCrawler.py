@@ -3,6 +3,12 @@ from pyfinder import Tester
 from docopt import docopt
 from os import path
 import logging.config
+
+ # policy = 'stars',
+ # min_stars = 0,
+ # min_pulls = 0,
+ # only_automated = False,
+ # only_official = False
 __doc__= """Crawler
 
 Usage:
@@ -36,13 +42,24 @@ if __name__ == '__main__':
     logger.info("Logging conf: "+ log_file_path)
 
     if args['crawl']:
+        policy = 'stars',
+        # min_stars = 0,
+        # min_pulls = 0,
+        # only_automated = False,
+        # only_official = False
         crawler = Crawler(amqp_url=args['--amqp-url'],
                           queue=args['--queue'],
                           images_url=args['--images-url'],
                           hub_url=args['--hub-url'],
                           exchange=args['--ex'],
                           route_key=args['--key'],
-                          path_last_url=args['--save-url'])
+                          path_last_url=args['--save-url'],
+                          policy="stars",
+                          min_pulls=100,
+                          min_stars = 3,
+                          only_official = False,
+                          only_official = False
+                          )
         crawler.run(num_samples = None if args['--si'] == "None" else int(args['--si']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
                     from_page=None if args['--fp'] == "None"  else int(args['--fp']),
