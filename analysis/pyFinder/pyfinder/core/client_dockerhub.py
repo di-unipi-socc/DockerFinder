@@ -45,17 +45,20 @@ class ClientHub:
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
 
-    def get_all_tags(self, repo_name):
+    def get_all_tags(self, repo_name, is_official):
         """
-        RGEt  all the tags associated with the repository name.
+        GEt  all the tags associated with the repository name.
         :param repo_name: the name of the repository.
         :return: a list of (string) tags name.
         """
-        url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
+        if is_official:
+            url_tags = self.docker_hub+"/v2/repositories/library/" + repo_name + "/tags/"
+        else:
+            url_tags = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"
         try:
             #self.logger.info(url_tags)
             res = self.session.get(url_tags)
-            self.logger.debug("["+repo_name+"] Getting all the tags")
+            #self.logger.debug("["+repo_name+"] Getting all the tags")
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
                 count = json_response['count']
@@ -66,6 +69,7 @@ class ClientHub:
                     json_response = res.json()
                     list_tags += [res['name'] for res in json_response['results']]
                     next_page = json_response['next']
+                self.logger.info("[{}] {} tags found ".format(repo_name, len(list_tags)))
                 return list_tags
             else:
                 self.logger.debug(str(res.status_code) +": "+ res.text)
@@ -76,7 +80,7 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, max_images, from_page=1, page_size=100, sort='star', force_from_page=False, filter_image_tag= lambda repo_name: True):
+    def crawl_images(self, max_images, from_page=1, page_size=100, sort='-star', force_from_page=False, filter_image_tag= lambda repo_name: True):
 
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub.
@@ -91,7 +95,7 @@ class ClientHub:
         elif self.next_url:  # if exist a previous stored url
             self.next_url=  self.get_last_url(self.path_file_url)
         else:
-            self.next_url = self.build_search_url(from_page, page_size)
+            self.next_url = self.build_search_url(from_page, page_size,sort)
         #else:
         #    self.next_url=  self.get_last_url(self.path_file_url)
         #    #self.build_search_url(page=from_page, page_size=page_size)
@@ -110,17 +114,22 @@ class ClientHub:
                 res = requests.get(self.next_url)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
+                    temp_images = 0
                     for image in json_response['results']:
-                        filtered_image = self._apply_filter(image, filter_function=filter_image_tag)
-                        if filtered_image is not None:
-                            yield filtered_image
+                        #filtered_image = self._apply_filter(image, ffilter=filter_image_tag) # apply the function on each tag of the image
+                        for image_tag_filtered in self._apply_filter(image, ffilter=filter_image_tag): # apply the function on each tag of the image
 
-
-                        self.next_url= json_response['next']
-                        temp_images = len(list_json_image)
-                        if temp_images + crawled_images > max_images:
-                            list_json_image = list_json_image[:max_images-crawled_images]
-                        crawled_images += len(list_json_image)
+                            if image_tag_filtered is not None:
+                                temp_images +=1
+                                yield image_tag_filtered
+                    self.next_url= json_response['next']
+                    #temp_images = len(list_json_image)
+                    if temp_images + crawled_images > max_images:
+                        self.logger.debug("Break yield images because {0}> {1}".format(temp_images + crawled_images,max_images))
+                        break
+                    #if temp_images + crawled_images > max_images:
+                    #    list_json_image = list_json_image[:max_images-crawled_images]
+                    #crawled_images += temp_images
                         #yield list_json_image
                         # for image in list_json_image:
                         #     yield image
@@ -141,12 +150,14 @@ class ClientHub:
         try:
             with open(path, 'w') as f:
                 f.write(url)
-                self.logger.debug(url + " saved into "+ path)
+                #self.logger.debug(url + " saved into "+ path)
         except FileNotFoundError as e:
             self.logger.error(str(e))
             raise
 
     def get_last_url(self,path):
+        try:
+            with open(path, 'r') as f:
                 url = f.read()
                 self.logger.debug("Read last URL from file: "+ url)
                 return url
@@ -156,56 +167,73 @@ class ClientHub:
 
 
 
-    def _apply_filter(self, image, ffilter):
-        """Filters the *list_of_json_images* applying the *filter_function*.  \n
-        The *filter_function* take as input an image name and return  \n
-        ``True`` if the image must be mantained, ``False`` if the image must be discarded."""
-            repo_name =  image['repo_name']
-            # star_count	0
-            # pull_count	0
-            # repo_owner
-            # short_description	""
-            # is_automated	false
-            # is_official	false
-            # repo_name	"codenergic/theskeleton"
-            # tag :"tag"
-            pulls  =  image['pull_count']
-            stars  =  image['star_count']
-            list_tags = self.client_hub.get_all_tags(repo_name)
-            for tag in list_tags:
-                image_tag = self.client_hub.get_json_tag(repo_name, tag=tag)
-                # full_size	5161543948
-                # images : [
-                        # {
-                        # size	5161543948
-                        # architecture	"amd64"
-                        # variant
-                        # features
-                        # os	"linux"
-                        # os_version
-                        # os_features
-                        # }
-                        #]
-                # id	185394
-                # repository	178608
-                # creator	222338
-                # last_updater	1300638
-                # last_updated	"2017-05-08T04:14:58.422174Z"
-                # image_id
-                # v2:	true
-                size  =  image_tag['full_size']
 
-                if size and size > 0 and \
-                   pulls and pulls >= 0 and \
-                   stars and stars >= 0:
+    def _apply_filter(self, image, ffilter):
+        """Filters the every tag of the image applying the *ffilter* function.  \n
+        The *filter_function* take as input a JONS of the tagged image and return  \n
+        ``JSON of the image`` if the image must be mantained,
+        ``None`` if the image must be discarded."""
+        repo_name =  image['repo_name']
+        # REPOSITORY INFORMATION
+        # image  ={
+            # star_count : 0
+            # pull_count : 0
+            # repo_owner : <name>
+            # short_description	: ""
+            # is_automated : false
+            # is_official :	false
+            # repo_name	: "codenergic/theskeleton"
+            # tag :"tag"
+        #   }
+        pulls  =  image['pull_count']
+        stars  =  image['star_count']
+
+        is_official = image['is_official'] if  image['is_official']  else False
+
+        list_tags = self.get_all_tags(repo_name, is_official)
+        #if list_tags:                       # is list tags is not None
+        for tag in list_tags:
+                image_tag = self.get_json_tag(repo_name, is_official, tag=tag)
+                ## TAG INFORMATION
+                    # full_size	: 5161543948
+                    # images : [
+                            # {
+                            # size	5161543948
+                            # architecture	"amd64"
+                            # variant
+                            # features
+                            # os	"linux"
+                            # os_version
+                             # os_features
+                            # } ]
+                        # id	: 185394
+                        # repository	: 178608
+                        # creator	: 222338
+                        # last_updater	: 1300638
+                   # last_updated	: "2017-05-08T04:14:58.422174Z"
+                   # image_id :
+                   # v2 :	true
+                size  =  image_tag['full_size']
+                #if (size and size > 0 and pulls and pulls >= 0 and  stars and stars >= 0):
+                if  size is None or pulls is None or stars is None:
+                    self.logger.debug("[{0}:{1}] image discarded (size={2}, pulls={3}, stars={4})".format(repo_name, tag, size, pulls, stars))
+                    yield None
+                else:
                     image_tag['name'] = "{}:{}".format(repo_name, tag) # name is eault to the tag
                     image_with_tag = {**image, 'tag':tag, **image_tag} # dictionary with the name info end the tag information
 
-                    if ffilter(image_with_tag)
-                        return image_with_tag
+                    if ffilter(image_with_tag): # apply the filter function to the name:tag , if return TRUE the image must be selected
+                        self.logger.debug("[{0}:{1}] selected ".format(repo_name, tag))
+                        yield image_with_tag
                     else:
-                        self.logger.debug("Negative filtered, not taken {0} ".format(image_with_tag))
-                        return None
+                        self.logger.debug("[{0}:{1}] discarded  by filter function".format(repo_name, tag))
+                        yield None
+                # else:
+                #     self.logger.debug("[{0}:{1}] image discarded size={2}, pulls={3}, stars={4} \n\t {5} ".format(repo_name, tag, size, pulls, stars))
+                #     yield None
+
+
+
 
             #filter_function(image)
             # repo_name = image['repo_name']
@@ -215,26 +243,34 @@ class ClientHub:
             #     self.logger.debug("["+repo_name+"] negative filtered, not taken")
 
 
-    def build_search_url(self, page, page_size=10, sort="stars"):
+    def build_search_url(self, page, page_size=10, sort="-stars"):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1&ordering=-pull_count
 
         ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
         assert (sort in ordering.keys()),"Sort parameter allowed {0}".format(list(ordering.keys()))
 
-        params = (('query', '*'), ('page', page), ('ordering', ordering[sort])('page_size', page_size))
-        # ordering=-star_count TODO : continua da qui.
+        params = (('query', '*'), ('page', page), ('ordering', ordering[sort]),('page_size', page_size))
 
+        # Is official: "/v2/repositories/library?"
         url_encode = urllib.parse.urlencode(params)
+
         url_images = self.docker_hub+"/v2/search/repositories/?"+url_encode
         return url_images
 
-    def get_json_repo(self, repo_name):
+    def get_json_repo(self, repo_name, is_official=False):
         """Get a the informations present on Docker Hub for a given repository name.
         :return: JSON object with the Docker Hub info for the repository name.
 
         """
-        url_namespace = self.docker_hub+"/v2/repositories/" + repo_name
+        # if official:
+        #     url_images = self.docker_hub+"/v2/repositories/library?"+url_encode
+        # else:
+
+        if is_official:
+            url_namespace = self.docker_hub+"/v2/repositories/library/" + repo_name
+        else:
+            url_namespace = self.docker_hub+"/v2/repositories/" + repo_name
         try:
             res = self.session.get(url_namespace)
             if res.status_code == requests.codes.ok:
@@ -246,9 +282,13 @@ class ClientHub:
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
 
-    def get_json_tag(self, repo_name, tag="latest"):
+    def get_json_tag(self, repo_name, is_official=False, tag="latest"):
         """ Get the informations for the repository with *tag*."""
-        url_tag = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
+
+        if is_official:
+            url_tag = self.docker_hub+"/v2/repositories/library/" + repo_name + "/tags/"+tag
+        else:
+            url_tag = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
         try:
             res = self.session.get(url_tag)
             if res.status_code == requests.codes.ok:
@@ -314,8 +354,12 @@ class ClientHub:
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " + str(e))
 
-    def is_alive_in_hub(self, repo_name, tag = "latest"):
-        image_hub = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
+    def is_alive_in_hub(self, repo_name, is_official=False, tag = "latest"):
+        if is_official:
+            image_hub = self.docker_hub+"/v2/repositories/library/" + repo_name + "/tags/"+tag
+        else:
+            image_hub = self.docker_hub+"/v2/repositories/" + repo_name + "/tags/"+tag
+
         #try:
         res = self.session.get(image_hub)
         if res.status_code == 404:# or res.json()['count'] == 0:

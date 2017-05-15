@@ -18,11 +18,11 @@ class Crawler:
                  hub_url="https://hub.docker.com",
                  path_last_url="/data/crawler/lasturl.txt",
 
-                 policy = 'stars',
-                 min_stars = 0,
-                 min_pulls = 0,
-                 only_automated = False,
-                 only_official = False
+                 policy='stars',
+                 min_stars=0,
+                 min_pulls=0,
+                 only_automated=False,
+                 only_official=False
                 ):
 
         self.policy  = policy
@@ -41,8 +41,6 @@ class Crawler:
         # Client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url,
                                     path_last_url=path_last_url,
-                                    policy = policy,
-
                                      )
 
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
@@ -129,7 +127,7 @@ class Crawler:
     def crawl(self, force_from_page, from_page,page_size, max_images=None):
         """
         The crawl() is a generator function. It crawls the docker images name from the Docker HUb.
-        IT return a JSON of the image .
+        It yeld a  JSON of the image.
         :param from_page:  the starting page into the Docker Hub.
         :param page_size:  is the number of images per image that Docker Hub return.
         :param max_images:  the number of images to download.
@@ -144,19 +142,19 @@ class Crawler:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ", Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         else:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
-        for image in self.client_hub.crawl_images(from_page=from_page,
-                                                        page_size=page_size,
-                                                        max_images=max_images,
-                                                        sort=self.policy,
-                                                        force_from_page = force_from_page,
-                                                        #filter_image_tag=self.filter_tag
-                                                        filter_image_tag=self.filter_toscker
-                                                        ):
-
-                yield image #json.dumps({"name": repo_name})
-            self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
+        for image in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,  force_from_page = force_from_page,
+                                                  sort=self.policy,
+                                                  #filter_image_tag=self.filter_tag
+                                                  filter_image_tag=self.filter_toscker
+                                                ):
+                sent_images += 1
+                if sent_images % 100 == 0:
+                    self.logger.info("{0} number of images sent to analyser".format(sent_images))
+                yield json.dumps(image) #json.dumps({"name": repo_name})
+            #self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
             #self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
-        self.logger.info("Total num of images sent to queue: {0}".format(str(sent_images)))
+            #self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
+        self.logger.info("Total num of images sent to queue: {0}".format(sent_images))
 
     def filter_latest(self, image_with_tag):
         """
@@ -180,15 +178,23 @@ class Crawler:
         # self.only_official  = only_official
 
         select_image = True
+        stars =  image_with_tag['star_count']
+        pulls = image_with_tag['pull_count']
+        is_automated = image_with_tag['is_automated']
+        is_official =  image_with_tag['is_official']
 
-        if  image_with_tag['star_count'] < self.min_stars:
+        if  stars < self.min_stars:
             select_image = False
-        if image_with_tag['pull_count'] < self.min_pulls:
+        if  pulls < self.min_pulls:
             select_image = False
         if self.only_automated:
-            if image_with_tag['is_automated'] != True:
+            if is_automated != True:
                 select_image = False
         if self.only_official:
-            if image_with_tag['is_official'] != True
+            if is_official != True:
                 select_image = False
+        if select_image:
+            self.logger.info("[{}] selected (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
+        else:
+            self.logger.info("[{}] discarded (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         return select_image

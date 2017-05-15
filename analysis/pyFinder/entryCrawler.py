@@ -42,7 +42,7 @@ if __name__ == '__main__':
     logger.info("Logging conf: "+ log_file_path)
 
     if args['crawl']:
-        policy = 'stars',
+        #policy = 'stars',
         # min_stars = 0,
         # min_pulls = 0,
         # only_automated = False,
@@ -54,11 +54,11 @@ if __name__ == '__main__':
                           exchange=args['--ex'],
                           route_key=args['--key'],
                           path_last_url=args['--save-url'],
-                          policy="stars",
-                          min_pulls=100,
-                          min_stars = 3,
+                          policy="-stars",
+                          min_pulls = 200,
+                          min_stars = 1000,
                           only_official = False,
-                          only_official = False
+                          only_automated = False
                           )
         crawler.run(num_samples = None if args['--si'] == "None" else int(args['--si']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
