@@ -18,11 +18,16 @@ services:
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
                     '--queue=images',
-                    '--force-page=False',
+                    '--force-page=True',
                     #'--si=10000',
                     '--random=False',
                     '--fp=1',
                     '--ps=2',
+                    '--policy=stars',
+                    '--min-stars=3',
+                    '--min-pulls=0',
+                    '--only-official=False',
+                    '--only-automated=False',
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:

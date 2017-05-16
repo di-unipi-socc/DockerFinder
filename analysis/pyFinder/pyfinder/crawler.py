@@ -18,18 +18,14 @@ class Crawler:
                  hub_url="https://hub.docker.com",
                  path_last_url="/data/crawler/lasturl.txt",
 
-                 policy='stars',
+                 policy="-stars",
                  min_stars=0,
                  min_pulls=0,
                  only_automated=False,
                  only_official=False
                 ):
 
-        self.policy  = policy
-        self.min_stars =  min_stars
-        self.min_pulls =  min_pulls
-        self.only_automated =  only_automated
-        self.only_official  = only_official
+
 
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger  initialized")
@@ -45,6 +41,14 @@ class Crawler:
 
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
+
+        self.policy  = policy
+        self.min_stars =  min_stars
+        self.min_pulls =  min_pulls
+        self.only_automated =  only_automated
+        self.only_official  = only_official
+        self.logger.info("Crawler: policy={}, min_stars={}, min_pulls={}, only_official={}, only_official={}".format(policy, min_stars, min_pulls, only_official, only_automated))
+
 
     def run(self, from_page, page_size, num_samples=None, at_random=False, force_from_page=False):#, max_images=None):
         """
@@ -106,7 +110,8 @@ class Crawler:
             for list_images in self.client_hub.crawl_images(from_page=from_page,
                                                             page_size=page_size,
                                                             max_images=num_images,
-                                                            force_from_page = force_from_page
+                                                            force_from_page = force_from_page,
+                                                            sort=self.policy
                                                             ):
                                                             #filter_images=self.filter_tag_latest):
                 previous_num_sampled =  sent_images   # set the previous sent images

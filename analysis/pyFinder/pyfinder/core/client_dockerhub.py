@@ -24,14 +24,15 @@ class ClientHub:
             # file where to save the url:  "/data/crawler/lasturl.txt"
             self.path_file_url = path_last_url
 
-            from_page, page_size= 1, 100  # initial page to start the crawling
-            if(self.get_last_url(self.path_file_url) is None):  # if the url is not stored in the file
-                init_url = self.build_search_url(page=from_page, page_size=page_size)
-                self.logger.info("Init URL:"+init_url)
-                self.save_last_url(self.path_file_url, init_url)
-                self.next_url  = init_url
-            else:
-                self.next_url = self.get_last_url(self.path_file_url)
+            # from_page, page_size= 1, 100  # initial page to start the crawling
+            # if(self.get_last_url(self.path_file_url) is None):  # if the url is not stored in the file
+            #  # TODO paameterèp is missing
+            #     init_url = self.build_search_url(page=from_page, page_size=page_size, )
+            #     self.logger.info("Init URL:"+init_url)
+            #     self.save_last_url(self.path_file_url, init_url)
+            #     self.next_url  = init_url
+            # else:
+            #     self.next_url = self.get_last_url(self.path_file_url)
 
     def get_num_tags(self, repo_name):
         """ Count the number of tags associated with a repository name."""
@@ -80,7 +81,7 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, max_images, from_page=1, page_size=100, sort='-star', force_from_page=False, filter_image_tag= lambda repo_name: True):
+    def crawl_images(self, max_images, sort, from_page=1, page_size=100, force_from_page=False, filter_image_tag= lambda repo_name: True):
 
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub.
@@ -90,6 +91,16 @@ class ClientHub:
          If *None* all the images  of Docker Hub will be crawled [default: None]
         :return:
         """
+        #from_page, page_size= 1, 100  # initial page to start the crawling
+        if(self.get_last_url(self.path_file_url) is None):  # if the url is not stored in the file
+            init_url = self.build_search_url(page=from_page, page_size=page_size, sort=sort)
+            self.logger.info("Initial URL: "+init_url)
+            self.save_last_url(self.path_file_url, init_url)
+            self.next_url  = init_url
+        else:
+            self.next_url = self.get_last_url(self.path_file_url)
+
+
         if force_from_page:
             self.next_url = self.build_search_url(from_page, page_size, sort)
         elif self.next_url:  # if exist a previous stored url
@@ -110,7 +121,7 @@ class ClientHub:
 
                 self.save_last_url(self.path_file_url, self.next_url) # save last url
 
-                self.logger.debug("URL="+ self.next_url)
+                self.logger.info("URL="+ self.next_url)
                 res = requests.get(self.next_url)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()

@@ -12,7 +12,7 @@ import logging.config
 __doc__= """Crawler
 
 Usage:
-  Crawler.py crawl  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>] [--random=<False>] [--force-page=<False>] [--fp=<1>] [--ps=<10>]  [--si=<100>]
+  Crawler.py crawl [--policy=<-stars>][--min-stars=<0>] [--min-pulls=<0>] [--only-automated=<False>] [--only-official=<False>]  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>] [--random=<False>] [--force-page=<False>] [--fp=<1>] [--ps=<10>]  [--si=<100>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -30,6 +30,11 @@ Options:
   --si=SAMPLED_IMAGES Number of images sampled from Docker hub      [default: None].
   --random=RANDOM     If True the sampled images are random dampled [default: True]
   --force-page=FORCE PAGE   If True the crawler start from the from_image, otherwise take the last url [default: False]
+  --policy=POLICY      Policy of crawling Docker Hub images (stars, -stars, pulls, -pulls) [default: -stars]
+  --min-stars=STARS    The images with number of stars > STARS are crawled [deafult:0]
+  --min-pulls=PULLS     The images with a number of pulls > PULLS are crawled [default:0]
+  --only-official=True|False If true only the official images are downloaded [default:False]
+  --only-automated=True|False  If true only the automated imsges are downloaded [default:False]
   --version     Show version.
 """
 
@@ -40,7 +45,6 @@ if __name__ == '__main__':
     logging.config.fileConfig(log_file_path)
     logger = logging.getLogger()
     logger.info("Logging conf: "+ log_file_path)
-
     if args['crawl']:
         #policy = 'stars',
         # min_stars = 0,
@@ -54,11 +58,11 @@ if __name__ == '__main__':
                           exchange=args['--ex'],
                           route_key=args['--key'],
                           path_last_url=args['--save-url'],
-                          policy="-stars",
-                          min_pulls = 200,
-                          min_stars = 1000,
-                          only_official = False,
-                          only_automated = False
+                          policy=args['--policy'],
+                          min_pulls = int(args['--min-pulls']),
+                          min_stars = int(args['--min-stars']),
+                          only_official = args['--only-official'],
+                          only_automated = args['--only-automated']
                           )
         crawler.run(num_samples = None if args['--si'] == "None" else int(args['--si']),
                     page_size=None if args['--ps'] == "None"  else int(args['--ps']),
