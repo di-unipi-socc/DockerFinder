@@ -199,7 +199,7 @@ class Crawler:
             if is_official != True:
                 select_image = False
         if select_image:
-            self.logger.info("[{}] selected (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
+            self.logger.info("[{}]  filter toskerr selected (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         else:
-            self.logger.info("[{}] discarded (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
+            self.logger.info("[{}] filter tosker discarded (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         return select_image

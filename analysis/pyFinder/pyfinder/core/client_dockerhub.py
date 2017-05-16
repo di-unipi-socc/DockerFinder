@@ -225,19 +225,22 @@ class ClientHub:
                    # image_id :
                    # v2 :	true
                 size  =  image_tag['full_size']
-                #if (size and size > 0 and pulls and pulls >= 0 and  stars and stars >= 0):
-                if  size is None or pulls is None or stars is None:
-                    self.logger.debug("[{0}:{1}] image discarded (size={2}, pulls={3}, stars={4})".format(repo_name, tag, size, pulls, stars))
+                if size is None and size > 0 and pulls is None and \
+                   pulls >= 0 and  stars is None and stars >= 0:
+                #if  size is None or pulls is None or stars is None:
+                    self.logger.info("[{0}:{1}] image discarded (size={2},"
+                                      " pulls={3}, stars={4})".format(repo_name,
+                                      tag, size, pulls, stars))
                     yield None
                 else:
                     image_tag['name'] = "{}:{}".format(repo_name, tag) # name is eault to the tag
                     image_with_tag = {**image, 'tag':tag, **image_tag} # dictionary with the name info end the tag information
 
                     if ffilter(image_with_tag): # apply the filter function to the name:tag , if return TRUE the image must be selected
-                        self.logger.debug("[{0}:{1}] selected ".format(repo_name, tag))
+                        self.logger.info("[{0}:{1}] selected ".format(repo_name, tag))
                         yield image_with_tag
                     else:
-                        self.logger.debug("[{0}:{1}] discarded  by filter function".format(repo_name, tag))
+                        self.logger.info("[{0}:{1}] discarded  by filter function".format(repo_name, tag))
                         yield None
                 # else:
                 #     self.logger.debug("[{0}:{1}] image discarded size={2}, pulls={3}, stars={4} \n\t {5} ".format(repo_name, tag, size, pulls, stars))
