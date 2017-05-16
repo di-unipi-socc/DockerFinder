@@ -225,8 +225,8 @@ class ClientHub:
                    # image_id :
                    # v2 :	true
                 size  =  image_tag['full_size']
-                if size is None and size > 0 and pulls is None and \
-                   pulls >= 0 and  stars is None and stars >= 0:
+                if size is None and size < 0 and pulls is None and \
+                   pulls < 0 and  stars is None and stars < 0:
                 #if  size is None or pulls is None or stars is None:
                     self.logger.info("[{0}:{1}] image discarded (size={2},"
                                       " pulls={3}, stars={4})".format(repo_name,

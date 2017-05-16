@@ -45,6 +45,9 @@ if __name__ == '__main__':
     logging.config.fileConfig(log_file_path)
     logger = logging.getLogger()
     logger.info("Logging conf: "+ log_file_path)
+    print(args['--only-official'])
+    if bool(args['--only-official']) is False:
+        print("False official")
     if args['crawl']:
         #policy = 'stars',
         # min_stars = 0,

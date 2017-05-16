@@ -189,17 +189,21 @@ class Crawler:
         is_official =  image_with_tag['is_official']
 
         if  stars < self.min_stars:
+            self.logger.info("stars {} {}"  .format(stars,self.min_stars )  )
             select_image = False
         if  pulls < self.min_pulls:
+            self.logger.info("pulls {} {}"  .format(stars,self.min_stars )  )
             select_image = False
-        if self.only_automated:
+        if self.only_automated == True:
             if is_automated != True:
+                self.logger.info("not automates ")
                 select_image = False
-        if self.only_official:
-            if is_official != True:
+        if self.only_official == True:
+            if is_official == False: # True:
+                self.logger.info("not official ")
                 select_image = False
-        if select_image:
-            self.logger.info("[{}]  filter toskerr selected (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
+        if select_image == False:
+            self.logger.info("[{}] SELECTED filter tosker (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         else:
-            self.logger.info("[{}] filter tosker discarded (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
+            self.logger.info("[{}] DISCARDED filter tosker (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         return select_image
