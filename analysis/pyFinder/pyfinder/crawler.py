@@ -18,7 +18,7 @@ class Crawler:
                  hub_url="https://hub.docker.com",
                  path_last_url="/data/crawler/lasturl.txt",
 
-                 policy="-stars",
+                 policy="none",
                  min_stars=0,
                  min_pulls=0,
                  only_automated=False,
@@ -36,13 +36,16 @@ class Crawler:
 
         # Client of Docker Hub.
         self.client_hub = ClientHub(docker_hub_endpoint=hub_url,
-                                    path_last_url=path_last_url,
-                                     )
+                                    path_last_url=path_last_url)
 
         # client of Images Service:  if an image is NEW it is sent to queue, otherwise it is discarded
         self.client_images = ClientImages(images_url=images_url)
 
-        self.policy  = policy
+        #ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
+
+        self.ordering = {"stars_first":"-star_count", "pull_first": "-pull_count", "none":None}.get(policy)
+        self.policy = policy
+
         self.min_stars =  min_stars
         self.min_pulls =  min_pulls
         self.only_automated =  only_automated
@@ -148,7 +151,7 @@ class Crawler:
         else:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         for image in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,  force_from_page = force_from_page,
-                                                  sort=self.policy,
+                                                  sort=self.ordering,
                                                   #filter_image_tag=self.filter_tag
                                                   filter_image_tag=self.filter_toscker
                                                 ):

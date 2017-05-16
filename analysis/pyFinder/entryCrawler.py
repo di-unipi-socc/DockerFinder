@@ -12,7 +12,7 @@ import logging.config
 __doc__= """Crawler
 
 Usage:
-  Crawler.py crawl [--policy=<-stars>][--min-stars=<0>] [--min-pulls=<0>] [--only-automated=<False>] [--only-official=<False>]  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>] [--random=<False>] [--force-page=<False>] [--fp=<1>] [--ps=<10>]  [--si=<100>]
+  Crawler.py crawl [--policy=<start_first>] [--min-stars=<0>] [--min-pulls=<0>] [--only-automated=<False>] [--only-official=<False>]  [--save-url=</data/crawler/lasturl.txt>] [--amqp-url=<amqp://guest:guest@rabbitmq:5672>] [--hub-url=<https://hub.docker.com>] [--images-url=<http://images_server:3000/api/images>] [--queue=<dofinder>] [--ex=<dofinder>] [--key=<images.scan>] [--random=<False>] [--force-page=<False>] [--fp=<1>] [--ps=<10>]  [--si=<100>]
   Crawler.py (-h | --help)
   Crawler.py --version
 
@@ -30,7 +30,7 @@ Options:
   --si=SAMPLED_IMAGES Number of images sampled from Docker hub      [default: None].
   --random=RANDOM     If True the sampled images are random dampled [default: True]
   --force-page=FORCE PAGE   If True the crawler start from the from_image, otherwise take the last url [default: False]
-  --policy=POLICY      Policy of crawling Docker Hub images (stars, -stars, pulls, -pulls) [default: -stars]
+  --policy=POLICY      Policy of crawling Docker Hub images (start_first, pulls_first, none) [default: start_first]
   --min-stars=STARS    The images with number of stars > STARS are crawled [deafult:0]
   --min-pulls=PULLS     The images with a number of pulls > PULLS are crawled [default:0]
   --only-official=True|False If true only the official images are downloaded [default:False]

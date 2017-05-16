@@ -257,14 +257,15 @@ class ClientHub:
             #     self.logger.debug("["+repo_name+"] negative filtered, not taken")
 
 
-    def build_search_url(self, page, page_size=10, sort="-stars"):
+    def build_search_url(self, page, page_size=10, sort):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1&ordering=-pull_count
 
-        ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
-        assert (sort in ordering.keys()),"Sort parameter allowed {0}".format(list(ordering.keys()))
+        #ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
 
-        params = (('query', '*'), ('page', page), ('ordering', ordering[sort]),('page_size', page_size))
+        #assert (sort in ordering.keys()),"Sort parameter allowed {0}".format(list(ordering.keys()))
+
+        params = (('query', '*'), ('page', page), ('ordering', sort),('page_size', page_size))
 
         # Is official: "/v2/repositories/library?"
         url_encode = urllib.parse.urlencode(params)
