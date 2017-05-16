@@ -16,7 +16,7 @@ class Crawler:
                  amqp_url='amqp://guest:guest@127.0.0.1:5672',
                  images_url="http://127.0.0.1:3000/api/images",
                  hub_url="https://hub.docker.com",
-                 path_last_url="/data/crawler/lasturl.txt"
+                 path_last_url="/tmp/lasturl.txt"#"/data/crawler/lasturl.txt"
                 ):
 
 

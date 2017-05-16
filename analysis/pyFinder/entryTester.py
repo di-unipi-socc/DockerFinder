@@ -28,7 +28,7 @@ Options:
 if __name__ == '__main__':
     args = docopt(__doc__, version='Tester 0.0.1')
     sw = ClientSoftware(api_url="http://127.0.0.1:3001/api/software")
-    tester = Tester(path_file_images=args['--pf'])
+    tester = Tester(path_file_images=args['--pf'], path_last_url="/tmp/fileurl.txt")
     if args['build']:
         tester.build_test(num_images_test=int(args['--ni']), from_page=int(args['--fp']))
 

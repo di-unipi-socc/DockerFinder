@@ -10,14 +10,14 @@ import time
 """This module contains the methods for executing the tests of the architecture. """
 
 class Tester:
-    def __init__(self, path_file_images="images.test",  hub_url="https://hub.docker.com/"):
+    def __init__(self, path_file_images="images.test",  hub_url="https://hub.docker.com/", path_last_url=None):
         self._path = path_file_images
         self.crawler = Crawler()
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger  initialized")
         # the client hub interacts with the docker Hub registry
-        self.client_hub = ClientHub(docker_hub_endpoint=hub_url,path_last_url=None )
-        self.client_daemon = docker.Client(base_url='unix://var/run/docker.sock')
+        self.client_hub = ClientHub(docker_hub_endpoint=hub_url,path_last_url=path_last_url)
+        self.client_daemon =  docker.DockerClient(base_url='unix://var/run/docker.sock')
 
     def build_test(self, num_images_test=100, from_page=1, page_size=10,):
         list_json_images = [image_json for image_json in self.crawler.crawl(max_images=num_images_test, from_page=from_page, page_size=page_size)]
@@ -51,9 +51,13 @@ class Tester:
         # download all the official library
         images_libraries = self.client_hub.crawl_official_images()
         self.logger.info("[" + str(len(images_libraries)) + "] number of official images to pull...")
+        print("[" + str(len(images_libraries)) + "] number of official images to pull...")
         for image in images_libraries:
             try:
-                self.client_daemon.pull(image)
+                tag = "latest"
+                print("Downloading {}:{} ".format(image,tag))
+                self.client_daemon.images.pull(image, tag=tag)
+                print("Download {}:{} ".format(image,tag))
             except docker.errors.APIError:
                 self.logger.exception("Docker api error")
 
