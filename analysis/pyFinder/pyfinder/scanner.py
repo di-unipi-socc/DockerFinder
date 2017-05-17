@@ -118,20 +118,23 @@ class Scanner:
         #for tag in tags :  # for scanning all the tags
         #if 'latest' in tags :
         #    tag = 'latest'
-        if self.client_images.is_new(repo_name_tag):  # the image is totally new
+        if self.client_images.is_new(repo_name_tag):  # the image is totally new locally
 
             image = self.scan(json_image)
             dict_image = image.to_dict()
             self.logger.debug("POST [" + repo_name_tag + "] to images server...")
             self.client_images.post_image(dict_image)  # POST the description of the image
 
-        elif self.client_images.must_scanned(repo_name_tag):  # the image must be scan again
-            self.logger.debug("[" + repo_name_tag+ "] is present into images server but must be scan again")
-            image = self.scan(json_image)
-            dict_image = image.to_dict()
-            self.logger.info("PUT [" + repo_name_tag + "] to images server ...")
-            self.client_images.put_image(dict_image)  # PUT the new image description of the image
+            if
+        # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire
+        # elif self.client_images.must_scanned(repo_name_tag):  # the image must be scan again
+        #     self.logger.debug("[" + repo_name_tag+ "] is present into images server but must be scan again")
+        #     image = self.scan(json_image)
+        #     dict_image = image.to_dict()
+        #     self.logger.info("PUT [" + repo_name_tag + "] to images server ...")
+        #     self.client_images.put_image(dict_image)  # PUT the new image description of the image
         else:
+             # TODO
             self.logger.info("[" + repo_name_tag + "] already up to date.")
         #         self.client_daemon.remove_image(image.name, force=True)
         #         self.logger.info('[{0}] removed image'.format(image.name))
