@@ -66,7 +66,7 @@ class Scanner:
         while attempt < 4 and not processed:
             try:
                 self.logger.debug("["+ json_message['name']+ "] scanning ...")
-                self.process_repo_name(json_message['name'])
+                self.process_repo_name(json_message)
                 processed = True
             except docker.errors.NotFound as e: # docker.errors.NotFound:
                 self.logger.error(str(e) +": retry number "+ str(attempt))
@@ -83,40 +83,71 @@ class Scanner:
             self.logger.warning("["+json_message['name']+"] PURGED from the queue")
         return processed
 
-    def process_repo_name(self, repo_name):
+    def process_repo_name(self, json_image) :#repo_name):
         """
         Process a single image.
         It checks if an image must Scanned or it is already updated.
         """
+        # "star_count": 1148,
+        # "pull_count": 19432547,
 
-        tags = self.client_hub.get_all_tags(repo_name)
+        # "repo_owner": null,
+        # "short_description": "GitLab Community Edition docker image based on the Omnibus package",
+        # "is_automated": true,
+        # "is_official": false,
+        # "repo_name": "gitlab/gitlab-ce",
+        # "tag": "nightly",
+        # "name": "gitlab/gitlab-ce:nightly",
+        # "full_size": 390282144,
+        # "images": [{"size": 390282144, "architecture": "amd64", "variant": null, "features": null, "os": "linux", "os_version": null, "os_features": null}],
+        # "id": 4253706,
+        # "repository": 252439,
+        # "creator": 454693,
+        # "last_updater": 454693,
+        # "last_updated": "2017-05-16T02:32:53.252028Z",
+        # "image_id": null,
+        #  "v2": true
+
+        #is_offical = repo_name['is_official']
+        repo_name = json_image['repo_name']
+        tag = json_image['tag']
+        repo_name_tag = json_image['name']
+
+        #tags = self.client_hub.get_all_tags(repo_name)
 
         #for tag in tags :  # for scanning all the tags
-        if 'latest' in tags :
-            tag = 'latest'
-            if self.client_images.is_new(repo_name):  # the image is totally new
-                image = self.scan(repo_name, tag)
-                dict_image = image.to_dict()
-                self.logger.debug("POST [" + dict_image['name'] + "] to images server...")
-                self.client_images.post_image(dict_image)  # POST the description of the image
-            elif self.client_images.must_scanned(repo_name):  # the image must be scan again
-                self.logger.debug("[" + repo_name + "] is present into images server but must be scan again")
-                image = self.scan(repo_name, tag)
-                dict_image = image.to_dict()
-                self.logger.info("PUT [" + dict_image['name'] + "] to images server ...")
-                self.client_images.put_image(dict_image)  # PUT the new image description of the image
-            else:
-                self.logger.info("[" + repo_name + "] already up to date.")
+        #if 'latest' in tags :
+        #    tag = 'latest'
+        if self.client_images.is_new(repo_name_tag):  # the image is totally new
+
+            image = self.scan(json_image)
+            dict_image = image.to_dict()
+            self.logger.debug("POST [" + repo_name_tag + "] to images server...")
+            self.client_images.post_image(dict_image)  # POST the description of the image
+
+        elif self.client_images.must_scanned(repo_name_tag):  # the image must be scan again
+            self.logger.debug("[" + repo_name_tag+ "] is present into images server but must be scan again")
+            image = self.scan(json_image)
+            dict_image = image.to_dict()
+            self.logger.info("PUT [" + repo_name_tag + "] to images server ...")
+            self.client_images.put_image(dict_image)  # PUT the new image description of the image
+        else:
+            self.logger.info("[" + repo_name_tag + "] already up to date.")
         #         self.client_daemon.remove_image(image.name, force=True)
         #         self.logger.info('[{0}] removed image'.format(image.name))
 
 
     #@classmethod
-    def scan(self, repo_name, tag="latest"):
+    def scan(self, json_image):
         """
         It scans an image and create the new Docker finder description.
         """
-        self.logger.info("[" + repo_name + "] pulling the image ...")
+
+        repo_name = json_image['repo_name']
+        tag = json_image['tag']
+        repo_name_tag = json_image['name']
+
+        self.logger.info("[" + repo_name+":"+tag + "] pulling the image ...")
         for line in self.client_daemon.pull(repo_name, tag, stream=True):
             json_image = json.loads(line.decode())
             # self.logger.debug('\r' + json_image['id'] + ":" + json_image['progress'], end="")
@@ -125,13 +156,41 @@ class Scanner:
 
         image = Image()
 
-        image.name = repo_name+":"+tag
+        image.name = repo_name_tag
+        image.tag = tag
+        iamge.repo_name = repo_name
 
         self.logger.debug('[{0}] start scanning'.format(image.name))
 
         # add info from DockerHub
-        self.logger.info('[{0}] Adding Docker Hub info'.format(image.name))
+
+        #self.logger.info('[{0}] Adding Docker Hub info'.format(image.name))
+        #INFO FROM CRAWLER
+        #image.user =json_image["creator"]           # String
+        if 'star_count' in json_image:
+            image.stars = json_image["star_count"]
+
+        if 'pull_count' in json_image:
+            image.pulls = json_image["pull_count"]
+
+        if 'description' in json_image:
+            image.description = json_image["short_description"]    # String
+
+        if "is_automated" in json_image:
+
+            image.is_automated = json_image["is_automated"]      # Bool
+
+        if "is_official" in json_image:
+            image.is_official  = json_image["is_official"]
+
+
+
         self.info_docker_hub(image)
+
+
+
+        #image.is_private =json_image[]         # Bool
+
         # search software versions and system commands
         self.logger.info('[{0}] Adding Softwares versions'.format(image.name))
         self.info_dofinder(image)
@@ -161,28 +220,28 @@ class Scanner:
         repo_name  = image.name.split(":")[0]
         tag        = image.name.split(":")[1]
 
-        json_response = self.client_hub.get_json_repo(repo_name)
+        # json_response = self.client_hub.get_json_repo(repo_name)
+        #
+        # if json_response:
+        #     if 'user' in json_response:
+        #         image.user = json_response['user']
+        #
+        #     if 'star_count' in json_response:
+        #         image.stars = json_response['star_count']
+        #
+        #     if 'pull_count' in json_response:
+        #         image.pulls =  json_response['pull_count']
+        #
+        #     if 'description' in json_response:
+        #         image.description = json_response['description']
+        #
+        #     if "is_automated" in json_response:
+        #         image.is_automated =  json_response['is_automated']
+        #
+        #     if "is_private" in json_response:
+        #         image.is_private =  json_response['is_private']
 
-        if json_response:
-            if 'user' in json_response:
-                image.user = json_response['user']
-
-            if 'star_count' in json_response:
-                image.stars = json_response['star_count']
-
-            if 'pull_count' in json_response:
-                image.pulls =  json_response['pull_count']
-
-            if 'description' in json_response:
-                image.description = json_response['description']
-
-            if "is_automated" in json_response:
-                image.is_automated =  json_response['is_automated']
-
-            if "is_private" in json_response:
-                image.is_private =  json_response['is_private']
-
-        json_response = self.client_hub.get_json_tag(repo_name, tag)
+        json_response = self.client_hub.get_json_tag(repo_name, tag, image.is_official)
 
         if 'last_updated' in json_response:
             image.last_updated = json_response['last_updated']
@@ -258,6 +317,7 @@ class Scanner:
     def version_from_regex(self, container_id, command, regex):
         try:
             output = self.run_command(container_id, command)
+            self.logger.info(regex)
             p = re.compile(regex)
             match = p.search(output)
             if match:

@@ -18,16 +18,16 @@ services:
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
                     '--queue=images',
-                    '--force-page=False',
+                    '--force-page=True',
                     #'--si=10000',
                     '--random=True',
                     '--fp=1',
                     '--ps=100',
-                    '--policy=star_first',
+                    '--policy=stars_first',
                     '--min-stars=3',
                     '--min-pulls=0',
-                    '--only-official=False',
-                    '--only-automated=False',
+                    #'--only-official',
+                    '--only-automated',
 
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
@@ -110,7 +110,7 @@ services:
     image: mongo:3
     hostname: software_db
     volumes:
-      - /data/db  # /data/db is the deafult directory where mogno stores the databases.
+      - softwaredb:/data/db  # /data/db is the deafult directory where mogno stores the databases.
     deploy:
        placement:
           constraints:
@@ -159,6 +159,8 @@ services:
                - node.hostname == swarm-manager
 
     # /data/db is the deafult directory where mogno container store the databases.
+volumes:
+  softwaredb:
 
 
 #####################################################

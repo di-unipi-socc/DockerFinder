@@ -17,7 +17,6 @@ class Crawler:
                  images_url="http://127.0.0.1:3000/api/images",
                  hub_url="https://hub.docker.com",
                  path_last_url="/data/crawler/lasturl.txt",
-
                  policy="none",
                  min_stars=0,
                  min_pulls=0,
@@ -42,15 +41,15 @@ class Crawler:
         self.client_images = ClientImages(images_url=images_url)
 
         #ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
-
-        self.ordering = {"stars_first":"-star_count", "pull_first": "-pull_count", "none":None}.get(policy)
+        ordi = {"stars_first":"-star_count", "pulls_first"  : "-pull_count", "none":None}
+        self.ordering = ordi[policy] #{"stars_first":"-star_count", "pulls_first"  : "-pull_count", "none":None}.get(policy, None)
         self.policy = policy
 
         self.min_stars =  min_stars
         self.min_pulls =  min_pulls
         self.only_automated =  only_automated
         self.only_official  = only_official
-        self.logger.info("Crawler: policy={}, min_stars={}, min_pulls={}, only_official={}, only_official={}".format(policy, min_stars, min_pulls, only_official, only_automated))
+        self.logger.info("Crawler: ordering={}, policy={}, min_stars={}, min_pulls={}, only_official={}, only_automated={}".format(self.ordering ,self.policy, min_stars, min_pulls, only_official, only_automated))
 
 
     def run(self, from_page, page_size, num_samples=None, at_random=False, force_from_page=False):#, max_images=None):
@@ -114,7 +113,7 @@ class Crawler:
                                                             page_size=page_size,
                                                             max_images=num_images,
                                                             force_from_page = force_from_page,
-                                                            sort=self.policy
+                                                            sort=self.ordering
                                                             ):
                                                             #filter_images=self.filter_tag_latest):
                 previous_num_sampled =  sent_images   # set the previous sent images
@@ -152,9 +151,9 @@ class Crawler:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         for image in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,  force_from_page = force_from_page,
                                                   sort=self.ordering,
-                                                  #filter_image_tag=self.filter_tag
-                                                  filter_image_tag=self.filter_toscker
-                                                ):
+                                                  # filter_image_tag=self.filter_tag
+                                                  # filter_tag=self.filter_latest,
+                                                  filter_repo=self.filter_tosker):
                 sent_images += 1
                 if sent_images % 100 == 0:
                     self.logger.info("{0} number of images sent to analyser".format(sent_images))
@@ -177,7 +176,8 @@ class Crawler:
 
         return image_with_tag['tag'] =="latest"
 
-    def filter_toscker(self,image_with_tag):
+    def filter_tosker(self, image):
+        #self.logger.info(dir(self))
 
         # self.policy  = policy
         # self.min_stars =  min_stars
@@ -186,27 +186,27 @@ class Crawler:
         # self.only_official  = only_official
 
         select_image = True
-        stars =  image_with_tag['star_count']
-        pulls = image_with_tag['pull_count']
-        is_automated = image_with_tag['is_automated']
-        is_official =  image_with_tag['is_official']
+        stars =  image['star_count']
+        pulls = image['pull_count']
+        is_automated = image['is_automated']
+        is_official =  image['is_official']
+
+        #self.logger.info(self.only_automated)
+        #self.logger.info(self.only_official)
+
 
         if  stars < self.min_stars:
-            self.logger.info("stars {} {}"  .format(stars,self.min_stars )  )
+            #self.logger.info("stars {} {}"  .format(stars,self.min_stars )  )
             select_image = False
         if  pulls < self.min_pulls:
-            self.logger.info("pulls {} {}"  .format(stars,self.min_stars )  )
+            #self.logger.info("pulls {} {}"  .format(stars,self.min_stars )  )
             select_image = False
         if self.only_automated == True:
-            if is_automated != True:
-                self.logger.info("not automates ")
+            if is_automated == False:
+                self.logger.debug("not automated  ")
                 select_image = False
         if self.only_official == True:
             if is_official == False: # True:
-                self.logger.info("not official ")
+                self.logger.debug("not official ")
                 select_image = False
-        if select_image == False:
-            self.logger.info("[{}] SELECTED filter tosker (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
-        else:
-            self.logger.info("[{}] DISCARDED filter tosker (stars={}, pulls={}, automated={} official={})".format(image_with_tag['name'], stars, pulls, is_automated, is_official ))
         return select_image

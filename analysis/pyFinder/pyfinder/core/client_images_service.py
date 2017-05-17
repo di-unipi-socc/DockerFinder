@@ -153,6 +153,8 @@ class ClientImages:
             self.logger.exception("Unexpected error:")
             raise
 
+    # TODO crate method for checkein if a image must be scanned gain
+
 
     def must_scanned(self, name):#, tag="latest"):
         """

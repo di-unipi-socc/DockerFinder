@@ -7,6 +7,8 @@ class Image:
 
         # property of a tagged image
         self.name = None            # string  'repo_name:tag'
+        self.repo_nmae = None       # String   repo_name
+        self.tag = None             #String    tag
         self.id_tag = None          # number
         self.last_updated = None    # "2016-06-12T15:46:20.873610Z
         self.last_updater  = None   # number
@@ -23,6 +25,7 @@ class Image:
         self.pulls = None           # Number
         self.description = None     # String
         self.is_automated = None    # Bool
+        self.is_official = None     # BOol
         self.is_private = None      # Bool
 
         # info of docker finder
