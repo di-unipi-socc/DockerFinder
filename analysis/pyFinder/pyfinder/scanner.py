@@ -131,7 +131,6 @@ class Scanner:
 
         img = self.client_daemon.images.pull(image.name)
 
-        image.id = img.id
 
         self.logger.debug('[{0}] start scanning'.format(image.name))
 

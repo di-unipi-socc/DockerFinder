@@ -13,7 +13,7 @@ var imageSchema =  new mongoose.Schema({
         required    :[true, 'The name of the image cannot be empty']
     },
 
-    id: String,
+    //id: String,  already present in the inspect_info
 
     repo_owner: String,
     id_tag: Number,
