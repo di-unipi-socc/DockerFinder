@@ -129,9 +129,8 @@ class ClientHub:
                     json_response = res.json()
                     temp_images = 0
                     for image in json_response['results']:
-                        if self._apply_repo_filter(image, ffilter=filter_repo):
-                            #filtered_image = self._apply_tag_filter(image, ffilter=filter_tag) # apply the function on each tag of the image
-                            for image_tag_filtered in self._apply_tag_filter(image, ffilter=filter_tag): # apply the function on each tag of the image
+                        if self._apply_repo_filter(image, filter_repo=filter_repo):
+                            for image_tag_filtered in self._apply_tag_filter(image, filter_tag=filter_tag): # apply the function on each tag of the image
                                 if image_tag_filtered is not None:
                                     temp_images +=1
                                     yield image_tag_filtered
@@ -180,105 +179,96 @@ class ClientHub:
             return None
 
 
-    def _apply_repo_filter(self, image, ffilter):
+    def _apply_repo_filter(self, image, filter_repo):
+        # Image is a JSON with the following information
+        # REPOSITORY INFORMATION from Docker Hub
+        # {
+        # repo_name	: "nginx"
+        # star_count: 6010
+        # pull_count: 643756690
+        # repo_owner:
+        # short_description:	"Official build of Nginx."
+        # is_automated:	false
+        # is_official:	true
+        # }
+
         pulls  =  image['pull_count']
         stars  =  image['star_count']
-        #res = True
+
         if pulls is None or pulls < 0 or stars is None or stars < 0:
             res = False
         else:
-            res = ffilter(image)
+            # apply filter passed by the crawler (filters the image looking at the repository information)
+            res = filter_repo(image)
 
         if res:
-            self.logger.info("{0[repo_name]}:  SELECTED filter tosker (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image))
+            self.logger.info("{0[repo_name]} - SELECTED by repository filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image))
         else:
-            self.logger.info("{0[repo_name]}:  DISCARDED filter tosker (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image))
+            self.logger.info("{0[repo_name]} - DISCARDED by repositoty filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image))
 
         return res
 
-    def _apply_tag_filter(self, image, ffilter):
-        """Filters the every tag of the image applying the *ffilter* function.  \n
+    def _apply_tag_filter(self, image, filter_tag):
+        """Filters the every tag of the image applying the *filter_tag* function.  \n
         The *filter_function* take as input a JONS of the tagged image and return  \n
         ``JSON of the image`` if the image must be mantained,
         ``None`` if the image must be discarded."""
-        # repo_name =  image['repo_name']
-        # REPOSITORY INFORMATION
-        # image  ={
-            # star_count : 0
-            # pull_count : 0
-            # repo_owner : <name>
-            # short_description	: ""
-            # is_automated : false
-            # is_official :	false
-            # repo_name	: "codenergic/theskeleton"
-            # tag :"tag"
-        #   }
+
+        # image = {
+        #   repo_name : "nginx"
+        #   star_count: 6010
+        #   pull_count: 643756690
+        #   repo_owner:
+        #   short_description:	"Official build of Nginx."
+        #   is_automated:	false
+        #   is_official:	true
+        # }
 
 
         is_official = image['is_official']
         repo_name =  image['repo_name']
 
         list_tags = self.get_all_tags(repo_name, is_official)
-        #if list_tags:                       # is list tags is not None
         for tag in list_tags:
                 image_tag = self.get_json_tag(repo_name, is_official, tag=tag)
-                ## TAG INFORMATION
-                    # full_size	: 5161543948
-                    # images : [
-                            # {
-                            # size	5161543948
-                            # architecture	"amd64"
-                            # variant
-                            # features
-                            # os	"linux"
-                            # os_version
-                             # os_features
-                            # } ]
-                        # id	: 185394
-                        # repository	: 178608
-                        # creator	: 222338
-                        # last_updater	: 1300638
-                   # last_updated	: "2017-05-08T04:14:58.422174Z"
-                   # image_id :
-                   # v2 :	true
+                # https://hub.docker.com/v2/repositories/diunipisocc/docker-finder/tags/crawler/
+                # JSOn of a single tag:
+                # {
+                #   name	"crawler"
+                #   full_size :44484893
+                #   images :[
+                #   size :44484893
+                #   architecture :"amd64"
+                #   variant :
+                #       features :
+                #       os :"linux"
+                #       os_version :
+                #       os_features :
+                #       id :5924758
+                #   ]
+                #   repository :1022083
+                #   creator :534858
+                #   last_updater :534858
+                #   last_updated :"2017-02-13T09:33:09.873799Z"
+                #   image_id :
+                #   v2 :true
+                # }
                 size  =  image_tag['full_size']
                 if size is None or size < 0:
-                #if  size is None or pulls is None or stars is None:
-                    self.logger.info("[{0}:{1}] image discarded (size={2},".format(repo_name, tag, size))
+                    self.logger.info("[{0}:{1}] tag discarded (size={2})".format(repo_name, tag, size))
                     yield None
                 else:
-                    image_tag['name'] = "{}:{}".format(repo_name, tag) # name is eault to the tag
+                    image_tag['name'] = "{}:{}".format(repo_name, tag) # "name" is the tag  we rename into "reponame:tag"
 
-                    # the key of the image dictionary are updated if they are present to the image_tag (e-g- last_updated)
-                    image_with_tag = {**image, 'tag':tag, **image_tag} # dictionary with the name info end the tag information
+                    # dictionary with the REPOSITORY  and TAG info
+                    image_with_tag = {**image, 'tag':tag, **image_tag}
 
-                    # if ffilter(image_with_tag) == True: # apply the filter function to the name:tag , if return TRUE the image must be selected
-                    #     self.logger.info("[{0}:{1}] selected by function filter ".format(repo_name, tag))
-                    #     yield image_with_tag
-                    # else:
-                    #     self.logger.info("[{0}:{1}] discarded  by  function filter".format(repo_name, tag))
-                    #     yield None
-                    #self.logger.info(image_with_tag)
-                    if ffilter(image_with_tag) :
-                        #image_with_tag['name'], stars, pulls, is_automated, is_official
-                        self.logger.info("{0[repo_name]}: {0[tag]} SELECTED filter tosker (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
+                    if filter_tag(image_with_tag) :
+                        self.logger.info("{0[repo_name]}: {0[tag]} - SELECTED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
                         yield image_with_tag
                     else:
-                        self.logger.info("{0[repo_name]}:{0[tag]} DISCARDED filter tosker (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
+                        self.logger.info("{0[repo_name]}:{0[tag]} - DISCARDED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
                         yield None
-                # else:
-                #     self.logger.debug("[{0}:{1}] image discarded size={2}, pulls={3}, stars={4} \n\t {5} ".format(repo_name, tag, size, pulls, stars))
-                #     yield None
-
-
-
-
-            #filter_function(image)
-            # repo_name = image['repo_name']
-            # if filter_function(repo_name):
-            #     filtered_images.append(image)
-            # else:
-            #     self.logger.debug("["+repo_name+"] negative filtered, not taken")
 
 
     def build_search_url(self, page,  page_size=10, sort=None):
@@ -326,6 +316,9 @@ class ClientHub:
 
     def get_json_tag(self, repo_name, tag="latest", is_official=False):
         """ Get the informations for the repository with *tag*."""
+
+        # https://hub.docker.com/v2/repositories/diunipisocc/docker-finder/tags/crawler/
+
 
         if is_official:
             url_tag = self.docker_hub+"/v2/repositories/library/" + repo_name + "/tags/"+tag
@@ -396,7 +389,7 @@ class ClientHub:
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: " + str(e))
 
-    def is_alive_in_hub(self, repo_name, is_official=False, tag = "latest"):
+    def is_alive_in_hub(self, repo_name, is_official=False, tag="latest"):
         if is_official:
             image_hub = self.docker_hub+"/v2/repositories/library/" + repo_name + "/tags/"+tag
         else:

@@ -149,7 +149,10 @@ class Crawler:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ", Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
         else:
             self.logger.info("Consecutive sampling activated. \n\t\tTarget :" +str(max_images)+ ". Total images: "+ str(count) +"\n\t\tPercentage:" +str(max_images/count))
-        for image in self.client_hub.crawl_images(from_page=from_page, page_size=page_size, max_images=max_images,  force_from_page = force_from_page,
+        for image in self.client_hub.crawl_images(from_page=from_page,
+                                                  page_size=page_size,
+                                                  max_images=max_images,
+                                                  force_from_page = force_from_page,
                                                   sort=self.ordering,
                                                   # filter_image_tag=self.filter_tag
                                                   # filter_tag=self.filter_latest,
@@ -158,6 +161,7 @@ class Crawler:
                 if sent_images % 100 == 0:
                     self.logger.info("{0} number of images sent to analyser".format(sent_images))
                 yield json.dumps(image) #json.dumps({"name": repo_name})
+
             #self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))
             #self.logger.info("Number of images sent to queue: {0}".format(str(sent_images)))
             #self.logger.info("{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(count)))

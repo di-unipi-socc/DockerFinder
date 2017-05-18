@@ -49,3 +49,20 @@ class Image:
 
     def __str__(self):
         return json.dumps(self.__dict__)
+
+        
+    # if 'star_count' in json_image:
+    #     image.stars = json_image["star_count"]
+    #
+    # if 'pull_count' in json_image:
+    #     image.pulls = json_image["pull_count"]
+    #
+    # if 'description' in json_image:
+    #     image.description = json_image["short_description"]    # String
+    #
+    # if "is_automated" in json_image:
+    #
+    #     image.is_automated = json_image["is_automated"]      # Bool
+    #
+    # if "is_official" in json_image:
+    #     image.is_official  = json_image["is_official"]
