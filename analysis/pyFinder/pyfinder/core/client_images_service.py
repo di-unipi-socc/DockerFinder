@@ -156,18 +156,17 @@ class ClientImages:
     # TODO crate method for checkein if a image must be scanned gain
 
 
-    def must_scanned(self, name):#, tag="latest"):
+    def must_scanned(self, name, remote_last_update):#, tag="latest"):
         """
-        Check if the *repo_name* has been scanned recently and it is not require the scan.
-         if(local.last_updated > remote.last_scan ) then {scan}
+
         :param repo_name: the image name with tag.
         :return: True if the image must be scan. False otherwise.
         """
         tag = name.split(":")[1]
         repo = name.split(":")[0]
-        res_image_json = self.get_scan_updated(name)  # {"images:[
+        must_scanned = True
+        res_image_json = self.get_scan_updated(name) # local "last_scan" and "last_update"
         if res_image_json is not None:   # if not empty list, the result is there
-            #self.logger.debug("Received from Images service" + str(res_image_json))
             image_json = res_image_json['images'][0]
             self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
                 'last_updated']))
@@ -177,18 +176,24 @@ class ClientImages:
             else:
                 dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
 
-            # latest_updated from docker hub
-            url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo + "/tags/" + tag
-            json_response = self.session.get(url_tag_latest).json()
-            hub_last_update_string = json_response['last_updated']
-            if(json_response['last_updated']):
-                hub_last_update = string_to_date(hub_last_update_string)
-            else:
-                hub_last_update = dofinder_last_scan
 
-            # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
-            if hub_last_update > dofinder_last_update or  hub_last_update > dofinder_last_scan:
-                self.logger.debug("[" + name + "] need to update, last update of docker Hub is greater than last scan")
-                return True
-            else:
-                self.logger.debug("["+name+"] NOT need to update: Hub last update:"+str(hub_last_update)+" local last upate:" +str(dofinder_last_update))
+            if string_to_date(remote_last_update) <= dofinder_last_scan or string_to_date(remote_last_update) <= dofinder_last_update:
+                must_scanned = False
+
+            return must_scanned
+
+            # latest_updated from docker hub
+            # url_tag_latest = "https://hub.docker.com/v2/repositories/" + repo + "/tags/" + tag
+            # json_response = self.session.get(url_tag_latest).json()
+            # hub_last_update_string = json_response['last_updated']
+            # if(json_response['last_updated']):
+            #     hub_last_update = string_to_date(hub_last_update_string)
+            # else:
+            #     hub_last_update = dofinder_last_scan
+            #
+            # # if(hub_last_update > dofinder_last__update && hub_last_update > dofinder_last_scan):
+            # if hub_last_update > dofinder_last_update or hub_last_update > dofinder_last_scan:
+            #     self.logger.debug("[" + name + "] need to update, last update of docker Hub is greater than last scan")
+            #     return True
+            # else:
+            #     self.logger.debug("["+name+"] NOT need to update: Hub last update:"+str(hub_last_update)+" local last upate:" +str(dofinder_last_update))

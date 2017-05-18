@@ -23,11 +23,11 @@ services:
                     '--random=False',
                     '--fp=1',
                     '--ps=2',
-                    '--policy=stars',
+                    '--policy=stars_first',
                     '--min-stars=0',
                     '--min-pulls=0',
-                    '--only-official=False',
-                    '--only-automated=False',
+                    '--only-official',
+                    #'--only-automated',
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
@@ -62,6 +62,7 @@ services:
                   '--software-url=http://software_server:3001/api/software', '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./analysis/pyFinder/:/code
 
     deploy:
       mode: replicated

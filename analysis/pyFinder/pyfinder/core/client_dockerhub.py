@@ -192,8 +192,8 @@ class ClientHub:
         # is_official:	true
         # }
 
-        pulls  =  image['pull_count']
-        stars  =  image['star_count']
+        pulls = image['pull_count']
+        stars = image['star_count']
 
         if pulls is None or pulls < 0 or stars is None or stars < 0:
             res = False
@@ -230,7 +230,7 @@ class ClientHub:
 
         list_tags = self.get_all_tags(repo_name, is_official)
         for tag in list_tags:
-                image_tag = self.get_json_tag(repo_name, is_official, tag=tag)
+                image_tag = self.get_json_tag(repo_name, tag, is_official)
                 # https://hub.docker.com/v2/repositories/diunipisocc/docker-finder/tags/crawler/
                 # JSOn of a single tag:
                 # {
@@ -264,10 +264,10 @@ class ClientHub:
                     image_with_tag = {**image, 'tag':tag, **image_tag}
 
                     if filter_tag(image_with_tag) :
-                        self.logger.info("{0[repo_name]}: {0[tag]} - SELECTED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
+                        self.logger.info("[{0[repo_name]}: {0[tag]}] - SELECTED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
                         yield image_with_tag
                     else:
-                        self.logger.info("{0[repo_name]}:{0[tag]} - DISCARDED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
+                        self.logger.info("[{0[repo_name]}:{0[tag]}] - DISCARDED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
                         yield None
 
 

@@ -12,14 +12,25 @@ var imageSchema =  new mongoose.Schema({
         unique:     true,
         required    :[true, 'The name of the image cannot be empty']
     },
+
+    id: String,
+
+    repo_owner: String,
     id_tag: Number,
+    tag: String,
     last_scan:      Date,
     last_updated:   Date,  // time of the last updated of the repo in the docker hub
+    last_updater: Number,
     size:      Number,
     repository: Number,
     creator: Number,
+    architecture : String,
+    //variant:  mongoose.Schema.Types.Mixed,
+    image_id: Number,
+    v2: Boolean,
 
     //Docker repository informations
+    repo_name: String,
     user:String,
     stars:     {
         type:       Number,
@@ -41,6 +52,7 @@ var imageSchema =  new mongoose.Schema({
     status: String, // "pending" | "updated": if pending the image description must be updated.
 
     inspect_info:  mongoose.Schema.Types.Mixed  // docker run inpect <name>
+
 
 });
 
