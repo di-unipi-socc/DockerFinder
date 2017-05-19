@@ -107,8 +107,8 @@ class Scanner:
         else:
             self.logger.info(
                 "[{}] - uptodate into images server".format(image.name))
-        #self.client_daemon.images.remove(image.name, force=True)
-        #self.logger.info('[{0}] removed image'.format(image.name))
+        # self.client_daemon.images.remove(image.name, force=True)
+        # self.logger.info('[{0}] removed image'.format(image.name))
 
     #@classmethod
     def scan(self, image):
@@ -130,7 +130,6 @@ class Scanner:
         #     self.logger.info(json_image['status'])
 
         img = self.client_daemon.images.pull(image.name)
-
 
         self.logger.debug('[{0}] start scanning'.format(image.name))
 
@@ -181,9 +180,9 @@ class Scanner:
             # start the container with sleep
             container.start()
 
-
             image.softwares = self._extract_softwares(container)
 
+            image.distro = self._extract_distribution(container)
 
             # search distribution Operating system in the image,
             # self._get_sys(self.versionCommands):
@@ -194,9 +193,8 @@ class Scanner:
             #     if distro:
             #         image.distro = distro
 
-
-
-            container.stop(timeout=1) # after 1 second it stops the container with SIGKILL
+            # after 1 second it stops the container with SIGKILL
+            container.stop(timeout=1)
             container.remove()
             # # search software distribution in the image.
             # softwares = []
@@ -211,7 +209,7 @@ class Scanner:
             # image.softwares = softwares
 
             # stop ping process in the container
-            #self.client_daemon.stop(container_id)
+            # self.client_daemon.stop(container_id)
         except docker.errors.ImageNotFound as e:
             self.logger.error(str(e))
             raise
@@ -228,17 +226,19 @@ class Scanner:
 
     def _extract_distribution(self, container):
 
-         for command, regex in self.client_software.get_system():
+        for command, regex in self.client_software.get_system():
              res = container.exec_run(cmd=command)
              output = res.decode()
-             prog = re.compile(sw['regex'])
+             prog = re.compile(regex)
              match = prog.search(output)
              if match:
-                   version = match.group(0)
-                   softwares.append({'software': sw['name'], 'ver': version})
-                   logger.debug("{0} {1} found.".format(sw['name'], version))
+                   distro = match.group(0)
+                   self.logger.info("{0} found.".format(distro))
+                   return distro
              else:
-                   logger.debug("[{0}] NOT found in ".format(sw['name']))
+                   self.logger.debug("[{0}] NOT found in ".format(command))
+        return None
+
 
         #     # distro = self.version_from_regex(name, cmd, regex)
         #     distro = self.version_from_regex(container_id, cmd, regex)
