@@ -194,8 +194,10 @@ class ClientHub:
 
         pulls = image['pull_count']
         stars = image['star_count']
+        is_automated = image['is_automated']
+        is_official = image['is_official']
 
-        if pulls is None or pulls < 0 or stars is None or stars < 0:
+        if pulls is None or pulls < 0 or stars is None or stars < 0 or is_automated is None or is_official None:
             res = False
         else:
             # apply filter passed by the crawler (filters the image looking at the repository information)
@@ -237,14 +239,14 @@ class ClientHub:
                 #   name	"crawler"
                 #   full_size :44484893
                 #   images :[
-                #   size :44484893
-                #   architecture :"amd64"
-                #   variant :
-                #       features :
-                #       os :"linux"
-                #       os_version :
-                #       os_features :
-                #       id :5924758
+                #       size :44484893
+                #       architecture :"amd64"
+                #       variant :
+                #           features :
+                #           os :"linux"
+                #           o s_version :
+                #           os_features :
+                #           id :5924758
                 #   ]
                 #   repository :1022083
                 #   creator :534858
@@ -254,7 +256,9 @@ class ClientHub:
                 #   v2 :true
                 # }
                 size  =  image_tag['full_size']
-                if size is None or size < 0:
+                last_updated = image_tag ['last_updated']
+                
+                if size is None or size < 0 or last_updated is None:
                     self.logger.info("[{0}:{1}] tag discarded (size={2})".format(repo_name, tag, size))
                     yield None
                 else:
