@@ -165,21 +165,25 @@ class ClientImages:
         tag = name.split(":")[1]
         repo = name.split(":")[0]
         must_scanned = True
+
         res_image_json = self.get_scan_updated(name) # local "last_scan" and "last_update"
         if res_image_json is not None:   # if not empty list, the result is there
             image_json = res_image_json['images'][0]
-            self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
-                'last_updated']))
-            dofinder_last_scan = string_to_date(image_json['last_scan'])
-            if image_json['last_updated']:
-                dofinder_last_update = string_to_date(image_json['last_updated'])
-            else:
-                dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
+            try:
+                self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
+                    'last_updated']))
+
+                dofinder_last_scan = string_to_date(image_json['last_scan'])
+                if image_json['last_updated']:
+                    dofinder_last_update = string_to_date(image_json['last_updated'])
+                else:
+                    dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
 
 
-            if string_to_date(remote_last_update) <= dofinder_last_scan or string_to_date(remote_last_update) <= dofinder_last_update:
-                must_scanned = False
-
+                if string_to_date(remote_last_update) <= dofinder_last_scan or string_to_date(remote_last_update) <= dofinder_last_update:
+                    must_scanned = False
+            except TypeError:
+                raise
             return must_scanned
 
             # latest_updated from docker hub

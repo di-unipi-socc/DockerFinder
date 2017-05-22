@@ -79,6 +79,11 @@ class Scanner:
             except docker.errors.APIError as e:
                 self.logger.error(str(e) + ": retry number " + str(attempt))
                 attempt += 1
+            except Exception as e:
+                excepName = type(e).__name__ # returns the name of the exception
+                self.logger.error(" {} excpetion: {}".format(excepName,str(e)))
+                attempt += 1
+
         if processed is False:
             self.logger.warning("{} - PURGER from the queue after {}"
                                 "attempt".format(image.name, attempt))

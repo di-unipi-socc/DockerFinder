@@ -22,12 +22,12 @@ services:
                     #'--si=10000',
                     '--random=False',
                     '--fp=1',
-                    '--ps=2',
+                    '--ps=100',
                     '--policy=stars_first',
-                    '--min-stars=0',
+                    '--min-stars=3',
                     '--min-pulls=0',
-                    '--only-official',
-                    #'--only-automated',
+                    #'--only-official',
+                    '--only-automated',
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
