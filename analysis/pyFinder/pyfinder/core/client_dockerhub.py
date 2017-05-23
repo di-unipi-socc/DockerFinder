@@ -197,7 +197,7 @@ class ClientHub:
         is_automated = image['is_automated']
         is_official = image['is_official']
 
-        if pulls is None or pulls < 0 or stars is None or stars < 0 or is_automated is None or is_official None:
+        if pulls is None or pulls < 0 or stars is None or stars < 0 or is_automated is None or is_official is None:
             res = False
         else:
             # apply filter passed by the crawler (filters the image looking at the repository information)
@@ -257,7 +257,7 @@ class ClientHub:
                 # }
                 size  =  image_tag['full_size']
                 last_updated = image_tag ['last_updated']
-                
+
                 if size is None or size < 0 or last_updated is None:
                     self.logger.info("[{0}:{1}] tag discarded (size={2})".format(repo_name, tag, size))
                     yield None
