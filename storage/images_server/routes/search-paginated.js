@@ -1,7 +1,10 @@
+/* jshint node: true, esversion: 6 */
+"use strict";
+
 /**
  * Created by dido on 7/14/16.
  */
-"use strict";
+
 var express = require('express');
 var router = express.Router();
 var Image = require('../models/image');
@@ -46,7 +49,6 @@ router.get('/', function(req, res, next) {
                     case 'size':
                     case '-size':
                         var [value, order] = parseSort(req.query.sort);
-                        console.log('DEBUG:', value, order)
                         sort[value] = order;
                         break;
                     default:
@@ -101,6 +103,12 @@ router.get('/', function(req, res, next) {
             case 'stars_gte':
                 addMatch(key, 'stars', '$gte');
                 break;
+            case 'distro':
+                findMatch.distro = {
+                    $regex: `.*${req.query[key].split(' ').join('.*')}.*`,
+                    $options: 'i'
+                };
+                break;
             default:
                 if (!findMatch.softwares) findMatch.softwares = {$all: []};
                 findMatch.softwares.$all.push({
@@ -143,7 +151,7 @@ router.get('/', function(req, res, next) {
             "pages": result.pages,
             "images": result.docs
         });
-        console.log("Total Results: " + result.total)
+        console.log("Total Results: " + result.total);
     });
 });
 
