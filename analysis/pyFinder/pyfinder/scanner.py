@@ -137,33 +137,37 @@ class Scanner:
         # if 'status' in json_image.keys() and ("Downloaded" in json_image['status'] or "up to date" in json_image['status']):
         #     self.logger.info(json_image['status'])
 
-        img = self.client_daemon.images.pull(image.name)
+        try:
+            img = self.client_daemon.images.pull(image.name)
 
-        self.logger.debug('[{0}] start scanning'.format(image.name))
+            self.logger.debug('[{0}] start scanning'.format(image.name))
 
-        # search software versions and system commands
-        self.logger.info('[{0}] Adding Softwares versions'.format(image.name))
-        self.info_dofinder(image)
+            # search software versions and system commands
+            self.logger.info('[{0}] Adding Softwares versions'.format(image.name))
+            self.info_dofinder(image)
 
-        # add informatiom from the inspect command
-        self.logger.info('[{0}] Adding docker inspect info'.format(image.name))
-        self.info_inspect(image)
+            # add informatiom from the inspect command
+            self.logger.info('[{0}] Adding docker inspect info'.format(image.name))
+            self.info_inspect(image)
 
-        self.logger.info('[{0}] finish scanning'.format(image.name))
-        image.last_scan = str(datetime.datetime.now())
+            self.logger.info('[{0}] finish scanning'.format(image.name))
+            image.last_scan = str(datetime.datetime.now())
 
-        # set updated time
-        image.set_updated()
+            # set updated time
+            image.set_updated()
 
-        if self.rmi:
-            try:
+            if self.rmi:
                 self.client_daemon.images.remove(image.name, force=True)
                 self.logger.info('[{0}] removed image'.format(image.name))
-            except docker.errors.APIError as e:
-                self.logger.error(str(e))
-            except docker.errors.NotFound as e:
-                self.logger.error(str(e))
-
+        except docker.errors.APIError as e:
+            self.client_daemon.images.remove(image.name, force=True)
+            self.logger.error(str(e))
+        except docker.errors.NotFound as e:
+            self.client_daemon.images.remove(image.name, force=True)
+            self.logger.error(str(e))
+        except:
+            container.remove(force=True)
+            raise
         return image
 
     def info_dofinder(self, image):
@@ -218,10 +222,12 @@ class Scanner:
 
             # stop ping process in the container
             # self.client_daemon.stop(container_id)
-        except docker.errors.ImageNotFound as e:
+        except docker.errors.ImageNotFound as e
+            container.remove(force=True)
             self.logger.error(str(e))
             raise
         except docker.errors.APIError as e:
+            container.remove(force=True)
             self.logger.error(str(e))
             raise
         except:
