@@ -121,7 +121,7 @@ services:
      image: diunipisocc/docker-finder:webapp
      restart: on-failure:3
      ports:
-       - 8080:80
+       - 80:80
      volumes:
        - /home/dido/github/DockerFinder/discovery/webapp:/code
      deploy:
