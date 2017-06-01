@@ -96,6 +96,9 @@ class Scanner:
         """
 
         if self.client_images.is_new(image.name):
+            self.logger.info(
+                "[{}] is new into local database".format(image.name))
+            self.scan(image)
             self.scan(image)
             self.logger.debug(
                 "[{}] - POST to images server".format(image.name))
@@ -104,7 +107,7 @@ class Scanner:
         # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire
         # the image must be scan again
         elif self.client_images.must_scanned(image.name, image.last_updated):
-            self.logger.debug(
+            self.logger.info(
                 "[{}] is present into images server but must be scan again".format(image.name))
             self.scan(image)
             self.logger.info("[{}] - PUT to images server".format(image.name))
