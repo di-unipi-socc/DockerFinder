@@ -222,7 +222,7 @@ class Scanner:
 
             # stop ping process in the container
             # self.client_daemon.stop(container_id)
-        except docker.errors.ImageNotFound as e
+        except docker.errors.ImageNotFound as e:
             container.remove(force=True)
             self.logger.error(str(e))
             raise
