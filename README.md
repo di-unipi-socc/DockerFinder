@@ -1,23 +1,38 @@
 
 
 #  DockerFinder: Multi-attribute search of Docker images
-
 [![Join the chat at https://gitter.im/di-unipi-socc/DockerFinder](https://badges.gitter.im/di-unipi-socc/DockerFinder.svg)](https://gitter.im/di-unipi-socc/DockerFinder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License](http://img.shields.io/badge/license-APACHE-green.svg?style=flat)](https://raw.githubusercontent.com/di-unipi-socc/DockerFinder/master/LICENSE)
+```
+Antonio Brogi, Davide Neri, Jacopo Soldani
+IEEE International Conference on Cloud Engineering (IC2E), 2017 
+```
 
 
-
-[Department of Computer Science, University of Pisa](https://www.di.unipi.it/en/)
-
-Author: Davide Neri.
-
-Contact: davide.neri@di.unipi.it
-
-Try it: [Docker Finder](http://black.di.unipi.it/dockerfinder)
+Download the citation as .bib
+```
+@inproceedings{DBLP:conf/ic2e/BrogiNS17,
+  author    = {Antonio Brogi and
+               Davide Neri and
+               Jacopo Soldani},
+  title     = {DockerFinder: Multi-attribute Search of Docker Images},
+  booktitle = {2017 {IEEE} International Conference on Cloud Engineering, {IC2E}
+               2017, Vancouver, BC, Canada, April 4-7, 2017},
+  pages     = {273--278},
+  publisher = {{IEEE}},
+  year      = {2017},
+  url       = {https://doi.org/10.1109/IC2E.2017.41},
+  doi       = {10.1109/IC2E.2017.41},
+  timestamp = {Wed, 17 May 2017 10:11:45 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/ic2e/BrogiNS17},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+```
 
 <p align="center">
 <img src="./docs/DockerFinder-logo.png" width="300">
 </p>
+
 
 
 ## Why DockerFinder ?
