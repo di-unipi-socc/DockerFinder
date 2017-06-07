@@ -11,7 +11,7 @@ IEEE International Conference on Cloud Engineering (IC2E), 2017
 
 Download the citation as .bib
 ```
-@inproceedings{DBLP:conf/ic2e/BrogiNS17,
+@inproceedings{BrogiNeriSoldani:dockerfinder,
   author    = {Antonio Brogi and
                Davide Neri and
                Jacopo Soldani},
