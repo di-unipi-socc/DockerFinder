@@ -73,10 +73,7 @@ class Scanner:
                 self.logger.info("[{}] start scan".format(image.name))
                 self.process_repo_name(image)
                 processed = True
-            except docker.errors.NotFound as e:  # docker.errors.NotFound:
-                self.logger.error(str(e) + ": retry number " + str(attempt))
-                attempt += 1
-            except docker.errors.APIError as e:
+            except (docker.errors.APIError, docker.errors.NotFound) as e:  # docker.errors.NotFound:
                 self.logger.error(str(e) + ": retry number " + str(attempt))
                 attempt += 1
             except Exception as e:
@@ -158,15 +155,10 @@ class Scanner:
             if self.rmi:
                 self.client_daemon.images.remove(image.name, force=True)
                 self.logger.info('[{0}] removed image'.format(image.name))
-        except docker.errors.APIError as e:
-            self.client_daemon.images.remove(image.name, force=True)
+        except (docker.errors.APIError, docker.errors.NotFound) as e:
             self.logger.error(str(e))
-        except docker.errors.NotFound as e:
             self.client_daemon.images.remove(image.name, force=True)
-            self.logger.error(str(e))
-        except:
-            container.remove(force=True)
-            raise
+
         return image
 
     def info_dofinder(self, image):
@@ -206,7 +198,7 @@ class Scanner:
 
             # after 1 second it stops the container with SIGKILL
             container.stop(timeout=1)
-            container.remove()
+            container.remove(v=True)
             # # search software distribution in the image.
             # softwares = []
             #
@@ -221,16 +213,9 @@ class Scanner:
 
             # stop ping process in the container
             # self.client_daemon.stop(container_id)
-        except docker.errors.ImageNotFound as e:
-            container.remove(force=True)
+        except (docker.errors.ImageNotFound, docker.errors.APIError) as e:
+            container.remove(v=True, force=True)
             self.logger.error(str(e))
-            raise
-        except docker.errors.APIError as e:
-            container.remove(force=True)
-            self.logger.error(str(e))
-            raise
-        except:
-            container.remove(force=True)
             raise
         # # remove the contatiner
         # self.client_daemon.remove_container(container_id, force=True, v=True)
@@ -240,16 +225,16 @@ class Scanner:
     def _extract_distribution(self, container):
 
         for command, regex in self.client_software.get_system():
-             res = container.exec_run(cmd=command)
-             output = res.decode()
-             prog = re.compile(regex)
-             match = prog.search(output)
-             if match:
-                   distro = match.group(0)
-                   self.logger.info("{0} found.".format(distro))
-                   return distro
-             else:
-                   self.logger.debug("[{0}] NOT found in ".format(command))
+            res = container.exec_run(cmd=command)
+            output = res.decode()
+            prog = re.compile(regex)
+            match = prog.search(output)
+            if match:
+                distro = match.group(0)
+                self.logger.info("{0} found.".format(distro))
+                return distro
+            else:
+                self.logger.debug("[{0}] NOT found in ".format(command))
         return None
 
 
@@ -272,12 +257,12 @@ class Scanner:
             prog = re.compile(sw['regex'])
             match = prog.search(output)
             if match:
-                  version = match.group(0)
-                  if version != "." or version != ".go":
-                      softwares.append({'software': sw['name'], 'ver': version})
-                      self.logger.debug("{0} {1} found.".format(sw['name'], version))
+                version = match.group(0)
+                if version != "." or version != ".go":
+                    softwares.append({'software': sw['name'], 'ver': version})
+                    self.logger.debug("{0} {1} found.".format(sw['name'], version))
             else:
-                  self.logger.debug("[{0}] NOT found in ".format(sw['name']))
+                self.logger.debug("[{0}] NOT found in ".format(sw['name']))
         self.logger.info('['+''.join('{} {},'.format(s['software'],s['ver']) for s in softwares)+"]")
 
         return softwares
