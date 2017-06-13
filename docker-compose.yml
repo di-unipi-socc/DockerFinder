@@ -18,7 +18,7 @@ services:
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
                     '--queue=images',
-                    '--force-page=True',
+                    #'--force-page=True',
                     #'--si=10000',
                     '--random=True',
                     '--fp=1',
