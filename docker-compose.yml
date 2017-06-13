@@ -32,7 +32,7 @@ services:
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
-        - /data/crawler/
+        - crawler_volume:/data/crawler/
     deploy:
       placement:
         constraints:
@@ -45,7 +45,7 @@ services:
     ports:
       - 8082:15672
     volumes:
-      - /var/lib/rabbitmq
+      - rabbitmq_volume:/var/lib/rabbitmq
     deploy:
       placement:
         constraints:
@@ -72,13 +72,6 @@ services:
       restart_policy:
           condition: on-failure
 
-      # update_config:
-      #   parallelism: 2
-      #   delay: 10s
-      # restart_policy:
-      #   condition: on-failure
-
-
 #   checker:
 #       image: diunipisocc/docker-finder:checker
 #       build:
@@ -88,7 +81,8 @@ services:
 #       #command: verify
 #       volumes:
 #          - /dockerfinder/checker/log:/data/crawler/log
-# #
+
+#
 # #####################################################
 # ###############   DISCOVERY PHASE ####################
 # #####################################################
@@ -110,7 +104,7 @@ services:
     image: mongo:3
     hostname: software_db
     volumes:
-      - softwaredb:/data/db  # /data/db is the deafult directory where mogno stores the databases.
+      - software_db_volume:/data/db  # /data/db is the deafult directory where mogno stores the databases.
     deploy:
        placement:
           constraints:
@@ -152,15 +146,17 @@ services:
       restart: on-failure:3
       hostname: images_db
       volumes:
-        - /data/db
+        - images_db_volume:/data/db
       deploy:
          placement:
             constraints:
                - node.hostname == swarm-manager
 
-    # /data/db is the deafult directory where mogno container store the databases.
 volumes:
-  softwaredb:
+  crawler_volume:
+  rabbitmq_volume:
+  images_db_volume:
+  software_db_volume:
 
 
 #####################################################
