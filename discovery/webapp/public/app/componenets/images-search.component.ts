@@ -20,7 +20,7 @@ import {Router} from "@angular/router";
 export class ImagesSearchComponent implements  OnInit {
     sorting  = [{name:'Decreasing stars', val:"stars"},{name:'Increasing stars',val:"-stars"},
         {name:'Decreasing pulls', val:"pulls"},{name:'Increasing pulls',val:"-pulls"},
-        {name:'Increasing stars  Increasing pulls', val:"-stars -pulls"}
+        {name:'Increasing stars  Increasing pulls', val:"-stars&sort=-pulls"}
     ];
 
     comparisons = [{name:">=", val:"_gt"},{name:"<",val:"_lt"},{name:"=",val:""}];
