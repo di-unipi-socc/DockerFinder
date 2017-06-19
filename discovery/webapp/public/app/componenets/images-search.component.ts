@@ -20,24 +20,26 @@ import {Router} from "@angular/router";
 export class ImagesSearchComponent implements  OnInit {
     sorting  = [{name:'Decreasing stars', val:"stars"},{name:'Increasing stars',val:"-stars"},
         {name:'Decreasing pulls', val:"pulls"},{name:'Increasing pulls',val:"-pulls"},
-        {name:'Increasing stars  Increasing pulls', val:"-stars -pulls"}
+        {name:'Increasing stars  Increasing pulls', val:"-stars&sort=-pulls"}
     ];
 
     comparisons = [{name:">=", val:"_gt"},{name:"<",val:"_lt"},{name:"=",val:""}];
 
     //list  software and version used to construct the search URL
-    softwares : Software [] = [ new Software("", "", false)]; //{software:'', version:'', error:false}];
+    softwares : Software [] = [ new Software("", "", false)];
+    //{software:'', version:'', error:false}];
     msg: string = '';
 
 
-     selectedSort = {name:"sort", val:"stars"}; //default selection od sorting (Descreaing order)
+     selectedSort = {name:"sort", val:"stars"}; //default selection of sorting (Decresing order)
 
      sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};  //size_gt=x, size_lt=y, size=z
      pullsCmpValue = {name:"pulls", cmp: this.comparisons[0].val, val:"0"};
      starsCmpValue = {name:"stars", cmp: this.comparisons[0].val, val:"0"};
 
-     availableSoftware : string [] =["java", "python","pip", "wget",'perl','nano',
-                'php','ruby','scala','groovy','apache2','nginx','nodejs','npm','gunicorn','curl'];
+     availableSoftware : string [] =["java", "python","pip", "wget",'perl','nano','php','ruby','scala','groovy',
+                                     'apache2','nginx','nodejs','npm','gunicorn','curl','unzip', 'tar','zip','erl',
+                                     'go','ash','zsh','bash','git','ping','gradle','mvn'];
 
     resultImages : Image[];
     count = 0;
@@ -162,7 +164,12 @@ export class ImagesSearchComponent implements  OnInit {
             url_search +=sw.name+"="+sw.version+"&";
             //console.log("Versione: "+sw.version)
         }
-        url_search += "sort="+this.selectedSort.val;
+        console.log("$$$$$$$$$$$ VALUE"+ this.selectedSort.val +"#####");
+
+        if (this.selectedSort.val ===  null)
+          url_search += "sort=stars";
+        else
+          url_search += "sort="+this.selectedSort.val;
         url_search += "&"+this.sizeCmpValue.name+this.sizeCmpValue.cmp+"="+this.sizeCmpValue.val;
         url_search += "&"+this.pullsCmpValue.name+this.pullsCmpValue.cmp+"="+this.pullsCmpValue.val;
         url_search += "&"+this.starsCmpValue.name+this.starsCmpValue.cmp+"="+this.starsCmpValue.val;

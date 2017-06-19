@@ -117,7 +117,7 @@ services:
      ports:
        - 80:80
      volumes:
-       - /home/dido/github/DockerFinder/discovery/webapp:/code
+       - ./discovery/webapp:/code
      deploy:
         placement:
             constraints:

@@ -96,7 +96,12 @@
             <select class="form-control" [(ngModel)]="selectedSort.val" id="sort">
                 <option *ngFor="let sort of sorting" [value]="sort.val">{{sort.name}}</option>
             </select>
-        </div>
+
+            <!-- <select class="form-control" name="mySelect" id="sort"
+            ng-options="sort.name for sort in sorting "
+            ng-model="selectedSort">
+          </select> -->
+      </div>
          <!--   <div class="col-sm-3">
             <select class="form-control" [(ngModel)]="order"  id="order">
                 <option *ngFor="let o of ordering" [value]="o">{{o}}</option>
