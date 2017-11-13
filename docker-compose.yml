@@ -72,15 +72,15 @@ services:
       restart_policy:
           condition: on-failure
 
-#   checker:
-#       image: diunipisocc/docker-finder:checker
-#       build:
-#         context: analysis
-#         dockerfile: ./Dockerfile_checker
-#       command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log','--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
-#       #command: verify
-#       volumes:
-#          - /dockerfinder/checker/log:/data/crawler/log
+  checker:
+    image: diunipisocc/docker-finder:checker
+    build:
+      context: analysis
+      dockerfile: ./Dockerfile_checker
+    command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log','--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
+#    #command: verify
+    volumes:
+      - /dockerfinder/checker/log:/data/crawler/log
 
 #
 # #####################################################
