@@ -5,7 +5,6 @@ from logging.handlers import TimedRotatingFileHandler
 import json
 import pika
 import time
-import datetime
 
 
 class Checker:
@@ -112,8 +111,8 @@ class Checker:
             if self.client_hub.is_alive_in_hub(repo, tag=tag):
                 self.logger.debug("[" + name + "] status:" + image['status'])
                 if image['status'] == "updated":
-                    # str(datetime.datetime.min) = '0001-01-01 00:00:00'
-                    if self.client_images.must_scanned(name,  image['last_updated'] if image['last_updated'] else str(datetime.datetime.min)):
+                    # str(datetime.datetime.min)
+                    if self.client_images.must_scanned(name,  image['last_updated'] if image['last_updated'] else "2000-01-01T00:00:00.000Z"):
                         self.logger.debug(
                             "[" + name + "] must be scanned again.")
                         self.client_images.update_status(
