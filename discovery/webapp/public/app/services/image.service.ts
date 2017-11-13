@@ -56,17 +56,10 @@ export class ImageService {
   }
 
 
-  getTotalImages(): number {
+  getTotalImages(): Promise<number>{
   return this.http.get("http://images_server:3000/api/images") //this.imagesUrl+"&page="+page)
-                   . toPromise()
+                   .toPromise()
                    .then(response => response.json()['count'])
-
-                   // count: total number od images taht match the result
-                   // pages: totalnumber of pages
-                   // page:  the number
-                   // limit: number of images per size
-                   // images: array of images (currently)
-                   //.then(response => response.json())//.data) as Image[])
                    .catch(this.handleError);
 
   }

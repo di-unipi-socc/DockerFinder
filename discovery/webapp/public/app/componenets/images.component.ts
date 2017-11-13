@@ -28,7 +28,7 @@ import {ImageService} from "../services/image.service";
 
         <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt">
 
-         <div>{{pager.count}} images found</div>
+         <div>{{pager.count}} images found (among {{totImages }} in tha database)</div>
 
         <!-- pager-->
         <ul [hidden]="hideCount" style="font-size:14" class="pagination">
@@ -88,7 +88,7 @@ export class ImagesComponent implements OnInit {
     // array of all items to be paged
     //private allItems: any[];
 
-    totImages: 0 //tot images stored into the database.
+    totImages:number = 0; //tot images stored into the database.
 
     // pager object
     pager: any = {
@@ -108,6 +108,12 @@ export class ImagesComponent implements OnInit {
 
     ngOnInit(): void {
       console.log (this.route.params)
+
+      this.imageService.getTotalImages().then(totImages => {
+        this.totImages =  totImages;
+        console.log("Tot images"+this.totImages);
+      }
+      );
         this.route.params.forEach((params: Params) => {
             //console.log(params);
             this.searchApi = params['parm'];
@@ -177,9 +183,9 @@ export class ImagesComponent implements OnInit {
       return this.range(startPage, endPage + 1)
     }
 
-    range(start, end) {
-      return Array(end - start + 1).fill().map((_, idx) => start + idx)
-    }
+  range(start:number, end:number) {
+    return Array(end - start + 1).fill().map((_, idx) => start + idx);
+  }
 
     // range(start, count) {
     //      return Array.apply(0, Array(count))

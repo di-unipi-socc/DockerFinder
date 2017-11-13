@@ -43,15 +43,9 @@ export class ImagesSearchComponent implements  OnInit {
 
     resultImages : Image[];
     count = 0;
-    //
+    
      constructor( private imageService: ImageService,
                   private router: Router){
-
-                //    sizeCmpValue =  {name:"size",  cmp: this.comparisons[0].val, val:"0"};
-
-                 // private softwareService: SoftwareService){
-    //      //this.softwares.push(new Software("", ""));
-    //       this.selectedSort.val = this.sorting[0].val;
      }
 
     ngOnInit(): void {
