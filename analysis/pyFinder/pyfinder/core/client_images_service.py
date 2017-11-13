@@ -158,7 +158,6 @@ class ClientImages:
 
     def must_scanned(self, name, remote_last_update):#, tag="latest"):
         """
-
         :param repo_name: the image name with tag.
         :return: True if the image must be scan. False otherwise.
         """
@@ -178,7 +177,6 @@ class ClientImages:
                     dofinder_last_update = string_to_date(image_json['last_updated'])
                 else:
                     dofinder_last_update = dofinder_last_scan   # if is None tha image is not scan again becuse is  equal to last scan
-
 
                 if string_to_date(remote_last_update) <= dofinder_last_scan or string_to_date(remote_last_update) <= dofinder_last_update:
                     must_scanned = False
