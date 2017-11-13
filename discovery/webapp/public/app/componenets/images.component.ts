@@ -109,9 +109,10 @@ export class ImagesComponent implements OnInit {
     ngOnInit(): void {
       console.log (this.route.params)
 
-      this.imageService.getTotalImages().then(totImages => {
-        this.totImages =  totImages;
-        console.log("Tot images"+this.totImages);
+      this.imageService.getTotalImages().then(response => {
+        console.log(response);
+        this.totImages =  images;
+        // console.log(""+this.totImages);
       }
       );
         this.route.params.forEach((params: Params) => {

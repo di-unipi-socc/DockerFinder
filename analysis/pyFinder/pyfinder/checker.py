@@ -105,7 +105,7 @@ class Checker:
             tag = splitname[1]
             image_id = image['_id']
             if self.client_hub.is_alive_in_hub(repo, tag):
-                self.logger.debug("["+name+"]status:" +image['status'])
+                self.logger.info("["+name+"] status:" +image['status'])
                 if image['status'] == "updated":
                     #self.logger.info("["+name+"] status UPDTED")
                     if self.client_images.must_scanned(name):
@@ -120,13 +120,14 @@ class Checker:
                         self.logger.info("["+name+"] remains UPDATED status.")
                         uptodate +=1
                 if image['status'] == "pending":
-                    self.logger.debug("["+name+"] remains PENDING status")
+                    self.logger.info("["+name+"] remains PENDING status")
                     pending +=1
             else:
                 #the image is removed from the database if it is not present into Docker Hub
+                self.logger.info("["+name+"] deleted from local db because it is not alive in DockerHub")
                 self.client_images.delete_image(image_id)
                 removed += 1
-        if  self.path_file_logging:
+        if self.path_file_logging:
             self.file_logger.info(str(tot_hub_images)+":"+str(tot_dockerfinder_images)+":"+
                             str(removed)+":"+str(pending)+":"+str(uptodate))
         assert tot_dockerfinder_images == (pending+uptodate+removed)
