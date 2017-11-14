@@ -5,18 +5,33 @@ var router = express.Router();
 var Image = require('../models/image');
 
 // record all the methods
-Image.methods(['get','put','post','delete']).updateOptions({ new: true });
+Image.methods(['get', 'put', 'post', 'delete']).updateOptions({
+  new: true
+});
 
 // GET /api/images
 Image.after('get', function(req, res, next) {
-    var count = res.locals.bundle.length;
-    var data = res.locals.bundle;
-    res.locals.bundle = { "count":count, "images": data};
-    console.log("Results " + count);
-    next(); // Don't forget to call next!
+  res.setHeader('Content-Type', 'application/json');
+  var count = res.locals.bundle.length;
+  var data = res.locals.bundle;
+
+  var total = req.query.total;
+  console.log("Results " + count);
+  if(total === 'true'){
+    console.log("Returning only the total number of images")
+    res.locals.bundle = {"count": count };
+    next();
+  }
+
+  res.locals.bundle = {
+    "count": count,
+    "images": data
+  };
+
+  next(); // Don't forget to call next!
 });
 
-Image.register(router,'/images');
+Image.register(router, '/images');
 
 // Return router
 module.exports = router;
