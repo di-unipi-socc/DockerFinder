@@ -9,8 +9,8 @@ import {ImageService} from "../services/image.service";
 
 
 @Component({
-    selector: 'my-images',
-    template: `
+  selector: 'my-images',
+  template: `
 
     <!--button class="btn-xs  btn-primary" (click)="goBack()"> <span class="glyphicon glyphicon-menu-left"></span>Dashboard</button-->
 
@@ -28,7 +28,7 @@ import {ImageService} from "../services/image.service";
 
         <div [hidden]="hideCount" style="text-align:center; color:#2d5699;font-size:20pt">
 
-         <div>{{pager.count}} images found (among {{totImages }} in tha database)</div>
+         <div>{{pager.count}} images found</div>
 
         <!-- pager-->
         <ul [hidden]="hideCount" style="font-size:14" class="pagination">
@@ -77,123 +77,116 @@ import {ImageService} from "../services/image.service";
 
 })
 export class ImagesComponent implements OnInit {
-    errorMessage: string;
-    selectedImage: Image;
-    hideCount: boolean = true;
-    searchApi: string;
-    //showLoading:boolean =  True;
+  errorMessage: string;
+  selectedImage: Image;
+  hideCount: boolean = true;
+  searchApi: string;
+  //showLoading:boolean =  True;
 
-    //count = 0;
+  //count = 0;
 
-    // array of all items to be paged
-    //private allItems: any[];
+  // array of all items to be paged
+  //private allItems: any[];
 
-    totImages:number = 0; //tot images stored into the database.
+  totImages: number = 0; //tot images stored into the database.
 
-    // pager object
-    pager: any = {
-      count :0,
-      pagedimages: [],
-      currentPage : 1,
-    };
+  // pager object
+  pager: any = {
+    count: 0,
+    pagedimages: [],
+    currentPage: 1,
+  };
 
-    // paged items
-    //pagedItems: any[];
+  // paged items
+  //pagedItems: any[];
 
 
-    constructor(
-        private imageService: ImageService,
-        private route: ActivatedRoute ) {
+  constructor(
+    private imageService: ImageService,
+    private route: ActivatedRoute) {
+  }
+
+  ngOnInit(): void {
+
+    this.route.params.forEach((params: Params) => {
+      //console.log(params);
+      this.searchApi = params['parm'];
+      this.getPageImages(1);
+    });
+  }
+
+  getPageImages(page: number) {
+
+    console.log("submitted page: " + page)
+    if (page < 1 || page > this.pager.totalPages) {
+      return;
     }
+    this.imageService.searchImages(this.searchApi + "&page=" + page)
+      .then(resImages => {
 
-    ngOnInit(): void {
-      console.log (this.route.params)
+        if (resImages.count > 0) {
+          //this.pagedImages = resImages.images;
 
-      this.imageService.getTotalImages().then(response => {
-        console.log(response);
-        this.totImages =  images;
-        // console.log(""+this.totImages);
-      }
-      );
-        this.route.params.forEach((params: Params) => {
-            //console.log(params);
-            this.searchApi = params['parm'];
-            this.getPageImages(1);
-        });
-    }
+          this.pager.count = resImages.count;
+          this.pager.pagedImages = resImages.images
+          this.pager.totalPages = resImages.pages;
+          this.pager.currentPage = page;
+          this.pager.pages = this.getIntermediatePages(resImages.pages, page);
 
-    getPageImages(page: number){
-
-      console.log("submitted page: "+ page)
-      if (page < 1 || page > this.pager.totalPages) {
-            return;
-      }
-      this.imageService.searchImages(this.searchApi + "&page="+page)
-          .then(resImages => {
-
-              if (resImages.count > 0) {
-                  //this.pagedImages = resImages.images;
-
-                  this.pager.count = resImages.count;
-                  this.pager.pagedImages =  resImages.images
-                  this.pager.totalPages = resImages.pages;
-                  this.pager.currentPage = page;
-                  this.pager.pages = this.getIntermediatePages(resImages.pages, page);
-
-                  this.hideCount = false;
-                  console.log(resImages);
-              }
-              else{
-                  this.pager.count = resImages.count;
-                  this.hideCount = false;
-              }
-          });
-    }
+          this.hideCount = false;
+          console.log(resImages);
+        }
+        else {
+          this.pager.count = resImages.count;
+          this.hideCount = false;
+        }
+      });
+  }
 
 
-    onSelect(image: Image) {
-        //this.selectedImage = image;
-      //  name =
-        var values = image.name.split(':');
-        var repository = values[0];
-        var tag = values[1];
-        //console.log(repository)
-        var url = "https://hub.docker.com/r/"+repository
-        window.open(url)
-    }
+  onSelect(image: Image) {
+    //this.selectedImage = image;
+    //  name =
+    var values = image.name.split(':');
+    var repository = values[0];
+    var tag = values[1];
+    //console.log(repository)
+    var url = "https://hub.docker.com/r/" + repository
+    window.open(url)
+  }
 
-   getIntermediatePages(totalPages, currentPage){
-      let startPage: number, endPage: number;
-      if (totalPages <= 10) {
-          // less than 10 total pages so show all
-          startPage = 1;
-          endPage = totalPages;
+  getIntermediatePages(totalPages, currentPage) {
+    let startPage: number, endPage: number;
+    if (totalPages <= 10) {
+      // less than 10 total pages so show all
+      startPage = 1;
+      endPage = totalPages;
+    } else {
+      // more than 10 total pages so calculate start and end pages
+      if (currentPage <= 6) {
+        startPage = 1;
+        endPage = 10;
+      } else if (currentPage + 4 >= totalPages) {
+        startPage = totalPages - 9;
+        endPage = totalPages;
       } else {
-          // more than 10 total pages so calculate start and end pages
-          if (currentPage <= 6) {
-              startPage = 1;
-              endPage = 10;
-          } else if (currentPage + 4 >= totalPages) {
-              startPage = totalPages - 9;
-              endPage = totalPages;
-          } else {
-              startPage = currentPage - 5;
-              endPage = currentPage + 4;
-          }
+        startPage = currentPage - 5;
+        endPage = currentPage + 4;
       }
-      return this.range(startPage, endPage + 1)
     }
+    return this.range(startPage, endPage + 1)
+  }
 
-  range(start:number, end:number) {
+  range(start: number, end: number) {
     return Array(end - start + 1).fill().map((_, idx) => start + idx);
   }
 
-    // range(start, count) {
-    //      return Array.apply(0, Array(count))
-    //        .map(function (element, index) {
-    //          return index + start;
-    //      });
-    //    };
+  // range(start, count) {
+  //      return Array.apply(0, Array(count))
+  //        .map(function (element, index) {
+  //          return index + start;
+  //      });
+  //    };
 
 
 }

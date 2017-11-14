@@ -45,14 +45,15 @@ export class ImagesSearchComponent implements  OnInit {
     count = 0;
 
     totImages: number =0;
-     constructor( private imageService: ImageService,
+
+    constructor( private imageService: ImageService,
                   private router: Router){
-     }
+    }
 
     ngOnInit(): void {
         //availableSoftwre
         this.imageService.getTotalImages().then(images => {
-          console.log(images);
+          console.log("Tot images" + images);
           this.totImages =  images;
         });
 
