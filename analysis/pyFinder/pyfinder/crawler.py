@@ -117,7 +117,7 @@ class Crawler:
         # total number of images stored within Docker Hub
         num_images = self.client_hub.count_all_images()
         # TODO: not all the images into the Dokcer Hub are downaloded if the
-        # filter functioi is executed
+        # filter function is executed
         self.logger.info("Random sampling activated. \n\t\tTarget samples:" + str(m_samples) +
                          ", Total number of images: " + str(num_images) + "\n\t\tPercentage:" + str(m_samples / num_images))
         for list_images in self.client_hub.crawl_images(from_page=from_page,

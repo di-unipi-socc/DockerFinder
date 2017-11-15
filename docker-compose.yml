@@ -18,10 +18,10 @@ services:
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
                     '--queue=images',
-                    '--force-page=False', # force to generate the url with the "fp" without take the last url
+                    '--force-page=True', # force to generate the url with the "fp" without take the last url
                     #'--si=10000',
                     '--random=True',
-                    '--fp=50',
+                    '--fp=1',
                     '--ps=100',
                     '--policy=stars_first',
                     '--min-stars=3',

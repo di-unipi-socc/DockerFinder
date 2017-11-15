@@ -2,6 +2,7 @@ import requests
 import sys
 import urllib.parse
 import logging
+from urllib.parse import urlparse, urlunparse
 
 
 """
@@ -14,8 +15,8 @@ class ClientHub:
     def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
-        #self.logger = get_logger(__class__.__name__)
-        #self.logger = get_logger(__name__, logging.INFO)
+        # self.logger = get_logger(__class__.__name__)
+        # self.logger = get_logger(__name__, logging.INFO)
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger initialized.")
         self.next_url = None
@@ -59,7 +60,7 @@ class ClientHub:
         try:
             # self.logger.info(url_tags)
             res = self.session.get(url_tags)
-            #self.logger.debug("["+repo_name+"] Getting all the tags")
+            # self.logger.debug("["+repo_name+"] Getting all the tags")
             if res.status_code == requests.codes.ok:
                 json_response = res.json()
                 count = json_response['count']
@@ -116,16 +117,15 @@ class ClientHub:
         #    #self.build_search_url(page=from_page, page_size=page_size)
         self.logger.info("Next URL=" + self.next_url)
 
-        #count = self.count_all_images()
+        # count = self.count_all_images()
         # max_images = count if not max_images else max_images  # download all
         # images if max_images=None
         crawled_images = 0
-        #self.logger.debug("Total images into Docker Hub: " + str(max_images))
+        # self.logger.debug("Total images into Docker Hub: " + str(max_images))
         try:
-            while self.next_url and crawled_images < max_images:  # max_images > 0
+            while self.next_url and crawled_images < max_images:
 
-                self.save_last_url(self.path_file_url,
-                                   self.next_url)  # save last url
+                self.save_last_url(self.path_file_url, self.next_url)
 
                 self.logger.info("URL=" + self.next_url)
                 res = requests.get(self.next_url)
@@ -140,18 +140,11 @@ class ClientHub:
                                     temp_images += 1
                                     yield image_tag_filtered
 
-                    self.next_url = json_response['next']
-                    #temp_images = len(list_json_image)
+                    self.next_url = change_next_url(json_response['next'])
                     if temp_images + crawled_images > max_images:
                         self.logger.debug("Break yield images because {0}> {1}".format(
                             temp_images + crawled_images, max_images))
                         break
-                    # if temp_images + crawled_images > max_images:
-                    #    list_json_image = list_json_image[:max_images-crawled_images]
-                    #crawled_images += temp_images
-                        # yield list_json_image
-                        # for image in list_json_image:
-                        #     yield image
 
                 else:
                     self.logger.error(str(res.status_code) +
@@ -166,11 +159,22 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
             raise
 
+    def change_next_url(next_url):
+        # change the next url from
+        # https://search-api.s.us-east-1.aws.dckr.io/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
+        # to
+        # https://hub/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
+
+        old_url = list(urlparse(next_url))
+        old_url[1] = self.self.docker_hub
+        new_url = urlunparse(old_url)
+        return new_url
+
     def save_last_url(self, path, url):
         try:
             with open(path, 'w') as f:
                 f.write(url)
-                #self.logger.debug(url + " saved into "+ path)
+                # self.logger.debug(url + " saved into "+ path)
         except FileNotFoundError as e:
             self.logger.error(str(e))
             raise
@@ -291,14 +295,17 @@ class ClientHub:
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1&ordering=-pull_count
 
-        #ordering = {"stars":"star_count", "-stars":"-star_count", "pulls":"pull_count", "-pulls":"-pull_count"}
+        # ordering = {"stars":"star_count", "-stars":"-star_count",
+        # "pulls":"pull_count", "-pulls":"-pull_count"}
 
-        #assert (sort in ordering.keys()),"Sort parameter allowed {0}".format(list(ordering.keys()))
+        # assert (sort in ordering.keys()),"Sort parameter allowed
+        # {0}".format(list(ordering.keys()))
         params = [('query', '*'), ('page', page), ('page_size', page_size)]
         if sort is not None:
             params.append(('ordering', sort))
 
-        #params = (('query', '*'), ('page', page), ('ordering', sort),('page_size', page_size))
+        # params = (('query', '*'), ('page', page), ('ordering',
+        # sort),('page_size', page_size))
 
         # Is official: "/v2/repositories/library?"
         url_encode = urllib.parse.urlencode(params)
