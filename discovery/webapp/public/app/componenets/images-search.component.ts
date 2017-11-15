@@ -37,14 +37,19 @@ export class ImagesSearchComponent implements  OnInit {
      pullsCmpValue = {name:"pulls", cmp: this.comparisons[0].val, val:"0"};
      starsCmpValue = {name:"stars", cmp: this.comparisons[0].val, val:"0"};
 
-     availableSoftware : string [] =["java", "python","pip", "wget",'perl','nano','php','ruby','scala','groovy',
-                                     'apache2','nginx','nodejs','npm','gunicorn','curl','unzip', 'tar','zip','erl',
-                                     'go','ash','zsh','bash','git','ping','gradle','mvn'];
+     availableSoftware : string [] =['apache2', 'ash', 'bash', 'curl', 'erl', 'git',
+      'go', 'gradle', 'groovy', 'gunicorn', 'java', 'mvn', 'nano', 'nginx', 'nodejs', 'npm', 'perl',
+       'php', 'ping', 'pip', 'python', 'ruby', 'scala', 'tar', 'unzip', 'wget', 'zip', 'zsh']
+     //
+    //  ["java", "python","pip", "wget",'perl','nano','php','ruby','scala','groovy',
+    //                                  'apache2','nginx','nodejs','npm','gunicorn','curl','unzip', 'tar','zip','erl',
+    //                                  'go','ash','zsh','bash','git','ping','gradle','mvn'];
 
     resultImages : Image[];
     count = 0;
 
-    totImages: number =0;
+
+    totImages: number = undefined;
 
     constructor( private imageService: ImageService,
                   private router: Router){
