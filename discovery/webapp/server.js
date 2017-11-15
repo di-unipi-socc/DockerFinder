@@ -40,7 +40,6 @@ app.get('/images',function(req, res) {
     function(resApi) {
       // res.writeHead(resApi.statusCode, resApi.headers);
       res.writeHead(resApi.statusCode,resApi.headers);
-      console.log(resApi);
       resApi.pipe(res);
     }
   );
