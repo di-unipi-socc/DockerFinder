@@ -158,14 +158,15 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
             raise
 
-    def change_next_url(self,next_url):
+    def change_next_url(self, next_url):
         # change the next url from
         # https://search-api.s.us-east-1.aws.dckr.io/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
         # to
         # https://hub/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
 
         old_url = list(urlparse(next_url))
-        old_url[1] = self.docker_hub
+        # self.docker_hub  # https://hub.docker.com
+        old_url[1] = self.docker_hub.rpartition("//")[2]
         new_url = urlunparse(old_url)
         return new_url
 
