@@ -158,7 +158,7 @@ class ClientHub:
             self.logger.exception("Unexpected error:")
             raise
 
-    def change_next_url(next_url):
+    def change_next_url(self,next_url):
         # change the next url from
         # https://search-api.s.us-east-1.aws.dckr.io/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
         # to
