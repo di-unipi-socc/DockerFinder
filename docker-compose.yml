@@ -22,7 +22,7 @@ services:
                     #'--si=10000',
                     '--random=True',
                     '--fp=1',
-                    '--ps=100',
+                    '--ps=10',
                     '--policy=stars_first',
                     '--min-stars=3',
                     '--min-pulls=0',
