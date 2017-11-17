@@ -15,8 +15,6 @@ class ClientHub:
     def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
         self.docker_hub = docker_hub_endpoint
         self.session = requests.session()
-        # self.logger = get_logger(__class__.__name__)
-        # self.logger = get_logger(__name__, logging.INFO)
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger initialized.")
         self.next_url = None
@@ -183,9 +181,10 @@ class ClientHub:
         try:
             with open(path, 'r') as f:
                 url = f.read()
-                self.logger.debug("Read last URL from file: " + url)
+                self.logger.info("Read last URL from file: " + url)
                 return url
         except FileNotFoundError as e:
+            self.logger.info("EROOR;file not found: " + url)
             self.logger.warning(
                 "File from reading the last URL not found" + str(e))
             return None
