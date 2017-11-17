@@ -9,6 +9,7 @@ from urllib.parse import urlparse, urlunparse
 This module interacts with Docker Hub endpoint.
 """
 
+
 class ClientHub:
 
     def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
@@ -125,8 +126,7 @@ class ClientHub:
             while self.next_url and crawled_images < max_images:
 
                 self.save_last_url(self.path_file_url, self.next_url)
-
-                self.logger.info("URL=" + self.next_url)
+                self.logger.info("URL = " + self.next_url)
                 res = requests.get(self.next_url)
                 if res.status_code == requests.codes.ok:
                     json_response = res.json()
@@ -173,7 +173,7 @@ class ClientHub:
         try:
             with open(path, 'w') as f:
                 f.write(url)
-                # self.logger.debug(url + " saved into "+ path)
+                self.logger.info(url + " saved into " + path)
         except FileNotFoundError as e:
             self.logger.error(str(e))
             raise
