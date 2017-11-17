@@ -165,7 +165,7 @@ class ClientHub:
         # https://hub/v2/search/repositories/?ordering=-star_count&page=103&page_size=100&query=%2A"
 
         old_url = list(urlparse(next_url))
-        old_url[1] = self.self.docker_hub
+        old_url[1] = self.docker_hub
         new_url = urlunparse(old_url)
         return new_url
 
