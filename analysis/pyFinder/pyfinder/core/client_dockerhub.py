@@ -9,7 +9,6 @@ from urllib.parse import urlparse, urlunparse
 This module interacts with Docker Hub endpoint.
 """
 
-
 class ClientHub:
 
     def __init__(self, docker_hub_endpoint="https://hub.docker.com", path_last_url=None):
@@ -140,7 +139,7 @@ class ClientHub:
                                     temp_images += 1
                                     yield image_tag_filtered
 
-                    self.next_url = change_next_url(json_response['next'])
+                    self.next_url = self.change_next_url(json_response['next'])
                     if temp_images + crawled_images > max_images:
                         self.logger.debug("Break yield images because {0}> {1}".format(
                             temp_images + crawled_images, max_images))
