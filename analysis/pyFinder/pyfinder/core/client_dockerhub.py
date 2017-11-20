@@ -245,12 +245,10 @@ class ClientHub:
         list_tags = self.get_all_tags(repo_name, is_official)
         for tag in list_tags:
             image_tag = self.get_json_tag(repo_name, tag, is_official)
+
             # https://hub.docker.com/v2/repositories/diunipisocc/docker-finder/tags/crawler/
-            # JSOn of a single tag:
-            # {
-            #   name	"crawler"
-            #   full_size :44484893
-            #   images :[
+            # JSOn of a single tag: # {
+            #   name	"crawler", full_size :44484893, images :[
             #       size :44484893
             #       architecture :"amd64"
             #       variant :
@@ -267,14 +265,14 @@ class ClientHub:
             #   image_id :
             #   v2 :true
             # }
-            size = image_tag['full_size']
-            last_updated = image_tag['last_updated']
 
-            if size is None or size < 0 or last_updated is None:
+            if not image_tag or image_tag['full_size'] is None or image_tag['full_size'] < 0 or image_tag['last_updated'] is None:
                 self.logger.info(
-                    "[{0}:{1}] tag discarded (size={2})".format(repo_name, tag, size))
+                    "[{0}:{1}] tag discarded ".format(repo_name, tag))
                 yield None
             else:
+                size = image_tag['full_size']
+                last_updated = image_tag['last_updated']
                 # "name" is the tag  we rename into "reponame:tag"
                 image_tag['name'] = "{}:{}".format(repo_name, tag)
 
