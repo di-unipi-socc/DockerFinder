@@ -184,7 +184,7 @@ class ClientHub:
                 self.logger.info("Read last URL from file: " + url)
                 return url
         except FileNotFoundError as e:
-            self.logger.info("EROOR;file not found: " + url)
+            self.logger.info("EROOR;file not found: " + path)
             self.logger.warning(
                 "File from reading the last URL not found" + str(e))
             return None
