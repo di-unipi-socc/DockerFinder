@@ -16,17 +16,21 @@ Image.after('get', function(req, res, next) {
   var data = res.locals.bundle;
 
   var total = req.query.total;
+  console.log("path" + req.query);
   console.log("Results " + count);
-  if(total === 'true'){
+  if (total === 'true') {
     console.log("Returning only the total number of images")
-    res.locals.bundle = {"count": count };
-    next();
+    res.locals.bundle = {
+      "count": count
+    };
+    // next();
+  } else {
+    console.log("Returning all the images");
+    res.locals.bundle = {
+      "count": count,
+      "images": data
+    };
   }
-
-  res.locals.bundle = {
-    "count": count,
-    "images": data
-  };
 
   next(); // Don't forget to call next!
 });
