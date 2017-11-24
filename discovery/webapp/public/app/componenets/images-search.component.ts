@@ -53,14 +53,18 @@ export class ImagesSearchComponent implements  OnInit {
 
     constructor( private imageService: ImageService,
                   private router: Router){
+
+
+
     }
 
     ngOnInit(): void {
         //availableSoftwre
-        this.imageService.getTotalImages().then(images => {
-          console.log("Tot images" + images);
-          this.totImages =  images;
-        });
+        // TODO: error index.js 
+        // this.imageService.getTotalImages().then(images => {
+        //   console.log("Tot images" + images);
+        //   this.totImages =  images;
+        // });
 
     }
     remove(id: number) {
