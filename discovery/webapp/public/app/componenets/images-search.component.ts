@@ -60,11 +60,10 @@ export class ImagesSearchComponent implements  OnInit {
 
     ngOnInit(): void {
         //availableSoftwre
-        // TODO: error index.js 
-        // this.imageService.getTotalImages().then(images => {
-        //   console.log("Tot images" + images);
-        //   this.totImages =  images;
-        // });
+        this.imageService.getTotalImages().then(images => {
+          console.log("Tot images" + images);
+          this.totImages =  images;
+        });
 
     }
     remove(id: number) {

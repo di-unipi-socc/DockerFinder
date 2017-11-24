@@ -23,27 +23,27 @@ app.use(bodyParser.json({
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 var http = require('http');
-//
-// app.get('/images',function(req, res) {
-//   // res.send("Imìages api is working");
-//   var path = "/api/images"+ (req._parsedUrl.search || '');
-//   console.log("\n Redirect to images_server: " + path);
-//
-//   var reqApi = http.request({
-//       host: 'images_server',
-//       path: path,
-//       //since we are listening on a custom port, we need to specify it by hand
-//       port: '3000',
-//       //This is what changes the request to a POST request
-//       method: 'GET'
-//     },
-//     function(resApi) {
-//       res.writeHead(resApi.statusCode,resApi.headers);// res.writeHead(resApi.statusCode, resApi.headers);
-//       resApi.pipe(res);
-//     }
-//   );
-//   reqApi.end();
-// });
+
+app.get('/images',function(req, res) {
+  // res.send("Imìages api is working");
+  var path = "/api/images"+ (req._parsedUrl.search || '');
+  console.log("\n Redirect to images_server: " + path);
+
+  var reqApi = http.request({
+      host: 'images_server',
+      path: path,
+      //since we are listening on a custom port, we need to specify it by hand
+      port: '3000',
+      //This is what changes the request to a POST request
+      method: 'GET'
+    },
+    function(resApi) {
+      res.writeHead(resApi.statusCode,resApi.headers);// res.writeHead(resApi.statusCode, resApi.headers);
+      resApi.pipe(res);
+    }
+  );
+  reqApi.end();
+});
 
 app.get('/search', function(req, res) { //  /api
   var path = '/search' + (req._parsedUrl.search || '');
