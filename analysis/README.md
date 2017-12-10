@@ -94,6 +94,12 @@ problems
 
 ## scanner
 
+### Scan a single image
+In order to scan a single image (x = repository:tag) submit the following command in the production server.
+
+```
+docker run --network=dockerfinder_default -v /var/run/docker.sock:/var/run/docker.sock diunipisocc/docker-finder:scanner scan x
+```
 
 ## checker
 
