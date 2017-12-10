@@ -52,6 +52,15 @@ for (j=1 ; j <= n; j++)
      s++
  ```
 
+## scanner
+
+### Scan a single image
+In order to scan a single image (x = repository:tag) submit the following command in the production server.
+
+```
+docker run --network=dockerfinder_default -v /var/run/docker.sock:/var/run/docker.sock diunipisocc/docker-finder:scanner scan x
+```
+
 
 ## Cheker
 
@@ -91,15 +100,6 @@ resolutions:
 problems
   - crawler sends R to the queue only at the and (not an image at the time)
 
-
-## scanner
-
-### Scan a single image
-In order to scan a single image (x = repository:tag) submit the following command in the production server.
-
-```
-docker run --network=dockerfinder_default -v /var/run/docker.sock:/var/run/docker.sock diunipisocc/docker-finder:scanner scan x
-```
 
 ## checker
 
