@@ -96,7 +96,7 @@ class Scanner:
             self.logger.info(
                 "[{}] is new into local database".format(image.name))
             self.scan(image)
-            self.logger.debug(
+            self.logger.info(
                 "[{}] - POST to images server".format(image.name))
             self.client_images.post_image(image.to_dict())
 
