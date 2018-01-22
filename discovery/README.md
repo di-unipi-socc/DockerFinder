@@ -138,8 +138,3 @@ PUT /api/images/57b16eb21d3ee62000fcc74b
 }
 ```
 
-# GUI web application
-
-<div  align="center">
-<img src="../docs/df_gif.gif" width="500">
-</div>
