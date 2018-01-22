@@ -18,6 +18,163 @@ Storage
 |____images-13gen-12250.js: set of 12250 images already analysed by DockerFinder
 ```
 
+## JSON description of image in DockerFinder
+
+An image is described by a JSON, where the most important information are listed below:
+ - *id*: is the unique identifier of the image inside DockerFinder.
+ - *name*: is the name of the image (repository:tag)
+ - *stars*: number of stars received by the repository (not the image)
+ - *pulls*: number of time an image is dowloade from the the repository.
+ - *size*: size (in bytes) of the image ,
+ - *distro*: name of the OS distribution (e.g., Ubuntu precise (12.04.5 LTS))
+ - *last_scan*: datetime of the last scan performed by Docker Finder (e.g.,"2017-11-17T16:03:50.457Z",)
+ - *last_updated*: datetime of the last time the image was updated in Docker Hub (e.g., "2017-04-24T22:59:38.213Z",)
+ - *softwares*: list of the softwares versions supported by the image (e.g., Python 2.7)
+ - "inspect_info": object eith the inspect information of an image:
+      - *Id*: SHA256 as unique identifier of the image into Docker HUB (e.g., "sha256:5b117edd0b767986092e9f721ba2364951b0a271f53f1f41aff9dd1861c2d4fe")
+      - *Architecture*: the architecture (e.g."amd64",)
+      - *Os*: operating system of the image (e.g. "linux",)
+      - *Size*: size of the image ibn bytes.
+      - *RootFS*:
+          *Layers*: list of the SHA256 of the layers  composing the image. 
+
+  
+### Examples
+Retrive the JSON description of the image *ubuntu:12.04*
+```
+GET http://neri.di.unipi.it:3000/api/images?name=ubuntu:12.04
+```
+Result:
+```
+{
+  "_id": "5a0f0867c90d2a001b0f07a2",
+  "name": "ubuntu:12.04",
+  "repo_name": "ubuntu",
+  "stars": 6819,
+  "pulls": 315987338,
+  "description": null,
+  "is_automated": false,
+  "repo_owner": "",
+  "tag": "12.04",
+  "size": 39156124,
+  "architecture": null,
+  "repository": 130,
+  "creator": 7,
+  "last_updater": 2215,
+  "last_updated": "2017-04-24T22:59:38.213Z",
+  "image_id": null,
+  "v2": true,
+  "last_scan": "2017-11-17T16:03:50.457Z",
+  "distro": "Ubuntu precise (12.04.5 LTS)",
+  "status": "updated",
+  "inspect_info": {
+    "Id": "sha256:5b117edd0b767986092e9f721ba2364951b0a271f53f1f41aff9dd1861c2d4fe",
+    "RepoTags": [
+      "ubuntu:12.04"
+    ],
+    "RepoDigests": [
+      "ubuntu@sha256:18305429afa14ea462f810146ba44d4363ae76e4c8dfc38288cf73aa07485005"
+    ],
+    "Parent": "",
+    "Comment": "",
+    "Created": "2017-04-12T21:05:30.976274223Z",
+    "Container": "07f96280130f9446fcac0587da01f732228c62b460ab261fc4316f9ac32e6d76",
+    "ContainerConfig": {
+      "Hostname": "eb5b2868ea5d",
+      "Domainname": "",
+      "User": "",
+      "AttachStdin": false,
+      "AttachStdout": false,
+      "AttachStderr": false,
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Cmd": [
+        "/bin/sh",
+        "-c",
+        "#(nop) ",
+        "CMD [\"/bin/bash\"]"
+      ],
+      "ArgsEscaped": true,
+      "Image": "sha256:47e3f9ec5e6e59673b057bbbefad4aeccd33a53b98d1ff12ffa2f049b7981bba",
+      "Volumes": null,
+      "WorkingDir": "",
+      "Entrypoint": null,
+      "OnBuild": null
+    },
+    "DockerVersion": "1.12.6",
+    "Author": "",
+    "Config": {
+      "Hostname": "eb5b2868ea5d",
+      "Domainname": "",
+      "User": "",
+      "AttachStdin": false,
+      "AttachStdout": false,
+      "AttachStderr": false,
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Cmd": [
+        "/bin/bash"
+      ],
+      "ArgsEscaped": true,
+      "Image": "sha256:47e3f9ec5e6e59673b057bbbefad4aeccd33a53b98d1ff12ffa2f049b7981bba",
+      "Volumes": null,
+      "WorkingDir": "",
+      "Entrypoint": null,
+      "OnBuild": null
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 103592866,
+    "VirtualSize": 103592866,
+    "GraphDriver": {
+      "Name": "aufs",
+      "Data": null
+    },
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:58bcc73dcf4050a4955916a0dcb7e5f9c331bf547d31e22052f1b5fa16cf63f8",
+        "sha256:9dc188d975fd7c511e3e40db68fcc5eb6290df063f36998c956fd147163fd821",
+        "sha256:ee60293db08fc3111327cc7accc92798fd215ba7c148a6a7d6e1e3fd3b533efc",
+        "sha256:73b4683e66e8ba13317b022e51f16960e0d436df40a772611e4d17248a721771",
+        "sha256:3efd1f7c01f65eff325e5615c7b4913537017c633b0c83cba74f8ee1816df535"
+      ]
+    }
+  },
+  "__v": 0,
+  "softwares": [
+    {
+      "software": "python",
+      "ver": "2.7.3"
+    },
+    {
+      "software": "perl",
+      "ver": "5.14.2"
+    },
+    {
+      "software": "erl",
+      "ver": "2"
+    },
+    {
+      "software": "bash",
+      "ver": "4.2.25"
+    },
+    {
+      "software": "tar",
+      "ver": "1.26"
+    }
+  ]
+		}
+``` 
+
 ## Search API for searching images
 The `/search` interface exposes the GET operation
 that permits looking for (description of) images.
