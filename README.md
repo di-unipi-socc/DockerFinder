@@ -125,7 +125,9 @@ Each service is shippend within a Docker image (represented as boxes) and the pr
 <img src="./docs/architecture_docker.png" width="500">
 </div>
 
-### Docker Compose - Single-host deployment
+
+
+### Docker Compose (Single-host deployment)
 Docker Finder can be runned locally as a multi-container Docker application using *Docker Compose*.
 
 In order to run **DockerFinder** into your local host, copy, paste, and tun  the following command.
