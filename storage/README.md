@@ -1,6 +1,5 @@
 # Storage
-DockerFinder stores all image descriptions produced by the
-Scanners into a **local repository**, and it makes them accessible
+DockerFinder stores all image descriptions as JSON objects into a **local repository**, and it makes them accessible
 to the other microservices in DockerFinder through a RESTful API.
 
 ```
