@@ -125,7 +125,21 @@ Each service is shippend within a Docker image (represented as boxes) and the pr
 <img src="./docs/architecture_docker.png" width="500">
 </div>
 
-### Docker Compose - Single-host deployment
+###  DockerFinder: production endpoint
+At the [DockerFinder](http://neri.di.unipi.it/)  url  there is the production version of DockerFinder.
+
+
+Search Docker images with _python 2.7_:
+```
+http://neri.di.unipi.it:3000/search?python=2.7
+```
+
+Get a single Dckcer image description:
+```
+http://neri.di.unipi.it:3000/search?python=2.7
+```
+
+### Docker Compose (Single-host deployment)
 Docker Finder can be runned locally as a multi-container Docker application using *Docker Compose*.
 
 In order to run **DockerFinder** into your local host, copy, paste, and tun  the following command.
