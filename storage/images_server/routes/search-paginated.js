@@ -137,13 +137,7 @@ router.get('/', function(req, res, next) {
             console.log(err);
             return next(err);
         }
-        // result.docs
-        // result.total
-        // result.limit
-        // result.page
-        // result.pages
-        //  "limit":result.limit,
-
+        
         res.json({
             "count": result.total,
             "page": result.page,
