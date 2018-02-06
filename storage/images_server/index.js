@@ -148,13 +148,14 @@ connectWithRetry();
  */
 
 app.get('/', function(req, res) {
-  res.json({
-    message: 'use /api/images'
-  });
+  res.redirect(req.baseUrl + '/api/images');
+  // res.json({
+  //   message: 'use /api/images'
+  // });
 });
 
 
-//app.use('/search', require('./routes/search'))
+// app.use('/search', require('./routes/search'))
 app.use('/search', require('./routes/search-paginated'))
 app.use('/api', require('./routes/api'));
 
