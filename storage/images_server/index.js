@@ -149,18 +149,15 @@ connectWithRetry();
 
 app.get('/', function(req, res) {
   res.redirect(req.baseUrl + '/api/images');
-  // res.json({
-  //   message: 'use /api/images'
-  // });
 });
 
-
+// /images/v2/ endpoint
+app.use('/images', require('./routes/api-paginated'));
 // app.use('/search', require('./routes/search'))
 app.use('/search', require('./routes/search-paginated'))
 // app.use('/api', require('./routes/api'));
 app.use('/api', require('./routes/api'));
-// /images endpoint
-app.use('/', require('./routes/api-paginated'));
+
 
 // development error handler
 // will print stacktrace
