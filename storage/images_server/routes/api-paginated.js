@@ -15,7 +15,7 @@ String.prototype.inList = function (list) {
 };
 
 Image.before('get', function (req, res, next) {
-    console.log("GET: " + req.originalUrl);
+    console.log("api pagintaed GET: " + req.originalUrl);
 
     // if images/:id  call next middleware.
      if (req.params.id){
@@ -57,7 +57,6 @@ Image.before('get', function (req, res, next) {
        console.log("Total Results: " + result.total);
      });
 });
-
-Image.register(router, '/images');
+Image.register(router, '/v2')
 
 module.exports = router;
