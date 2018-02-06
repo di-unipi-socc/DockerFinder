@@ -157,7 +157,10 @@ app.get('/', function(req, res) {
 
 // app.use('/search', require('./routes/search'))
 app.use('/search', require('./routes/search-paginated'))
+// app.use('/api', require('./routes/api'));
 app.use('/api', require('./routes/api'));
+// /images endpoint
+app.use('/', require('./routes/api-paginated'));
 
 // development error handler
 // will print stacktrace
