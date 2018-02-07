@@ -20,13 +20,14 @@
   <!-- 3. Display the application -->
   <body>
 
+      <div class="loading">
+        <h1>Loading...</h1>
+      </div>
+      
       <div class="container">
         <my-app></my-app>
       </div>
 
-      <div class="loading">
-        <h1>Loading...</h1>
-      </div>
 
       <script>
         System.import('app').catch(function(err){ console.error(err); });

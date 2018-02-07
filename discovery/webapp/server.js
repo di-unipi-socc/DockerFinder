@@ -25,7 +25,6 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 var http = require('http');
 
 app.get('/images',function(req, res) {
-  // res.send("Imìages api is working");
   var path = "/api/images"+ (req._parsedUrl.search || '');
   console.log("\n Redirect to images_server: " + path);
 
