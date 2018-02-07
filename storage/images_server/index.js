@@ -159,10 +159,8 @@ app.use('/search', require('./routes/search-paginated'))
 app.use('/api', require('./routes/api'));
 
 
-// development error handler
-// will print stacktrace
+// development error handler: will print stacktrace
 if (app.get('env') === 'development') {
-
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({
@@ -172,9 +170,7 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
-
-// no stacktraces leaked to user
+// production error handler: no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({
