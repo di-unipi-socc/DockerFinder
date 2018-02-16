@@ -104,10 +104,20 @@ class ClientImages:
         #url = self.url_api + "?name=" + repo_name
         # {"count": 1,  "images": []}
         try:
+            self.logger.info("Get_image: "+repo_name)
             payload = {'name': repo_name}
+            self.logger.info("URL{}".format(self.url_api))
+            self.logger.info("{} ".format(payload))
             res = self.session.get(self.url_api, params=payload)
+            print('HTTP/1.1 {status_code}\n{headers}\n\n{body}'.format(
+                status_code=res.status_code,
+                headers='\n'.join('{}: {}'.format(k, v) for k, v in res.headers.items()),
+                body=res.content,
+            ))
             res_json = res.json()
-            images = res_json['images']
+            self.logger.info("json: {} ".format(res_json['count']))
+            # print(res_json)
+            # images = res_json['images']
             if res_json['count'] == 1:
                 return images[0]  # return the first image object
             else:
@@ -127,9 +137,10 @@ class ClientImages:
         """Check if the image is new into the images service. \n
         An image is new if it is not present."""
         try:
+            self.logger.info("[" + repo_name + "] is new ?")
             res_json = self.get_image(repo_name)
             ## Return the json or raise an exception if does not exist
-            self.logger.debug("[" + repo_name + "] found within local database")
+            self.logger.info("[" + repo_name + "] found within local database")
             return False
         except ImageNotFound as e:
             self.logger.debug(str(e))
