@@ -57,7 +57,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
-    command: [run, '--images-url=http://images_server:3000/api/images/',
+    command: [run, '--images-url=http://images_server:3000/api/images',
                   '--queue=images',
                   '--key=images.scan',
                   '--software-url=http://software_server:3001/api/software', '--rmi']
