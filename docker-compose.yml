@@ -23,7 +23,7 @@ services:
                     #'--si=10000',
                     '--random=True',
                     '--fp=1',
-                    '--ps=10',
+                    '--ps=100',
                     '--policy=stars_first',
                     '--min-stars=3',
                     '--min-pulls=0',
@@ -57,7 +57,7 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
-    command: [run, '--images-url=http://images_server:3000/api/images/',
+    command: [run, '--images-url=http://images_server:3000/api/images',
                   '--queue=images',
                   '--key=images.scan',
                   '--software-url=http://software_server:3001/api/software', '--rmi']
@@ -169,8 +169,3 @@ volumes:
 #    build: management
 #    ports:
 #      - "3002:3002"
-
-
-# volumes:
-#   df-software:
-#     external: true

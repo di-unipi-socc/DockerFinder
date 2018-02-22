@@ -91,7 +91,8 @@ class Scanner:
         Process a single image.
         It checks if an image must Scanned or it is already updated.
         """
-
+        self.logger.info(
+            "[{}] process repo".format(image.name))
         if self.client_images.is_new(image.name):
             self.logger.info(
                 "[{}] is new into local database".format(image.name))
@@ -119,7 +120,6 @@ class Scanner:
         """
         It scans an image and create the new Docker finder description.
         """
-        #
         # repo_name = image.repo_name
         # tag = image.tag
         # repo_name_tag = image.name

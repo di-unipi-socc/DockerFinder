@@ -1,7 +1,7 @@
 import json
 import requests
 from docopt import docopt
-
+import datetime
 
 def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
@@ -40,8 +40,11 @@ def get_all_images(url="http://127.0.0.1:3000/api/images"):
     except requests.exceptions.ConnectionError:
         raise
 
-def pull_images( path_file_json, url="http://127.0.0.1:3000/api/images",):
+def pull_images(path_file_json, url="http://127.0.0.1:3000/api/images",):
     list_json_images = get_all_images(url)
+    print(path_file_json)
+    path_file_json = path_file_json.format(datetime.date.today().isoformat(),list_json_images['count'])
+    print(path_file_json)
     with open(path_file_json, 'w') as f:
         json.dump(list_json_images, f, ensure_ascii=False)
         print(str(list_json_images['count']) + " Saved into "+ path_file_json)
@@ -58,7 +61,7 @@ def _delete_images(url, list_images):
 __doc__= """ImagesManager
 
 Usage:
-  Tester.py pull  [--file=<images.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
+  Tester.py pull  [--file=<{:date}_{:count}.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
   Tester.py upload [--file=<images.json>] [--images-url=<http://127.0.0.1:3000/api/images>]
   Tester.py rm    [--images-url=<http://127.0.0.1:3000/api/images>]
   Tester.py (-h | --help)
@@ -66,7 +69,7 @@ Usage:
 
 Options:
   -h --help     Show this screen.
-  --file=FILE        File JSON with all the images   [default: images.json]
+  --file=FILE        File JSON with all the images   [default: {}_{}.json]
   --images-url=IMAGESSERVICE  Url images service [default: http://127.0.0.1:3000/api/images].
   --version     Show version.
 """
@@ -77,6 +80,7 @@ if __name__=="__main__":
         upload_images(args['--file'], args['--images-url'])
 
     if args['pull']:
+        # "{0}_{1}.json".format(datetime.date.today().isoformat(),2330)
         pull_images(path_file_json=args['--file'], url=args['--images-url'])
 
     if args['rm']:
