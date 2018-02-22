@@ -10,15 +10,14 @@ version: "3"
 services:
   traefik:
     image: traefik
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    command: --web --docker --docker.domain=localhost --logLevel=DEBUG
     ports:
       - "80:80"
       - "8080:8080"
-      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
-
+      - $PWD/traefik.toml:/etc/traefik/traefik.toml
+          # - /dev/null:/traefik.toml
 
 ###############   ANALYSIS PHASE ####################
   crawler:
@@ -54,14 +53,17 @@ services:
     image: rabbitmq:3-management
     hostname: rabbitmq
     restart: on-failure:3
-    ports:
-      - 8082:15672
+    # ports:
+    #   - 8082:15672
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
     deploy:
       placement:
         constraints:
             - node.hostname==swarm-manager
+      labels:
+          - 'traefik.port=8082'
+          - 'traefik.frontend.rule=PathStrip: /rabbitmq'
 
   scanner:
     image: diunipisocc/docker-finder:scanner
@@ -83,16 +85,6 @@ services:
             - node.hostname != swarm-manager
       restart_policy:
           condition: on-failure
-
-#  checker:
-#    image: diunipisocc/docker-finder:checker
-#    build:
-#      context: analysis
-#      dockerfile: ./Dockerfile_checker
-#    command: [run, '--interval=30','--path-logging=/data/crawler/log/stats.log','--images-url=http://images_server:3000/api/images', '--queue=images', '--key=images.scan','--amqp-url=amqp://guest:guest@rabbitmq:5672']
-#    #command: verify
-#    volumes:
-#      - /dockerfinder/checker/log:/data/crawler/log
 
 #
 # #####################################################
@@ -126,8 +118,8 @@ services:
      build: discovery/webapp/
      image: diunipisocc/docker-finder:webapp
      restart: on-failure:3
-     ports:
-       - 80:80
+     # ports:
+     #   - 80:80
      volumes:
        - ./discovery/webapp:/code
      deploy:
@@ -144,14 +136,19 @@ services:
       image: diunipisocc/docker-finder:images_server
       hostname: images_server
       restart: on-failure:3
-      ports:
-        - "3000:3000"
+      # ports:
+      #   - "3000:3000"
       depends_on:
         - images_db
       deploy:
          placement:
             constraints:
                - node.hostname == swarm-manager
+         # labels:
+         #    - "traefik.backend=docker"
+         #    - "traefik.frontend.rule=Host:images.localhost"
+         #    - "traefik.enable=true"
+         #    - "traefik.port=3000"
 
   images_db:
       image: mongo:3

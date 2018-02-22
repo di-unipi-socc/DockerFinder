@@ -32,11 +32,13 @@ var imageSchema =  new mongoose.Schema({
     //Docker repository informations
     repo_name: String,
     user:String,
+
     stars:     {
         type:       Number,
         min:        [0, 'stars must be positive number']
     },
     pulls:     Number,
+
     description:    String,
     is_automated: Boolean,
     is_private: Boolean,
