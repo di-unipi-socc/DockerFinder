@@ -22,9 +22,8 @@ Image.after('get', function(req, res, next) {
     res.locals.bundle = {
       "count": count
     };
-    // next();
   } else {
-    console.log("Returning all the images");
+    console.log("Returning images");
     res.locals.bundle = {
       "count": count,
       "images": data
