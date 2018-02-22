@@ -1,6 +1,6 @@
 {
-  "name": "api",
-  "version": "0.0.0",
+  "name": "images_server",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,6 @@
     "git": "^0.1.5",
     "mongoose": "^4.7.6",
     "mongoose-paginate": "^5.0.3",
-    "node": "0.0.0",
     "node-restful": "git+https://github.com/baugarten/node-restful.git"
   },
   "devDependencies": {}

@@ -151,7 +151,7 @@ app.get('/', function(req, res) {
   res.redirect(req.baseUrl + '/api/images');
 });
 
-// /images/v2/ endpoint
+// /images/v2/ endpoint allow to search with paginated.
 app.use('/images', require('./routes/api-paginated'));
 // app.use('/search', require('./routes/search'))
 app.use('/search', require('./routes/search-paginated'))

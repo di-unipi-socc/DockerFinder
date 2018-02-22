@@ -7,9 +7,7 @@ def upload_images(file_json, url="http://127.0.0.1:3001/api/images", ):
 
     with open(file_json) as json_data:
         images = json.load(json_data)
-        #print(type(images))
-        #print(images)
-        print( str(images['count']) + " Images read from ")
+        print(str(images['count']) + " Images read from ")
         tot_upload = 0
         for image in  images['images']:
             try:
