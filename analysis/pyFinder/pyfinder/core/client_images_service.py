@@ -4,7 +4,7 @@ import sys
 from .dfexception import *
 import logging
 from urllib.parse import urljoin
-from  requests.compact import urljoin
+from  requests.compat import urljoin
 from .utils import  string_to_date
 """ This module interacts with the *Images service* running on the *storage* part."""
 
@@ -37,7 +37,7 @@ class ClientImages:
         """Update an image description"""
         try:
             id_image = self.get_id_image(dict_image['name'])
-            res = self.session.put(urljoin(self.url_api,id_image), headers={'Content-type': 'application/json'}, json=dict_image)
+            res = self.session.put(urljoin(self.url_api, "/images/{}".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("PUT [" + dict_image['name'] + "] into "+res.url)
             else:
@@ -61,7 +61,7 @@ class ClientImages:
             #    url = self.url_api+id_image
             #else:
             #    url = self.url_api+"/"+id_image
-            res = self.session.put(urljoin(self.url_api,id_image), headers={'Content-type': 'application/json'}, json=dict_status)
+            res = self.session.put(urljoin(self.url_api,"/images/".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
@@ -139,7 +139,7 @@ class ClientImages:
     def delete_image(self, image_id):
         try:
             #url_image_id =self.url_api + "/"+image_id
-            res = self.session.delete(urljoin(self.url_api, image_id)) #url_image_id)
+            res = self.session.delete(urljoin(self.url_api,"/images/{}".format(image_id))) #url_image_id)
             if res.status_code == 204:
                 self.logger.debug("DELETE [" + image_id + "] found within local database")
                 #print("Deleted ", image_id)
