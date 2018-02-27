@@ -12,7 +12,8 @@ class ClientImages:
 
     def __init__(self, images_url):
         self.session = requests.Session()
-        self.url_api = images_url
+        # self.url_api = images_url
+        self.url_api  = images_url+"/" if images_url[len(images_url)-1] != "/" else images_url # add blacklash at the end of the url
 
         self.logger = logging.getLogger(__class__.__name__)
         self.logger.info(__class__.__name__ + " logger  initialized")
@@ -37,8 +38,9 @@ class ClientImages:
         """Update an image description"""
         try:
             id_image = self.get_id_image(dict_image['name'])
-            self.logger.info("PUT url {} ".format(urljoin(self.url_api,str(id_image)) ) )
-            res = self.session.put(urljoin(self.url_api, str(id_image)), headers={'Content-type': 'application/json'}, json=dict_image)
+            url = urljoin(self.url_api,str(id_image))
+            self.logger.info("PUT {} ".format(url) )
+            res = self.session.put(url, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("PUT [" + dict_image['name'] + "] into "+res.url)
             else:
@@ -55,14 +57,10 @@ class ClientImages:
 
     def update_status(self, id_image, status):
         try:
-            #id_image = self.get_id_image(dict_image['name'])
             dict_status = { "status": status }
-            #url = ''
-            #if  self.url_api[len(self.url_api)-1] == "/":
-            #    url = self.url_api+id_image
-            #else:
-            #    url = self.url_api+"/"+id_image
-            res = self.session.put(urljoin(self.url_api,str(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
+            url = urljoin(self.url_api,str(id_image))
+            self.logger.info("PUT update status {}".format(url))
+            res = self.session.put(url, headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
@@ -107,11 +105,10 @@ class ClientImages:
         # {"count": 1,  "images": []}
         try:
             payload = {'name': repo_name}
-            res = self.session.get(self.url_api, params=payload)
-            res_json = res.json()
-            self.logger.info("{}".format(res_json))
-            if len(res_json) > 0:
-                return res_json[0] #['images'][0]  # return the first image object
+            res_json = self.session.get(self.url_api, params=payload).json()
+            # self.logger.info("{}".format(res_json))
+            if res_json['count'] > 0:
+                return res_json['images'][0] #['images'][0]  # return the first image object
             else:
                 raise ImageNotFound("Image "+ repo_name + " not found")
         except requests.exceptions.ConnectionError as e:
@@ -131,7 +128,6 @@ class ClientImages:
         try:
             self.logger.info("[" + repo_name + "] is new ?")
             res_json = self.get_image(repo_name)
-            ## Return the json or raise an exception if does not exist
             self.logger.info("[" + repo_name + "] found within local database")
             return False
         except ImageNotFound as e:
@@ -140,25 +136,21 @@ class ClientImages:
 
     def delete_image(self, image_id):
         try:
-            #url_image_id =self.url_api + "/"+image_id
-            res = self.session.delete(urljoin(self.url_api,str(image_id))) #url_image_id)
+            url = urljoin(self.url_api,str(id_image))
+            self.logger.info("DELETE {}".format(url))
+            res = self.session.delete(url)
             if res.status_code == 204:
-                self.logger.debug("DELETE [" + image_id + "] found within local database")
-                #print("Deleted ", image_id)
-                #return res.json()
+                self.logger.debug("DELETE [" + image_id + "] into local database")
             else:
                 self.logger.error(str(res.status_code) + " Error code. " + res.text)
-                #print(str(res.status_code) + " Error code. " + res.text)
         except requests.exceptions.ConnectionError as e:
              self.logger.exception("ConnectionError: ")
-             #print("ConnectionError: ")
+             raise e
         except:
             self.logger.exception("Unexpected error:")
             raise
 
     # TODO crate method for checkein if a image must be scanned gain
-
-
     def must_scanned(self, name, remote_last_update):#, tag="latest"):
         """
         :param repo_name: the image name with tag.
