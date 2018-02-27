@@ -61,7 +61,7 @@ class ClientImages:
             #    url = self.url_api+id_image
             #else:
             #    url = self.url_api+"/"+id_image
-            res = self.session.put(urljoin(self.url_api,"/images/".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
+            res = self.session.put(urljoin(self.url_api,"/images/{}".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
@@ -170,7 +170,7 @@ class ClientImages:
         if res_image_json is not None:   # if not empty list, the result is there
             image_json = res_image_json['images'][0]
             try:
-                self.logger.debug("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
+                self.logger.info("[" + name + "] local: last scan: " + str(image_json['last_scan']) + "; last update: " + str(image_json[
                     'last_updated']))
 
                 dofinder_last_scan = string_to_date(image_json['last_scan'])
