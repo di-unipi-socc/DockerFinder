@@ -109,7 +109,7 @@ class Scanner:
             self.scan(image)
             #self.logger.info("[{}] - PUT to images server".format(image.name))
             self.client_images.put_image(image.to_dict())  # PUT the new image
-            self.logger.info("[{}] - PUT into images server succesfully".format(images.name))
+            self.logger.info("[{}] - PUT into images server succesfully".format(image.name))
         else:
             self.logger.info(
                 "[{}] - uptodate into images server".format(image.name))

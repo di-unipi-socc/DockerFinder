@@ -152,10 +152,9 @@ app.get('/', function(req, res) {
 });
 
 // /images/v2/ endpoint
-app.use('/images', require('./routes/api-paginated'));
-// app.use('/search', require('./routes/search'))
+// ATTENTION: this api does not work.  /api/images?name=x vs api/images/?name=x is different response
+// app.use('/images', require('./routes/api-paginated'));
 app.use('/search', require('./routes/search-paginated'))
-// app.use('/api', require('./routes/api'));
 app.use('/api', require('./routes/api'));
 
 

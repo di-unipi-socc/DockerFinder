@@ -30,7 +30,7 @@ Options:
 """
 
 # interactive mode for scanner
-#docker run -it --net=core-net --entrypoint=/bin/sh dofinder/scanner:latest
+# docker run -it --net=core-net --entrypoint=/bin/sh dofinder/scanner:latest
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='Scanner 0.0.1')
