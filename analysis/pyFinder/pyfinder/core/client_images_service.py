@@ -37,7 +37,8 @@ class ClientImages:
         """Update an image description"""
         try:
             id_image = self.get_id_image(dict_image['name'])
-            res = self.session.put(urljoin(self.url_api, "/images/{}".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_image)
+            self.logger.info("PUT url {} ".format(urljoin(self.url_api,str(id_image)) ) )
+            res = self.session.put(urljoin(self.url_api, str(id_image)), headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("PUT [" + dict_image['name'] + "] into "+res.url)
             else:
@@ -61,7 +62,7 @@ class ClientImages:
             #    url = self.url_api+id_image
             #else:
             #    url = self.url_api+"/"+id_image
-            res = self.session.put(urljoin(self.url_api,"/images/{}".format(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
+            res = self.session.put(urljoin(self.url_api,str(id_image)), headers={'Content-type': 'application/json'}, json=dict_status)
             if res.status_code == requests.codes.ok:
                 self.logger.debug("UPDATED  ["+ res.json()['name'] +" status: "+status)
             else:
@@ -108,8 +109,9 @@ class ClientImages:
             payload = {'name': repo_name}
             res = self.session.get(self.url_api, params=payload)
             res_json = res.json()
-            if res_json['count'] == 1:
-                return res_json['images'][0]  # return the first image object
+            self.logger.info("{}".format(res_json))
+            if len(res_json) > 0:
+                return res_json[0] #['images'][0]  # return the first image object
             else:
                 raise ImageNotFound("Image "+ repo_name + " not found")
         except requests.exceptions.ConnectionError as e:
@@ -139,7 +141,7 @@ class ClientImages:
     def delete_image(self, image_id):
         try:
             #url_image_id =self.url_api + "/"+image_id
-            res = self.session.delete(urljoin(self.url_api,"/images/{}".format(image_id))) #url_image_id)
+            res = self.session.delete(urljoin(self.url_api,str(image_id))) #url_image_id)
             if res.status_code == 204:
                 self.logger.debug("DELETE [" + image_id + "] found within local database")
                 #print("Deleted ", image_id)
