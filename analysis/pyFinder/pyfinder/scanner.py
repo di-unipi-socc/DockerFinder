@@ -91,15 +91,15 @@ class Scanner:
         Process a single image.
         It checks if an image must Scanned or it is already updated.
         """
-        self.logger.info(
+        self.logger.debug(
             "[{}] process repo".format(image.name))
         if self.client_images.is_new(image.name):
             self.logger.info(
                 "[{}] is new into local database".format(image.name))
             self.scan(image)
-            self.logger.info(
-                "[{}] - POST to images server".format(image.name))
             self.client_images.post_image(image.to_dict())
+            self.logger.info(
+                "[{}] - added to images server succesfully".format(image.name))
 
         # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire
         # the image must be scan again
@@ -109,7 +109,7 @@ class Scanner:
             self.scan(image)
             #self.logger.info("[{}] - PUT to images server".format(image.name))
             self.client_images.put_image(image.to_dict())  # PUT the new image
-            self.logger.info("[{}] - PUT into images server succesfully".format(image.name))
+            self.logger.info("[{}] - updated into images server succesfully".format(image.name))
         else:
             self.logger.info(
                 "[{}] - uptodate into images server".format(image.name))
@@ -140,11 +140,11 @@ class Scanner:
             self.logger.debug('[{0}] start scanning'.format(image.name))
 
             # search software versions and system commands
-            self.logger.info('[{0}] Adding Softwares versions'.format(image.name))
+            self.logger.info('[{0}] extracing softwares versions ...'.format(image.name))
             self.info_dofinder(image)
 
             # add informatiom from the inspect command
-            self.logger.info('[{0}] Adding docker inspect info'.format(image.name))
+            self.logger.info('[{0}] adding docker inspect info....'.format(image.name))
             self.info_inspect(image)
 
             self.logger.info('[{0}] finish scanning'.format(image.name))
@@ -264,7 +264,8 @@ class Scanner:
                     self.logger.debug("{0} {1} found.".format(sw['name'], version))
             else:
                 self.logger.debug("[{0}] NOT found in ".format(sw['name']))
-        self.logger.info('['+''.join('{} {},'.format(s['software'],s['ver']) for s in softwares)+"]")
+        self.logger.info("{} software found".format(len(softwares)))
+        self.logger.debug('Software found: ['+''.join('{} {},'.format(s['software'],s['ver']) for s in softwares)+"]")
 
         return softwares
 
