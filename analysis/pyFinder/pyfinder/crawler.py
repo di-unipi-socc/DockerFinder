@@ -194,7 +194,7 @@ class Crawler:
         """
         process_image = False
         self.logger.debug(
-            "[" + repo_name + "] filtering lates tag processing image.")
+            "[" + image_with_tag['tag']+ "] filtering lates tag processing image.")
 
         return image_with_tag['tag'] == "latest"
 
