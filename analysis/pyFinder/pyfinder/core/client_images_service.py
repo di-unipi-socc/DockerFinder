@@ -22,12 +22,13 @@ class ClientImages:
     def post_image(self, dict_image):
         """Add an image description"""
         try:
-            self.logger.debug("POST "+ str(dict_image)+"  into  "+self.url_api)
+            self.logger.info("POST {} url: {}".format(dict_image['name'],self.url_api))
             res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
                 self.logger.debug("POST ["+dict_image['name']+"]  into  "+res.url)
             else:
                 self.logger.error(str(res.status_code)+": "+res.text)
+                raise
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
         except:
@@ -126,9 +127,9 @@ class ClientImages:
         """Check if the image is new into the images service. \n
         An image is new if it is not present."""
         try:
-            self.logger.info("[" + repo_name + "] is new ?")
+            self.logger.debug("[" + repo_name + "] is new ?")
             res_json = self.get_image(repo_name)
-            self.logger.info("[" + repo_name + "] found within local database")
+            self.logger.debug("[" + repo_name + "] found within local database")
             return False
         except ImageNotFound as e:
             self.logger.debug(str(e))
