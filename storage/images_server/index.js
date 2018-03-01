@@ -151,11 +151,10 @@ app.get('/', function(req, res) {
   res.redirect(req.baseUrl + '/api/images');
 });
 
-// /images/v2/ endpoint allow to search with paginated.
-app.use('/images', require('./routes/api-paginated'));
-// app.use('/search', require('./routes/search'))
+// /images/v2/ endpoint
+// ATTENTION: this api does not work.  /api/images?name=x vs api/images/?name=x is different response
+// app.use('/images', require('./routes/api-paginated'));
 app.use('/search', require('./routes/search-paginated'))
-// app.use('/api', require('./routes/api'));
 app.use('/api', require('./routes/api'));
 
 

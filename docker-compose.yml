@@ -21,7 +21,7 @@ services:
                     '--queue=images',
                     '--force-page=True', # force to generate the url with the "fp" without take the last url
                     #'--si=10000',
-                    '--random=True',
+                    '--random=False',
                     '--fp=1',
                     '--ps=100',
                     '--policy=stars_first',
