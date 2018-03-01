@@ -170,7 +170,7 @@ class Crawler:
                                                   force_from_page=force_from_page,
                                                   sort=self.ordering,
                                                   # filter_image_tag=self.filter_tag
-                                                  # filter_tag=self.filter_latest,
+                                                  filter_tag=self.filter_latest,
                                                   filter_repo=self.filter_tosker):
             sent_images += 1
             if sent_images % 100 == 0:

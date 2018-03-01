@@ -83,8 +83,10 @@ class ClientHub:
         except:
             self.logger.exception("Unexpected error:")
 
-    def crawl_images(self, max_images, sort, from_page=1, page_size=100,
-                     force_from_page=False, filter_repo=lambda repo: True,
+    def crawl_images(self, max_images, sort,
+                    from_page=1, page_size=100,
+                     force_from_page=False,
+                     filter_repo=lambda repo: True,
                      filter_tag=lambda repo_name: True):
         """
         This is a generator function that crawls and yield the images' name crawled from Docker Hub.

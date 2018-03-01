@@ -86,7 +86,7 @@ class Scanner:
                                 "attempt".format(image.name, attempt))
         return processed
 
-    def process_repo_name(self, image):  # repo_name):
+    def process_repo_name(self, image):  
         """
         Process a single image.
         It checks if an image must Scanned or it is already updated.
@@ -101,8 +101,7 @@ class Scanner:
             self.logger.info(
                 "[{}] - added to images server succesfully".format(image.name))
 
-        # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire
-        # the image must be scan again
+        # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire the image must be scan again
         elif self.client_images.must_scanned(image.name, image.last_updated):
             self.logger.info(
                 "[{}] is present into images server but must be scan again".format(image.name))
@@ -113,10 +112,7 @@ class Scanner:
         else:
             self.logger.info(
                 "[{}] - uptodate into images server".format(image.name))
-        # self.client_daemon.images.remove(image.name, force=True)
-        # self.logger.info('[{0}] removed image'.format(image.name))
 
-    #@classmethod
     def scan(self, image):
         """
         It scans an image and create the new Docker finder description.
@@ -126,13 +122,6 @@ class Scanner:
         # repo_name_tag = image.name
 
         self.logger.info("[{}] pulling the image ...".format(image.name))
-
-        # for line in self.client_daemon.pull(repo_name, tag, stream=True):
-        # json_image=json.loads(line.decode())
-        # # self.logger.debug('\r' + json_image['id'] + ":" +
-        # # json_image['progress'], end="")
-        # if 'status' in json_image.keys() and ("Downloaded" in json_image['status'] or "up to date" in json_image['status']):
-        #     self.logger.info(json_image['status'])
 
         try:
             img = self.client_daemon.images.pull(image.name)
@@ -183,37 +172,11 @@ class Scanner:
 
             # start the container with sleep
             container.start()
-
             image.softwares = self._extract_softwares(container)
-
             image.distro = self._extract_distribution(container)
-
-            # search distribution Operating system in the image,
-            # self._get_sys(self.versionCommands):
-            # for cmd, regex in self.client_software.get_system():
-            #     # distro = self.version_from_regex(name, cmd, regex)
-            #     distro = self.version_from_regex(container_id, cmd, regex)
-            #
-            #     if distro:
-            #         image.distro = distro
-
-            # after 1 second it stops the container with SIGKILL
             container.stop(timeout=1)
-            container.remove(v=True)
-            # # search software distribution in the image.
-            # softwares = []
-            #
-            # for sw in self.client_software.get_software():
-            #     software = sw['name']
-            #     command = software + " " + sw['cmd']
-            #     regex = sw['regex']
-            #     version = self.version_from_regex(container_id, command, regex)
-            #     if version:
-            #         softwares.append({'software': software, 'ver': version})
-            # image.softwares = softwares
 
-            # stop ping process in the container
-            # self.client_daemon.stop(container_id)
+            container.remove(v=True)
         except (docker.errors.ImageNotFound, docker.errors.APIError) as e:
             container.remove(v=True, force=True)
             self.logger.error(str(e))
@@ -224,7 +187,6 @@ class Scanner:
         #     image.name, len(softwares), softwares))
 
     def _extract_distribution(self, container):
-
         for command, regex in self.client_software.get_system():
             res = container.exec_run(cmd=command)
             output = res.decode()
@@ -237,15 +199,6 @@ class Scanner:
             else:
                 self.logger.debug("[{0}] NOT found in ".format(command))
         return None
-
-
-        #     # distro = self.version_from_regex(name, cmd, regex)
-        #     distro = self.version_from_regex(container_id, cmd, regex)
-        #
-        #     if distro:
-        #         image.distro = distro
-
-
 
     def _extract_softwares(self, container):
         # list of software distributions found in the image.
@@ -266,7 +219,6 @@ class Scanner:
                 self.logger.debug("[{0}] NOT found in ".format(sw['name']))
         self.logger.info("{} software found".format(len(softwares)))
         self.logger.debug('Software found: ['+''.join('{} {},'.format(s['software'],s['ver']) for s in softwares)+"]")
-
         return softwares
 
     def info_inspect(self, image):
@@ -295,10 +247,6 @@ class Scanner:
                 return None
         except docker.errors.NotFound as e:
             self.logger.debug(command + " not found")
-            # raise
-        # except docker.errors.NotFound as e:
-        #     self.logger.error(e)
-        #     #raise
 
     def run_command(self, container_id, command):
         """Just like 'docker run CMD'.
@@ -312,24 +260,4 @@ class Scanner:
             container_id, cmd=command)
 
         output = self.client_daemon.exec_start(created_exec['Id'])
-
-        #
-        # container_id = self.client_daemon.create_container(image=repo_name,
-        #                                                    entrypoint=command,
-        #                                                    #tty=True,
-        #                                                    #stdin_open=True,
-        #                                                  )['Id']
-        # try:
-        #     response =self.client_daemon.start(container=container_id)
-        #
-        #     self.client_daemon.wait(container_id)
-        #
-        # except docker.errors.NotFound as e:
-        #     self.client_daemon.remove_container(container_id,force=True, v=True)
-        #     self.logger.debug(container_id +": ERROR so we have removed")
-        #
-        # output = self.client_daemon.logs(container=container_id)
-        # self.client_daemon.remove_container(container_id,force=True, v=True)
-        # self.logger.debug(container_id +": Removed container")
-
         return output.decode()
