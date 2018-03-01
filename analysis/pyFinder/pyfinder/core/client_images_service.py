@@ -27,8 +27,8 @@ class ClientImages:
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
                 self.logger.debug("POST ["+dict_image['name']+"]  into  "+res.url)
             else:
-                self.logger.error(str(res.status_code)+": "+res.text)
-                raise
+                self.logger.error(str(res.status_code)+" body: "+ res.json())
+                raise Exception("POST  error")
         except requests.exceptions.ConnectionError as e:
             self.logger.exception("ConnectionError: ")
         except:
