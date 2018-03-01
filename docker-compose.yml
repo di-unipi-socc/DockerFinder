@@ -19,7 +19,7 @@ services:
                     '--amqp-url=amqp://guest:guest@rabbitmq:5672',
                     '--images-url=http://images_server:3000/api/images/',
                     '--queue=images',
-                    '--force-page=True', # force to generate the url with the "fp" without take the last url
+                    #'--force-page=True', # force to generate the url with the "fp" without take the last url
                     #'--si=10000',
                     '--random=False',
                     '--fp=1',
@@ -27,8 +27,8 @@ services:
                     '--policy=stars_first',
                     '--min-stars=3',
                     '--min-pulls=0',
-                    #'--only-official',
-                    '--only-automated',
+                    '--only-official',
+                    #'--only-automated',
 
                     ]
     #,'--si=100'] #, '--fp=100', '--ps=10']
@@ -60,7 +60,9 @@ services:
     command: [run, '--images-url=http://images_server:3000/api/images',
                   '--queue=images',
                   '--key=images.scan',
-                  '--software-url=http://software_server:3001/api/software', '--rmi']
+                  '--software-url=http://software_server:3001/api/software', 
+                  #'--rmi'
+                  ]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
