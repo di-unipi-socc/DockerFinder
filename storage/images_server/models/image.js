@@ -41,6 +41,7 @@ var imageSchema =  new mongoose.Schema({
 
     description:    String,
     is_automated: Boolean,
+    //is_official: Boolean,
     is_private: Boolean,
 
     //Docker Finder informations
