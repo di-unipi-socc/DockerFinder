@@ -23,7 +23,8 @@ class ClientImages:
         """Add an image description"""
         try:
             self.logger.info("POST {} url: {}".format(dict_image['name'],self.url_api))
-            res = self.session.post(self.url_api, headers={'Content-type': 'application/json'}, json=dict_image)
+             # requests.post(url, data=json.dumps(payload))
+            res = self.session.post(self.url_api, data=json.dumps(dict_image)) # headers={'Content-type': 'application/json'}, json=dict_image)
             if res.status_code == requests.codes.created or res.status_code == requests.codes.ok:
                 self.logger.debug("POST ["+dict_image['name']+"]  into  "+res.url)
             else:
