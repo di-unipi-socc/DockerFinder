@@ -133,8 +133,8 @@ class Scanner:
             self.info_dofinder(image)
 
             # add informatiom from the inspect command
-            # self.logger.info('[{0}] adding docker inspect info....'.format(image.name))
-            # self.info_inspect(image)
+            self.logger.info('[{0}] adding docker inspect info....'.format(image.name))
+            self.info_inspect(image)
 
             self.logger.info('[{0}] finish scanning'.format(image.name))
             image.last_scan = str(datetime.datetime.now())
@@ -222,10 +222,32 @@ class Scanner:
         return softwares
 
     def info_inspect(self, image):
+        # "inspect_info":{
+        #       "Id":"sha256:702ffd5274797d4cf4b47ac9f4d48cc470ebed1c668a0a2f7e7f1ef493210a65",
+        #       "RepoTags":[ ],
+        #       "RepoDigests":[ ],
+        #       "Parent":"",
+        #       "Comment":"",
+        #       "Created":"2018-02-26T10:59:06.882767996Z",
+        #       "Container":"aaaa08869053814f0a37c5829f74f64f0d5b781e3527572addddf861e5b20376",
+        #       "ContainerConfig":{ },
+        #       "DockerVersion":"17.06.1-ce",
+        #       "Author":"",
+        #       "Config":{ },
+        #       "Architecture":"amd64",
+        #       "Os":"linux",
+        #       "Size":374134402,
+        #       "VirtualSize":374134402,
+        #       "GraphDriver":{ },
+        #       "RootFS":{ }
+        #    }
         self.logger.debug('[{}] $docker inspect <image>'.format(image.name))
         client = docker.APIClient(base_url='unix://var/run/docker.sock')
         json_inspect = client.inspect_image(image.name)  # Usign Low-level client docker because docker 2.0 has not "inspect_image" method
-        image.inspect_info = json_inspect
+        wanted_keys = ['Id', 'RepoTags', 'RepoDigests', "Parent", "DockerVersion", "Size",
+        "GraphDriver","RootFS", "VirtualSize","Architecture","Os"] # The keys you want
+        image.inspect_info  = dict((k, json_inspect[k]) for k in wanted_keys if k in json_inspect)
+        # image.inspect_info = json_inspect
 
     def version_from_regex(self, container_id, command, regex):
         try:
