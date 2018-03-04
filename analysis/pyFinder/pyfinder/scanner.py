@@ -86,7 +86,7 @@ class Scanner:
                                 "attempt".format(image.name, attempt))
         return processed
 
-    def process_repo_name(self, image):  
+    def process_repo_name(self, image):
         """
         Process a single image.
         It checks if an image must Scanned or it is already updated.
@@ -133,8 +133,8 @@ class Scanner:
             self.info_dofinder(image)
 
             # add informatiom from the inspect command
-            self.logger.info('[{0}] adding docker inspect info....'.format(image.name))
-            self.info_inspect(image)
+            # self.logger.info('[{0}] adding docker inspect info....'.format(image.name))
+            # self.info_inspect(image)
 
             self.logger.info('[{0}] finish scanning'.format(image.name))
             image.last_scan = str(datetime.datetime.now())

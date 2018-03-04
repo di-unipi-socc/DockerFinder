@@ -15,8 +15,6 @@ Image.after('get', function(req, res, next) {
   var data = res.locals.bundle;
 
   var total = req.query.total;
-  //console.log("path" + req.query);
-  // console.log("Results " + count);
   if (total === 'true') {
     console.log("Total="+count +" images")
     res.locals.bundle = {

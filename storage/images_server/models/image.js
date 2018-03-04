@@ -10,7 +10,7 @@ var imageSchema =  new mongoose.Schema({
     name:      { // <repo:tag> the name id composed by: repository name : tag
         type:       String,
         unique:     true,
-        required    :[true, 'The name of the image cannot be empty']
+        required:  [true, 'The name of the image cannot be empty']
     },
 
     //id: String,  already present in the inspect_info
@@ -41,7 +41,8 @@ var imageSchema =  new mongoose.Schema({
 
     description:    String,
     is_automated: Boolean,
-    //is_official: Boolean,
+
+    is_official: Boolean,
     is_private: Boolean,
 
     //Docker Finder informations
