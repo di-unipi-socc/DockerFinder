@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ab14342c3e348fad4e6b3eb1181894cd99efeab312d558c6ce9cea2ee8631710
-size 386
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/25e18b592470e3dddccc826fde2bb8e7610ef863/core-js/core-js.d.ts",
+    "raw": "registry:dt/core-js#0.0.0+20160725163759",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/25e18b592470e3dddccc826fde2bb8e7610ef863/core-js/core-js.d.ts"
+  }
+}
