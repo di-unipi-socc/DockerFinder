@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:59ce27543514f270daf466c192d33a59fbeda8757e559d77cb22a6b4f1c61abd
-size 792
+{"rabbit_version":"3.7.3","users":[{"name":"guest","password_hash":"4CYq0r0s3QCPsdM/lsgDbWfcODz4STajUwFZNzcAGz3x+Hgz","hashing_algorithm":"rabbit_password_hashing_sha256","tags":"administrator"}],"vhosts":[{"name":"/"}],"permissions":[{"user":"guest","vhost":"/","configure":".*","write":".*","read":".*"}],"topic_permissions":[],"parameters":[],"global_parameters":[{"name":"cluster_name","value":"rabbit@rabbitmq"}],"policies":[],"queues":[{"name":"images","vhost":"/","durable":true,"auto_delete":false,"arguments":{}}],"exchanges":[{"name":"dofinder","vhost":"/","type":"direct","durable":true,"auto_delete":false,"internal":false,"arguments":{}}],"bindings":[{"source":"dofinder","vhost":"/","destination":"images","destination_type":"queue","routing_key":"images.scan","arguments":{}}]}
