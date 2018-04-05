@@ -1,3 +1,141 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:06ce0b51c50af0ec5481cd6c7f2604eedfe9d683b6b97636d71d7c26a67e5a19
-size 3073
+[{
+        "name": "python",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "java",
+        "cmd": "-version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "perl",
+        "cmd": "-version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "curl",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "nano",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "php",
+        "cmd": "-v",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "ruby",
+        "cmd": "--version",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "scala",
+        "cmd": "-version",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "groovy",
+        "cmd": "-version",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "httpd",
+        "cmd": "-V",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "nginx",
+        "cmd": "-v",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "pip",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "node",
+        "cmd": "-v",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "npm",
+        "cmd": "-v",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "gunicorn",
+        "cmd": "--version",
+        "regex": "[0-9]+[.][0-9]*[.0-9]*"
+    },
+    {
+        "name": "wget",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "mvn",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "gradle",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "ping",
+        "cmd": "-V",
+        "regex": "s[0-9]+"
+    },
+    {
+        "name": "git",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "bash",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "zsh",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "ash",
+        "cmd": "--help",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "go",
+        "cmd": "version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "erl",
+        "cmd": "-eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell",
+        "regex": "[0-9]+"
+    },
+    {
+        "name": "zip",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "unzip",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    },
+    {
+        "name": "tar",
+        "cmd": "--version",
+        "regex": "[0-9]+\\.[0-9]+(\\.[0-9]+)*"
+    }
+]
