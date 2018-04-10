@@ -31,7 +31,7 @@ def delete_all_images(url="http://127.0.0.1:3001/api/images"):
 
 def get_all_images(url="http://127.0.0.1:3000/api/images"):
     try:
-        res = requests.get(url)
+        res = requests.get(url,timeout=None) # no timeout
         if res.status_code == requests.codes.ok:
             json_response = res.json()
             print(str(json_response['count']) + " total images downloaded")

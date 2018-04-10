@@ -1,3 +1,6 @@
+#backup images in json 
+backup-images/
+
 ## project folder
 mongo/
 venv/
