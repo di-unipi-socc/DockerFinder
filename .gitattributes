@@ -23,3 +23,4 @@ storage/backup-images/2018-03-05_11279.json filter=lfs diff=lfs merge=lfs -text
 storage/backup-images/2017-05-15_3916.json filter=lfs diff=lfs merge=lfs -text
 storage/backup-images/2017-11-14_8088.json filter=lfs diff=lfs merge=lfs -text
 storage/backup-images/2018-04-05_43293.json filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
