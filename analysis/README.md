@@ -14,6 +14,9 @@ Analysis
 |____pyFinder:
      |  
      |____pyfinder: the python  module  that defined the code of the scanner, crawler, checker
+     |    |____core:
+     |    |
+     |
      |    |____model:
      |    |    |___image.py: the definition of the field |of an image in Docker Finder
      |    |____resources:
@@ -51,6 +54,138 @@ for (j=1 ; j <= n; j++)
      select S[j];
      s++
  ```
+
+### Docker Hub api
+
+busyking/countryyear:1.0.0
+superrogue/mediumdefine:1.0.0
+palfool/cordeffect:1.0.0
+
+#### Retrive repository information
+GET repository info
+```
+GET https://hub.docker.com/v2/search/repositories/?query=busyking/countryyear&page_size=100&page=1
+
+{
+   "count":1,
+   "next":"",
+   "previous":"",
+   "results":[
+      {
+         "repo_name":"busyking/countryyear",
+         "short_description":"",
+         "star_count":6,
+         "pull_count":5,
+         "repo_owner":"",
+         "is_automated":false,
+         "is_official":false
+      }
+   ]
+}
+```
+
+Get tags of a REPOSITORY
+```
+GET https://hub.docker.com/v2/repositories/busyking/countryyear/tags/
+
+{
+   "count":1,
+   "next":null,
+   "previous":null,
+   "results":[
+      {
+         "name":"1.0.0",
+         "full_size":176243348,
+         "images":[
+            {
+               "size":176243348,
+               "architecture":"amd64",
+               "variant":null,
+               "features":null,
+               "os":"linux",
+               "os_version":null,
+               "os_features":null
+            }
+         ],
+         "id":26338569,
+         "repository":5434651,
+         "creator":3053991,
+         "last_updater":3053991,
+         "last_updated":"2018-04-26T12:20:13.436111Z",
+         "image_id":null,
+         "v2":true
+      }
+   ]
+}
+```
+
+Get a single tag information:
+```
+GET https://hub.docker.com/v2/repositories/busyking/countryyear/tags/1.0.0/
+
+{
+   "name":"1.0.0",
+   "full_size":176243348,
+   "images":[
+      {
+         "size":176243348,
+         "architecture":"amd64",
+         "variant":null,
+         "features":null,
+         "os":"linux",
+         "os_version":null,
+         "os_features":null
+      }
+   ],
+   "id":26338569,
+   "repository":5434651,
+   "creator":3053991,
+   "last_updater":3053991,
+   "last_updated":"2018-04-26T12:20:13.436111Z",
+   "image_id":null,
+   "v2":true
+}
+```
+
+### Insert into images servers
+Retrieve id of the image
+```
+GET http://neri.di.unipi.it:3000/api/images?name=busyking/countryyear:1.0.0&select=id
+{  
+   "count":1,
+   "images":[  
+      {  
+         "_id":"5aeb01706655650011dac605"
+      }
+   ]
+}
+```
+
+Update image description into ImagesServer
+
+```
+PUT http://neri.di.unipi.it:3000/api/images/5aeb01706655650011dac605
+
+
+{
+  "repo_name":"busyking/countryyear",
+  "tag":"1.0.0",
+  "description":"",
+  "stars":6,
+  "pulls":5,
+  "repo_owner":"",
+  "is_automated":false,
+  "is_official":false,
+  "size": 176243348,
+  "architecture":"amd64",
+  "repository":5434651,
+  "creator":3053991,
+  "last_updater":3053991,
+  "last_updated":"2018-04-26T12:20:13.436111Z",
+  "image_id":null,
+  "v2":true
+}
+```
 
 ## scanner
 

@@ -14,21 +14,22 @@ services:
     build:
      context: analysis
      dockerfile: ./Dockerfile_crawler
-    command: [crawl,'--save-url=/data/crawler/lasturl.txt',
-                    '--amqp-url=amqp://guest:guest@rabbitmq:5672',
-                    '--images-url=http://images_server:3000/api/images/',
-                    '--queue=images',
-                    '--force-page=True',
-                    #'--si=10000',
-                    '--random=False',
-                    '--fp=1',
-                    '--ps=100',
-                    '--policy=stars_first',
-                    '--min-stars=3',
-                    '--min-pulls=0',
-                    #'--only-official',
-                    '--only-automated',
-                    ]
+    # command: [crawl,'--save-url=/data/crawler/lasturl.txt',
+    #                 '--amqp-url=amqp://guest:guest@rabbitmq:5672',
+    #                 '--images-url=http://images_server:3000/api/images/',
+    #                 '--queue=images',
+    #                 '--force-page=True',
+    #                 #'--si=10000',
+    #                 '--random=False',
+    #                 '--fp=1',
+    #                 '--ps=100',
+    #                 '--policy=stars_first',
+    #                 '--min-stars=3',
+    #                 '--min-pulls=0',
+    #                 #'--only-official',
+    #                 '--only-automated',
+    #                 ]
+    command: [crawl-one, 'superrogue/mediumdefine']
     #,'--si=100'] #, '--fp=100', '--ps=10']
     volumes:
         - /data/crawler/
@@ -56,10 +57,11 @@ services:
     build:
       context: analysis
       dockerfile: ./Dockerfile_scanner
-    command: [run, '--images-url=http://images_server:3000/api/images/',
+    command: [run, '--images-url=http://neri.di.unipi.it:3000/api/images/',
                   '--queue=images',
                   '--key=images.scan',
-                  '--software-url=http://software_server:3001/api/software', '--rmi']
+                  '--software-url=http://neri.di.unipi.it:3001/api/software',
+                  '--rmi']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./analysis/pyFinder/:/code

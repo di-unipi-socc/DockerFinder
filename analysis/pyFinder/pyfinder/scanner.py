@@ -101,7 +101,7 @@ class Scanner:
             self.logger.info(
                 "[{}] - added to images server succesfully".format(image.name))
 
-        # TODO: Non chiama Dokcer Hub ???  Ma chima le images serve per capire the image must be scan again
+        # TODO: Non chiama Docker Hub ???  Ma chiama le images servers per capire se image must be scan again
         elif self.client_images.must_scanned(image.name, image.last_updated):
             self.logger.info(
                 "[{}] is present into images server but must be scan again".format(image.name))

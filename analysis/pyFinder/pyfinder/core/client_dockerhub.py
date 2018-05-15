@@ -1,5 +1,6 @@
 import requests
 import sys
+import json
 import urllib.parse
 import logging
 from urllib.parse import urlparse, urlunparse
@@ -32,6 +33,18 @@ class ClientHub:
             #     self.next_url  = init_url
             # else:
             #     self.next_url = self.get_last_url(self.path_file_url)
+
+    def crawl_single_repository(self, repo_name, is_official=False):
+        res = self.session.get(self.build_search_url(page=1, query=repo_name, page_size=10, sort=None)).json()
+        if res['count'] ==1:
+            repo_json = res['results'][0]
+            print(repo_json)
+            for image_tag_filtered in self._apply_tag_filter(repo_json,filter_tag=lambda repo_name: True):
+                if image_tag_filtered is not None:
+                    print(type(image_tag_filtered))
+                    yield json.dumps(image_tag_filtered)
+        else:
+            logger.info("{} not found in docker Hub".format(repo_name))
 
     def get_num_tags(self, repo_name):
         """ Count the number of tags associated with a repository name."""
@@ -290,7 +303,7 @@ class ClientHub:
                         "[{0[repo_name]}:{0[tag]}] - DISCARDED by tag filter (stars={0[star_count]}, pulls={0[pull_count]}, automated={0[is_automated]} official={0[is_official]})".format(image_with_tag))
                     yield None
 
-    def build_search_url(self, page,  page_size=10, sort=None):
+    def build_search_url(self, page, query="*",  page_size=10, sort=None):
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1
         # https://hub.docker.com/v2/search/repositories/?query=*&page_size=100&page=1&ordering=-pull_count
 
@@ -299,7 +312,7 @@ class ClientHub:
 
         # assert (sort in ordering.keys()),"Sort parameter allowed
         # {0}".format(list(ordering.keys()))
-        params = [('query', '*'), ('page', page), ('page_size', page_size)]
+        params = [('query', query), ('page', page), ('page_size', page_size)]
         if sort is not None:
             params.append(('ordering', sort))
 

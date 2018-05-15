@@ -89,6 +89,12 @@ class Crawler:
         except KeyboardInterrupt:
             self.publisher.stop()
 
+    def crawl_single_repository(self, repo_name,is_official=False):
+        try:
+            self.publisher.run(images_generator_function=self.client_hub.crawl_single_repository(repo_name, is_official=is_official))
+        except KeyboardInterrupt:
+            self.publisher.stop()
+
     def crawl_random_samples(self, m_samples, force_from_page, from_page, page_size):
         """
         This is a generator function that crawls docker images name at random name the Docker HUb.
@@ -137,12 +143,15 @@ class Crawler:
                 if p <= (m_samples - sent_images) / (num_images - j + 1):
                     repo_name = image['repo_name']
                     sent_images += 1
-                    yield json.dumps({"name": repo_name})
+                    # yield json.dumps({"name": repo_name})
+                    yield json.dumps(image)
             if sent_images > previous_num_sampled:
                 self.logger.info(
                     "{0}/{1} (Current samples/Target samples)".format(str(sent_images), str(m_samples)))
 
         self.logger.info("Total sampled images: {0}".format(str(sent_images)))
+
+
 
     def crawl(self, force_from_page, from_page, page_size, max_images=None):
         """
