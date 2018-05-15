@@ -1,3 +1,6 @@
+#backup images in json
+dockerfinder-dataset/
+
 ## project folder
 mongo/
 venv/
