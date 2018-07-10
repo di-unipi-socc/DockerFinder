@@ -69,12 +69,16 @@ The attributes for which is possible to search an image are:
   3. **Stars**.
   4. **Pulls**.
 
+# Try-it now
+You can try DockerFinder by using:
+-[**GUI **](http://black.di.unipi.it/dockerfinder): web-based UI that permits searching for images with a graphical environment.
+- [**CLI**](https://github.com/lucarin91/dockerfinder-cli): a command line interface client. Credits to: [lucarin91](https://github.com/lucarin91)
 
 ## GUI of Docker Finder
 
 The GUI of DockerFinder is running on [**http://black.di.unipi.it/dockerfinder**](http://black.di.unipi.it/dockerfinder)
 
-An example of a multi-attribute query submitted to DockerFinder is shown in the gif below.  It search the images that support:
+An example of a multi-attribute query submitted to DockerFinder by using the GUI is shown in the gif below.  It search the images that support:
 - *Java 1.8*,
 - *Python 2.7*,
 - *pulls >= 20*.
@@ -83,6 +87,16 @@ An example of a multi-attribute query submitted to DockerFinder is shown in the 
 <img src="./docs/df2.gif" width="700">
 </div>
 
+### CLI of DockerFinder
+
+Install the Dockerfinder client using pip by the following command:
+```
+pip install dfinder
+```
+After the installation just invok the dfinder software as following:
+```
+dfinder java:1.7 --sort -size --sort +stars
+```
 
 ## Docker Finder main steps
 
