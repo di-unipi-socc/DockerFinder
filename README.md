@@ -71,8 +71,9 @@ The attributes for which is possible to search an image are:
 
 # Try-it now
 You can try DockerFinder by using:
--[**GUI **](http://black.di.unipi.it/dockerfinder): web-based UI that permits searching for images with a graphical environment.
-- [**CLI**](https://github.com/lucarin91/dockerfinder-cli): a command line interface client. Credits to: [lucarin91](https://github.com/lucarin91)
+
+- [**GUI **](http://black.di.unipi.it/dockerfinder): web-based UI that permits searching for images with a graphical environment.
+- [**CLI**](https://github.com/lucarin91/dockerfinder-cli): a command line interface client. **Credits to: [lucarin91](https://github.com/lucarin91)**
 
 ## GUI of Docker Finder
 
